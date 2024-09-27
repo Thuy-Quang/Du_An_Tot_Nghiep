@@ -1,0 +1,96 @@
+<div xmlns:th="http://www.thymeleaf.org">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    /* Hiển thị menu thả xuống khi di chuột */
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    /* Căn giữa các mục trong navbar */
+    .navbar-nav {
+      align-items: center;
+    }
+
+    /* Logo sẽ được giữ kích thước cố định */
+    .navbar-brand img {
+      width: 100px;
+      height: 100px;
+    }
+
+    /* Đẩy các mục Đăng Nhập và Giỏ Hàng sang bên phải */
+    .ml-auto {
+      margin-left: auto;
+    }
+
+    /* Căn giữa logo */
+    .navbar-brand {
+      /*position: absolute;*/
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  </style>
+
+  <nav class="navbar navbar-expand-lg navbar-light " th:fragment="navbar">
+    <div class="container-fluid">
+      <!-- Các mục bên trái của navbar -->
+      <div class="d-flex justify-content-between w-100">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a th:href="@{/giohang}" class="nav-link">
+             Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/giohangdetail}">About</a>
+          </li>
+
+          <!-- Menu thả xuống cho Nam -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="a" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Nam
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="a">
+              <li><a class="dropdown-item" href="#">Quần</a></li>
+              <li><a class="dropdown-item" href="#">Áo</a></li>
+            </ul>
+          </li>
+
+          <!-- Menu thả xuống cho Nữ -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="b" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Nữ
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="b">
+              <li><a class="dropdown-item" href="#">Quần</a></li>
+              <li><a class="dropdown-item" href="#">Áo</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+        </ul>
+
+        <!-- Logo ở giữa -->
+        <a class="navbar-brand" href="#">
+          <img th:src="@{/images/images.png}">
+        </a>
+
+        <!-- Các mục bên phải của navbar -->
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a th:href="@{/giohang/giohang.html}" class="nav-link">
+              <i class="bi bi-person"></i> Đăng Nhập
+            </a>
+          </li>
+          <li class="nav-item">
+            <a th:href="@{/giohang/giohang.html}" class="nav-link" >
+            <i class="bi bi-cart"></i> Giỏ Hàng
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</div>
