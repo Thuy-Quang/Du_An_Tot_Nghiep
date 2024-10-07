@@ -21,7 +21,7 @@ public class VaiTroNguoiDung {
 
     @ManyToOne
     @JoinColumn(name = "nguoi_dung_id", referencedColumnName = "id", nullable = false)
-    private User nguoiDung; // Đối tượng User liên kết với vai trò người dùng
+    private NguoiDung nguoiDung; // Đối tượng User liên kết với vai trò người dùng
 
     @ManyToOne
     @JoinColumn(name = "vai_tro_id", referencedColumnName = "id", nullable = false)

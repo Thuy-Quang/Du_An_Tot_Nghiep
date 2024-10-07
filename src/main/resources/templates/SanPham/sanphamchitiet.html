@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/index.html :: dynamic(~{::main})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sản phẩm</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .product-title {
+            font-weight: bold;
+            font-size: 2.5rem;
+        }
+        .price {
+            color: #e74c3c;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .product-description {
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+        .quantity {
+            width: 100px;
+        }
+        .btn-buy-now {
+            background-color: #27ae60;
+            color: #fff;
+        }
+        .btn-buy-now:hover {
+            background-color: #2ecc71;
+        }
+        .img-container {
+            text-align: center;
+        }
+        .img-container img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+<main class="container mt-5">
+    <div class="row">
+        <!-- Hiển thị hình ảnh sản phẩm -->
+        <div class="col-md-6 img-container">
+            <img th:src="@{|/images/${sanPham.hinhAnh}|}" alt="Product Image" class="img-fluid">
+        </div>
+        <div class="col-md-6">
+            <!-- Tên sản phẩm -->
+            <h2 class="product-title" th:text="${sanPham.tenSanPham}">Tên sản phẩm</h2>
+
+            <!-- Giá sản phẩm -->
+            <p class="price" th:text="${#numbers.formatCurrency(sanPham.gia, 'VND')}">Giá sản phẩm</p>
+
+            <!-- Mô tả sản phẩm -->
+            <p class="product-description" th:text="${sanPham.moTa}">Mô tả sản phẩm</p>
+
+            <!-- Màu sắc và kích cỡ -->
+            <p><strong>Màu sắc:</strong> <span th:text="${sanPham.mauSac}">Màu sắc</span></p>
+            <p><strong>Kích cỡ:</strong> <span th:text="${sanPham.kichCo}">Kích cỡ</span></p>
+
+            <!-- Số lượng -->
+            <div class="form-group">
+                <label for="quantity">Số lượng còn lại:</label>
+                <input type="number" class="form-control quantity" id="quantity" th:value="${sanPham.soLuong}" readonly>
+            </div>
+
+            <!-- Nút thêm vào giỏ hàng và mua ngay -->
+            <div class="d-flex mt-4">
+                <button class="btn btn-primary btn-lg mr-2" th:onclick="'addToCart(' + ${sanPham.id} + ')'" type="button">
+                    Thêm vào giỏ hàng
+                </button>
+                <button class="btn btn-buy-now btn-lg" th:onclick="'buyNow(' + ${sanPham.id} + ')'" type="button">
+                    Mua ngay
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- JavaScript -->
+<script>
+    function addToCart(sanPhamId) {
+        alert("Thêm sản phẩm " + sanPhamId + " vào giỏ hàng");
+    }
+
+    function buyNow(sanPhamId) {
+        alert("Mua ngay sản phẩm " + sanPhamId);
+        // Chuyển hướng tới trang thanh toán hoặc xử lý logic mua hàng
+    }
+</script>
+</body>
+</html>

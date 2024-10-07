@@ -22,7 +22,7 @@ public class DonHang {
 
     @ManyToOne
     @JoinColumn(name = "nguoi_dung_id", referencedColumnName = "id", nullable = false)
-    private User nguoiDung; // Đối tượng User liên kết với đơn hàng
+    private NguoiDung nguoiDung; // Đối tượng User liên kết với đơn hàng
 
     @Column(name = "trang_thai", nullable = false)
     private String trangThai;

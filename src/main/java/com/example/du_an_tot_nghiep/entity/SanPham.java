@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Getter
@@ -43,10 +45,11 @@ public class SanPham {
     private int soLuong;
 
     @Column(name = "trang_thai")
-    private String trangThai;
+    private String trangThai ;
 
-    @Column(name = "ngay_tao", nullable = false)
-    private String ngayTao;
+
+    @Column(nullable = false)
+    private LocalDateTime ngayTao;
 
     // Quan hệ Many-to-One với LoaiSanPham
     @ManyToOne

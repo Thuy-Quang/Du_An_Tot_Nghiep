@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface NguoiDungRepository extends JpaRepository<Integer, NguoiDung> {
+public interface NguoiDungRepository extends JpaRepository<NguoiDung,Long> {
 }
