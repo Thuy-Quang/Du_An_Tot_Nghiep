@@ -47,4 +47,5 @@ public class DonHang {
     @Column(name = "dia_chi", nullable = false)
     private String diaChi;
 
+
 }
