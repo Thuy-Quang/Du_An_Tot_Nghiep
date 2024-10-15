@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::main})}">
 <head>
     <meta charset="UTF-8">
     <title>Thêm Loại Sản Phẩm</title>
@@ -7,22 +7,24 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="container">
+    <main>
+        <div class="container">
 
-    <br><br><h1 class="text-center">Thêm Loại Sản Phẩm</h1><br><br>
+            <br><br><h1 class="text-center">Thêm Loại Sản Phẩm</h1><br><br>
 
-    <form th:action="@{/loai-san-pham/save}" th:object="${loaiSanPham}" method="post">
-        <div class="mb-3">
-            <label for="tenLoai" class="form-label">Tên Loại</label>
-            <input type="text" class="form-control" id="tenLoai" th:field="*{tenLoai}" required>
+            <form th:action="@{/loai-san-pham/save}" th:object="${loaiSanPham}" method="post">
+                <div class="mb-3">
+                    <label for="tenLoai" class="form-label">Tên Loại</label>
+                    <input type="text" class="form-control" id="tenLoai" th:field="*{tenLoai}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="moTa" class="form-label">Mô Tả</label>
+                    <textarea class="form-control" id="moTa" th:field="*{moTa}"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+            </form>
+
         </div>
-        <div class="mb-3">
-            <label for="moTa" class="form-label">Mô Tả</label>
-            <textarea class="form-control" id="moTa" th:field="*{moTa}"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Lưu</button>
-    </form>
-
-</div>
+    </main>
 </body>
 </html>

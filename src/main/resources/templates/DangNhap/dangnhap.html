@@ -79,12 +79,12 @@
         <img th:src="@{/images/images.png}" class="logo">
     </a>
     <h2>Đăng Nhập </h2>
-    <form action="login-process.php" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+    <form th:action="@{/api/xac-thuc/dang-nhap}" method="post">
+        <label >Username:</label>
+        <input type="text"  name="tenDangNhap" placeholder="Enter your username" required>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        <label >Password:</label>
+        <input type="password" name="matKhau" placeholder="Enter your password" required>
         <a th:href="@{/dangki}" class="nav-link" style="text-decoration: none; color: rgba(0, 0, 0, 0.5);">
             <i class="bi bi-person"></i> Đăng kí
         </a>
