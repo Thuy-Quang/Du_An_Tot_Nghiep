@@ -34,12 +34,12 @@ public class SanPham {
 
     @Column(name = "hinh_anh")
     private String hinhAnh;
-
-    @Column(name = "mau_sac")
-    private String mauSac;
-
-    @Column(name = "kich_co")
-    private String kichCo;
+    @ManyToOne
+    @JoinColumn(name = "mau_sac_id")
+    private MauSac mauSac;
+    @ManyToOne
+    @JoinColumn(name = "kich_co_id")
+    private KichCo kichCo;
 
     @Column(name = "so_luong", nullable = false)
     private int soLuong;

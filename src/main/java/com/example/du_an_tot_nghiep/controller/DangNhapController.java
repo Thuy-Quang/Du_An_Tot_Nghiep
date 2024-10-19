@@ -1,19 +1,18 @@
 package com.example.du_an_tot_nghiep.controller;
 
 import com.example.du_an_tot_nghiep.security.JwtUtil;
-import com.example.du_an_tot_nghiep.security.NguoiDungDTO;
 import com.example.du_an_tot_nghiep.service.NguoiDungDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
-@RestController
+@Controller
 @RequestMapping("/api/xac-thuc")
 public class DangNhapController {
 
@@ -31,49 +30,24 @@ public class DangNhapController {
 
     // Đăng nhập
     @PostMapping("/dang-nhap")
-    public ResponseEntity<?> dangNhap(@RequestBody NguoiDungDTO nguoiDungDto) {
-        /* TODO:
-        *   Chỗ này cần lấy thông tin về quyền để đưa vào token
-        */
+    public RedirectView dangNhap(@RequestParam String tenDangNhap, @RequestParam String matKhau, RedirectAttributes redirectAttributes) {
         // Xác thực người dùng
-        Boolean isUserInDB = nguoiDungDetailsService.checkUserInDB(
-                nguoiDungDto.getTenDangNhap(),
-                nguoiDungDto.getMatKhau()
-        );
-        if (!isUserInDB){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("tên dăng nhập hoặc mật khẩu khôgg chính sác ");
+        Boolean isUserInDB = nguoiDungDetailsService.checkUserInDB(tenDangNhap, matKhau);
+        if (!isUserInDB) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Tên đăng nhập hoặc mật khẩu không chính xác");
+            return new RedirectView("/dang-nhap/hien-thi");
         }
 
-        //Tạo token JWT
+        // Tạo token JWT
         try {
-            String token = jwtUtil.generateToken(nguoiDungDto.getTenDangNhap());
-            return ResponseEntity.ok(token);
+            String token = jwtUtil.generateToken(tenDangNhap);
+            redirectAttributes.addFlashAttribute("successMessage", "Đăng nhập thành công");
+            redirectAttributes.addFlashAttribute("token", token);  // Lưu token nếu cần sử dụng
+            return new RedirectView("/index");  // Chuyển hướng về trang chủ sau khi đăng nhập thành công
         } catch (Exception e) {
             e.printStackTrace(); // In lỗi chi tiết để kiểm tra
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không thể tạo JWT");
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể tạo JWT");
+            return new RedirectView("/dang-nhap/hien-thi");
         }
     }
-
-
-//    // Đăng ký
-//    @PostMapping("/dang-ky")
-//    public ResponseEntity<?> dangKy(@RequestBody NguoiDung nguoiDung) {
-//        // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
-//        nguoiDung.setMatKhau(passwordEncoder.encode(nguoiDung.getMatKhau()));
-//
-//        // Lưu người dùng vào cơ sở dữ liệu
-//        nguoiDungDetailsService.dangKyNguoiDung(nguoiDung);
-//
-//        return ResponseEntity.ok("Đăng ký thành công!");
-//    }
-//
-//    // Đổi mật khẩu
-//    @PostMapping("/doi-mat-khau")
-//    public ResponseEntity<?> doiMatKhau(@RequestParam Long nguoiDungId, @RequestBody String matKhauMoi) {
-//        // Mã hóa mật khẩu mới
-//        String matKhauMaHoa = passwordEncoder.encode(matKhauMoi);
-//
-//        nguoiDungDetailsService.doiMatKhau(nguoiDungId, matKhauMaHoa);
-//        return ResponseEntity.ok("Đổi mật khẩu thành công!");
-//    }
 }

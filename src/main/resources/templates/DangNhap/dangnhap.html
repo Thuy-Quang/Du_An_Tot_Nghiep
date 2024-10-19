@@ -55,47 +55,61 @@
             background-color: #45a049;
         }
 
-        .error {
-            color: red;
+        .error, .success {
             text-align: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
         }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
         .navbar-brand {
-            display: flex;            /* Sử dụng flexbox */
-            justify-content: center;  /* Căn giữa theo chiều ngang */
-            align-items: center;      /* Căn giữa theo chiều dọc (nếu cần) */
-            text-align: center;       /* Đảm bảo văn bản căn giữa nếu có */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
 
         .logo {
-            width: 100px;  /* Kích thước hình ảnh */
-            height: auto; /* Giữ tỉ lệ hình ảnh */
+            width: 100px;
+            height: auto;
         }
-
     </style>
 </head>
 <body>
 <div class="login-container">
     <a class="navbar-brand" href="#">
-        <img th:src="@{/images/images.png}" class="logo">
+        <img th:src="@{/images/images.png}" class="logo" alt="Logo">
     </a>
-    <h2>Đăng Nhập </h2>
-    <form th:action="@{/api/xac-thuc/dang-nhap}" method="post">
-        <label >Username:</label>
-        <input type="text"  name="tenDangNhap" placeholder="Enter your username" required>
+    <h2>Đăng Nhập</h2>
 
-        <label >Password:</label>
-        <input type="password" name="matKhau" placeholder="Enter your password" required>
-        <a th:href="@{/dangki}" class="nav-link" style="text-decoration: none; color: rgba(0, 0, 0, 0.5);">
-            <i class="bi bi-person"></i> Đăng kí
-        </a>
-        <a th:href="@{/doimk}" class="nav-link ml-2" style="text-decoration: none; color: rgba(0, 0, 0, 0.5);">
-            <i class="bi bi-person"></i> Đổi mật khẩu
-        </a>
+    <!-- Thông báo đăng nhập thành công hoặc thất bại -->
+    <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="success" th:text="${successMessage}"></div>
+
+    <form action="/api/xac-thuc/dang-nhap" method="post">
+        <label for="tenDangNhap">Username:</label>
+        <input type="text" id="tenDangNhap" name="tenDangNhap" placeholder="Enter your username" required>
+
+        <label for="matKhau">Password:</label>
+        <input type="password" id="matKhau" name="matKhau" placeholder="Enter your password" required>
+
+        <div style="margin-top: 15px;">
+            <a class="nav-link" style="text-decoration: none; color: rgba(0, 0, 0, 0.5);">Đăng kí</a>
+            <a class="nav-link ml-2" style="text-decoration: none; color: rgba(0, 0, 0, 0.5);">Đổi mật khẩu</a>
+        </div>
+
         <input class="mt-2" type="submit" value="Đăng Nhập">
     </form>
-    <div class="error">
-        <!-- Thông báo lỗi nếu có -->
-    </div>
 </div>
 </body>
 </html>

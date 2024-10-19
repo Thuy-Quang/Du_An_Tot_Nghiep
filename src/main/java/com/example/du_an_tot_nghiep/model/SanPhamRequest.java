@@ -12,20 +12,15 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class SanPhamRequest {
     private String tenSanPham;
-
     private String moTa;
-
     private float gia;
-
     private MultipartFile hinhAnh;
 
-    private String mauSac;
-
-    private String kichCo;
+    // Thay đổi kiểu dữ liệu cho mauSac và kichCo
+    private Integer mauSac; // Hoặc Long, tùy thuộc vào cách bạn định nghĩa ID trong MauSac
+    private Integer kichCo;  // Hoặc Long, tùy thuộc vào cách bạn định nghĩa ID trong KichCo
 
     private int soLuong;
-
     private String trangThai;
-
-    private Long loaiSanPham;
+    private Long loaiSanPham; // Giữ lại kiểu Long cho loại sản phẩm
 }

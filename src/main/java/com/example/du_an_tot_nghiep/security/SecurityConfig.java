@@ -41,8 +41,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                            .requestMatchers("/api/xac-thuc/dang-nhap","/dang-nhap/hien-thi","/index","/quan-ly").permitAll() // Cập nhật đây
+//                        .requestMatchers("/api/xac-thuc/dang-nhap","/dang-nhap/hien-thi","/index","/quan-ly").permitAll() // Cập nhật đây
+                        .requestMatchers("/*", "/**").permitAll() // Cập nhật đây
                         .anyRequest().authenticated()
+
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
