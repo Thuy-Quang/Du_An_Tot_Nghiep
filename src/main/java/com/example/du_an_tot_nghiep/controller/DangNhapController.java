@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -30,7 +31,7 @@ public class DangNhapController {
 
     // Đăng nhập
     @PostMapping("/dang-nhap")
-    public RedirectView dangNhap(@RequestParam String tenDangNhap, @RequestParam String matKhau, RedirectAttributes redirectAttributes) {
+    public RedirectView dangNhap(@RequestParam String tenDangNhap, @RequestParam String matKhau, RedirectAttributes redirectAttributes, Model model) {
         // Xác thực người dùng
         Boolean isUserInDB = nguoiDungDetailsService.checkUserInDB(tenDangNhap, matKhau);
         if (!isUserInDB) {
@@ -42,12 +43,14 @@ public class DangNhapController {
         try {
             String token = jwtUtil.generateToken(tenDangNhap);
             redirectAttributes.addFlashAttribute("successMessage", "Đăng nhập thành công");
-            redirectAttributes.addFlashAttribute("token", token);  // Lưu token nếu cần sử dụng
-            return new RedirectView("/index");  // Chuyển hướng về trang chủ sau khi đăng nhập thành công
+            // Trả về trang và token cho client thông qua model
+            model.addAttribute("token", token);  // Thêm token vào model
+            return new RedirectView("/index");  // Chuyển hướng về trang chủ
         } catch (Exception e) {
-            e.printStackTrace(); // In lỗi chi tiết để kiểm tra
+            e.printStackTrace();
             redirectAttributes.addFlashAttribute("errorMessage", "Không thể tạo JWT");
             return new RedirectView("/dang-nhap/hien-thi");
         }
+
     }
 }

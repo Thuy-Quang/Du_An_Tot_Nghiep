@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/SanPham")
+@RequestMapping("/HienThi")
 public class HienThiController {
 
     @Autowired
@@ -28,7 +28,7 @@ public class HienThiController {
     @Autowired
     SanPhamService sanPhamService;
 
-    @GetMapping("/index")
+    @GetMapping("/getall")
     public String show(Model model){
         model.addAttribute("listSPham",sanPhamRepository.findAll());
         model.addAttribute("listLSP",loaiSanPhamRepository.findAll());
@@ -40,7 +40,6 @@ public class HienThiController {
     private  String getProject(Model model){
         model.addAttribute("listSPham",sanPhamRepository.findAll());
         model.addAttribute("listLSP",loaiSanPhamRepository.findAll());
-
         return "SanPham/HienThiSP/Add";
     }
 
