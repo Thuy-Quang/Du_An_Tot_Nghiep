@@ -1,10 +1,10 @@
-package com.example.du_an_tot_nghiep.controller.hoadon;
+package com.example.du_an_tot_nghiep.controller;
 
 import com.example.du_an_tot_nghiep.entity.DonHang;
 import com.example.du_an_tot_nghiep.model.DonHangRequest;
 import com.example.du_an_tot_nghiep.repository.DonHangRepository;
 import com.example.du_an_tot_nghiep.repository.NguoiDungRepository;
-import com.example.du_an_tot_nghiep.service.DonHang.DonHangService;
+import com.example.du_an_tot_nghiep.service.DonHangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VaiTroRepository extends JpaRepository<VaiTro,Long> {
+    boolean existsByTenVaiTro(String tenVaiTro);
 }

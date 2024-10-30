@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách vai trò</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Danh sách vai trò</h1>
+
+    <!-- Hiển thị thông báo -->
+    <div th:if="${message}" class="alert alert-success" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <a th:href="@{/vai-tro/add}" class="btn btn-primary mb-3">Thêm vai trò mới</a>
+
+    <!-- Bảng danh sách vai trò -->
+    <table class="table table-bordered table-hover table-striped text-center">
+        <thead class="thead-dark">
+        <tr>
+            <th>STT</th>
+            <th>Tên vai trò</th>
+            <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="vaiTro, stat : ${vaiTros}">
+            <td th:text="${stat.index + 1}"></td>
+            <td th:text="${vaiTro.tenVaiTro}"></td>
+            <td class="text-center">
+                <a th:href="@{/vai-tro/edit/{id}(id=${vaiTro.id})}" class="btn btn-warning btn-sm">Sửa</a>
+                <a th:href="@{/vai-tro/delete/{id}(id=${vaiTro.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</a>
+                <a th:href="@{/vai-tro/detail/{id}(id=${vaiTro.id})}" class="btn btn-info btn-sm">Chi tiết</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Nút quay lại trang chủ -->
+    <a th:href="@{/}" class="btn btn-secondary mt-3">Quay lại trang chủ</a>
+</div>
+
+<!-- Thư viện JavaScript của Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

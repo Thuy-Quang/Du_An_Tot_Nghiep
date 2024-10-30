@@ -1,4 +1,4 @@
-package com.example.du_an_tot_nghiep.service.SanPham;
+package com.example.du_an_tot_nghiep.service;
 
 import com.example.du_an_tot_nghiep.entity.KichCo;
 import com.example.du_an_tot_nghiep.entity.LoaiSanPham;

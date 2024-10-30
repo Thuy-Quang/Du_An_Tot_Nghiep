@@ -1,76 +1,125 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thêm Sản Phẩm</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #00448c;
+        }
+    </style>
 </head>
 <body>
-<main>
 
-    <div class="container mt-5">
-        <h2 class="mb-4">Thêm Sản Phẩm</h2>
-        <form href="/HienThi/create" method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="tenSanPham" class="form-label">Tên Sản Phẩm</label>
-                <input type="text" class="form-control" id="tenSanPham" name="tenSanPham" placeholder="Nhập tên sản phẩm" required>
-            </div>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Thêm Sản Phẩm</h2>
+    <form href="/HienThi/create" method="post" enctype="multipart/form-data">
 
-            <div class="mb-3">
-                <label for="moTa" class="form-label">Mô Tả</label>
-                <textarea class="form-control" id="moTa" name="moTa" rows="3" placeholder="Nhập mô tả sản phẩm" required></textarea>
-            </div>
+        <!-- Tên Sản Phẩm -->
+        <div class="mb-3">
+            <label for="tenSanPham" class="form-label">Tên Sản Phẩm</label>
+            <input type="text" class="form-control" id="tenSanPham" name="tenSanPham" placeholder="Nhập tên sản phẩm" required>
+        </div>
 
-            <div class="mb-3">
-                <label for="gia" class="form-label">Giá</label>
-                <input type="number" class="form-control" id="gia" name="gia" placeholder="Nhập giá sản phẩm" required>
-            </div>
+        <!-- Mô Tả -->
+        <div class="mb-3">
+            <label for="moTa" class="form-label">Mô Tả</label>
+            <textarea class="form-control" id="moTa" name="moTa" rows="3" placeholder="Nhập mô tả sản phẩm" required></textarea>
+        </div>
 
-            <div class="mb-3">
-                <label for="hinhAnh" class="form-label">Hình Ảnh</label>
-                <input type="file" class="form-control" id="hinhAnh" name="hinhAnh" required>
-            </div>
+        <!-- Giá -->
+        <div class="mb-3">
+            <label for="gia" class="form-label">Giá</label>
+            <input type="number" class="form-control" id="gia" name="gia" placeholder="Nhập giá sản phẩm" required>
+        </div>
 
-            <div class="mb-3">
-                <label for="mauSac" class="form-label">Màu Sắc</label>
-                <input type="text" class="form-control" id="mauSac" name="mauSac" placeholder="Nhập màu sắc sản phẩm" required>
-            </div>
+        <!-- Hình Ảnh -->
+        <div class="mb-3">
+            <label for="hinhAnh" class="form-label">Hình Ảnh</label>
+            <input type="file" class="form-control" id="hinhAnh" name="hinhAnh" required>
+        </div>
 
-            <div class="mb-3">
-                <label for="kichCo" class="form-label">Kích Cỡ</label>
-                <input type="text" class="form-control" id="kichCo" name="kichCo" placeholder="Nhập kích cỡ sản phẩm" required>
-            </div>
+        <!-- Màu Sắc -->
 
-            <div class="mb-3">
-                <label for="soLuong" class="form-label">Số Lượng</label>
-                <input type="number" class="form-control" id="soLuong" name="soLuong" placeholder="Nhập số lượng sản phẩm" required>
-            </div>
+        <div class="mb-3">
+            <label for="mauSac" class="form-label">Màu Sắc</label>
+            <select class="form-select" id="mauSac" name="mauSac" required>
+                <option value="" disabled selected>Chọn Màu Sắc</option> <!-- Option mặc định -->
+                <option th:each="mau : ${listMauSac}"
+                        th:value="${mau.id}"
+                        th:text="${mau.tenMau}"></option>
+            </select>
+        </div>
 
-            <div class="mb-3">
-                <label for="trangThai" class="form-label">Trạng Thái</label>
-                <select class="form-select" id="trangThai" name="trangThai">
-                    <option value="Trạng Thái Còn Hàng">Còn hàng</option>
-                    <option value="Trạng Thái Hết Hàng">Hết hàng</option>
-                </select>
-            </div>
 
-            <div class="mb-3">
-                <label for="loaiSanPham" class="form-label">Loại Sản Phẩm</label>
-                <select class="form-select" id="loaiSanPham" name="loaiSanPham" required>
-                    <option value="" disabled selected>Chọn loại sản phẩm</option> <!-- Option mặc định -->
-                    <option th:each="loai : ${listLSP}"
-                            th:value="${loai.id}"
-                            th:text="${loai.tenLoai}"></option>
-                </select>
-            </div>
+        <!-- Kích Cỡ -->
 
-            <button type="submit" class="btn btn-primary">Lưu Sản Phẩm</button>
-        </form>
-    </div>
+        <div class="mb-3">
+            <label for="kichCo" class="form-label">Kích Cỡ</label>
+            <select class="form-select" id="kichCo" name="kichCo" required>
+                <option value="" disabled selected>Chọn Kích Cỡ</option> <!-- Option mặc định -->
+                <option th:each="kc : ${listKichCo}"
+                        th:value="${kc.id}"
+                        th:text="${kc.tenKichCo}"></option>
+            </select>
+        </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</main>
+        <!-- Số Lượng -->
+        <div class="mb-3">
+            <label for="soLuong" class="form-label">Số Lượng</label>
+            <input type="number" class="form-control" id="soLuong" name="soLuong" placeholder="Nhập số lượng sản phẩm" required>
+        </div>
+
+        <!-- Trạng Thái -->
+        <div class="mb-3">
+            <label for="trangThai" class="form-label">Trạng Thái</label>
+            <select class="form-select" id="trangThai" name="trangThai" required>
+                <option value="conHang">Còn hàng</option>
+                <option value="hetHang">Hết hàng</option>
+            </select>
+        </div>
+
+        <!-- Loại Sản Phẩm -->
+        <div class="mb-3">
+            <label for="loaiSanPham" class="form-label">Loại Sản Phẩm</label>
+            <select class="form-select" id="loaiSanPham" name="loaiSanPham" required>
+                <option value="" disabled selected>Chọn loại sản phẩm</option> <!-- Option mặc định -->
+                <option th:each="loai : ${listLSP}"
+                        th:value="${loai.id}"
+                        th:text="${loai.tenLoai}"></option>
+            </select>
+        </div>
+
+        <!-- Submit -->
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">Lưu Sản Phẩm</button>
+        </div>
+    </form>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

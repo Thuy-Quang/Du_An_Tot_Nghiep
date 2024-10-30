@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Vai Trò Người Dùng</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Danh sách Vai Trò Người Dùng</h2>
+
+    <!-- Nút thêm mới -->
+    <div class="text-right mb-3">
+        <a class="btn btn-primary" th:href="@{/vai-tro-nguoi-dung/add}">Thêm Mới</a>
+    </div>
+
+    <!-- Bảng danh sách vai trò người dùng -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped align-middle text-center">
+            <thead class="table-dark align-middle">
+            <tr>
+                <th>STT</th>
+                <th>Tên Người Dùng</th>
+                <th>Tên Vai Trò</th>
+                <th>Hành Động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vtn ,stat: ${vaiTroNguoiDungList}">
+                <td th:text="${stat.index + 1}"></td>
+                <td th:text="${vtn.nguoiDung.hoTen}"></td>
+                <td th:text="${vtn.vaiTro.tenVaiTro}"></td>
+                <td class="text-center align-middle">
+                    <a th:href="@{/vai-tro-nguoi-dung/edit/{id}(id=${vtn.id})}" class="btn btn-warning btn-sm">Sửa</a>
+                    <a th:href="@{/vai-tro-nguoi-dung/delete/{id}(id=${vtn.id})}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</a>
+                    <a th:href="@{/vai-tro-nguoi-dung/detail/{id}(id=${vtn.id})}" class="btn btn-info btn-sm">Chi Tiết</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- JavaScript của Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
