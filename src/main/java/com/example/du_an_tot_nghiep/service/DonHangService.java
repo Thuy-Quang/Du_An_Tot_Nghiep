@@ -35,7 +35,6 @@ public class DonHangService {
         donHang.setTrangThai(donHangRequest.getTrangThai());
         donHang.setTongTien(donHangRequest.getTongTien());
         donHang.setPhuongThucThanhToan(donHangRequest.getPhuongThucThanhToan());
-        donHang.setDiaChi(donHangRequest.getDiaChi());
         donHang.setNgayCapNhat(now);
 
         // Lấy người dùng từ repository và thiết lập cho đơn hàng

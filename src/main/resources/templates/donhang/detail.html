@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"  th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::body})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Chi tiết đơn hàng</title>
@@ -59,6 +59,16 @@
                     </select>
                 </div>
 
+                <!-- Chỉnh sửa -->
+                <div class="mb-3">
+                    <label for="phuongThucThanhToanEdit" class="form-label">Cập nhật phương thức thanh toán</label>
+                    <select class="form-select" id="phuongThucThanhToanEdit" name="phuongThucThanhToanEdit" th:field="*{phuongThucThanhToan}" required>
+                        <option value="Tiền mặt" th:selected="${detail.phuongThucThanhToan == 'Tiền mặt'}">Tiền mặt</option>
+                        <option value="Chuyển khoản" th:selected="${detail.phuongThucThanhToan == 'Chuyển khoản'}">Chuyển khoản</option>
+                    </select>
+                </div>
+
+                <!-- Các nút điều hướng -->
                 <a th:href="@{/HienThiDonHang/GetAll}" class="btn btn-secondary">Quay lại</a>
                 <a th:href="@{/HienThiDonHang/listDonHang/edit/id/{id}(id=${detail.id})}" class="btn btn-warning">Cập nhật đơn hàng</a>
             </form>

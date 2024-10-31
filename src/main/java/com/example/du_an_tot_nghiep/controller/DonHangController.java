@@ -50,7 +50,6 @@ public class DonHangController {
         donHang.setTongTien(donHangRequest.getTongTien());
         donHang.setTrangThaiThanhToan(donHangRequest.getTrangThaiThanhToan());
         donHang.setPhuongThucThanhToan(donHangRequest.getPhuongThucThanhToan());
-        donHang.setDiaChi(donHangRequest.getDiaChi());
         donHang.setNguoiDung(nguoiDungRepository.findById(donHangRequest.getNguoiDungId()).orElse(null)); // Thêm người dùng vào đơn hàng
 
         // Chuyển đổi LocalDateTime sang Date
@@ -82,7 +81,6 @@ public class DonHangController {
         donHang.setTongTien(donHangRequest.getTongTien());
         donHang.setTrangThaiThanhToan(donHangRequest.getTrangThaiThanhToan());
         donHang.setPhuongThucThanhToan(donHangRequest.getPhuongThucThanhToan());
-        donHang.setDiaChi(donHangRequest.getDiaChi());
         // Thêm các trường khác nếu cần thiết
 
         // Lưu cập nhật vào database

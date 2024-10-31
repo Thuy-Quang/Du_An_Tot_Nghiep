@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"  th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::body})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,54 +12,66 @@
 
 <div class="container mt-5">
     <h2 class="mb-4">Thêm Đơn Hàng</h2>
-    <form action="/HienThiDonHang/create" method="post" enctype="multipart/form-data">
+    <form action="/HienThiDonHang/create" method="post" enctype="multipart/form-data" th:object="${donHangRequest}">
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${#fields.hasErrors('nguoiDungId')}" class="alert alert-danger">
+            <p th:errors="*{nguoiDungId}"></p>
+        </div>
         <!-- Người dùng -->
         <div class="mb-3">
             <label for="nguoiDung" class="form-label">Người Dùng</label>
-            <select class="form-select" id="nguoiDung" name="nguoiDungId" required> <!-- Đổi thành nguoiDungId -->
-                <option value="" disabled selected>Chọn người dùng</option> <!-- Option mặc định -->
+            <select class="form-select" id="nguoiDung" name="nguoiDungId" th:field="*{nguoiDungId}" required>
                 <option th:each="nguoiDung : ${listNguoiDung}"
                         th:value="${nguoiDung.id}"
                         th:text="${nguoiDung.hoTen}"></option>
             </select>
         </div>
 
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${#fields.hasErrors('trangThai')}" class="alert alert-danger">
+            <p th:errors="*{trangThai}"></p>
+        </div>
         <!-- Trạng thái -->
         <div class="mb-3">
             <label for="trangThai" class="form-label">Trạng Thái</label>
-            <select class="form-select" id="trangThai" name="trangThai" required>
+            <select class="form-select" id="trangThai" name="trangThai" th:field="*{trangThai}" required>
                 <option value="Đang xử lý">Đang xử lý</option>
                 <option value="Đã giao hàng">Đã giao hàng</option>
                 <option value="Đã hủy">Đã hủy</option>
             </select>
         </div>
 
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${#fields.hasErrors('tongTien')}" class="alert alert-danger">
+            <p th:errors="*{tongTien}"></p>
+        </div>
         <!-- Tổng tiền -->
         <div class="mb-3">
             <label for="tongTien" class="form-label">Tổng Tiền</label>
-            <input type="number" class="form-control" id="tongTien" name="tongTien" placeholder="Nhập tổng tiền" required>
+            <input type="number" class="form-control" id="tongTien" name="tongTien" th:field="*{tongTien}" placeholder="Nhập tổng tiền" required>
         </div>
 
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${#fields.hasErrors('phuongThucThanhToan')}" class="alert alert-danger">
+            <p th:errors="*{phuongThucThanhToan}"></p>
+        </div>
         <!-- Phương thức thanh toán -->
         <div class="mb-3">
             <label for="phuongThucThanhToan" class="form-label">Phương Thức Thanh Toán</label>
-            <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required>
-                <option value="TienMat">Tiền mặt</option>
-                <option value="ChuyenKhoan">Chuyển khoản</option>
-
+            <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" th:field="*{phuongThucThanhToan}" required>
+                <option value="Tiền mặt">Tiền mặt</option>
+                <option value="Chuyển khoản">Chuyển khoản</option>
             </select>
         </div>
 
-        <!-- Địa chỉ -->
-        <div class="mb-3">
-            <label for="diaChi" class="form-label">Địa Chỉ Giao Hàng</label>
-            <input type="text" class="form-control" id="diaChi" name="diaChi" placeholder="Nhập địa chỉ giao hàng" required>
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${#fields.hasErrors('trangThaiThanhToan')}" class="alert alert-danger">
+            <p th:errors="*{trangThaiThanhToan}"></p>
         </div>
-
         <!-- Trạng thái thanh toán -->
         <div class="mb-3">
             <label for="trangThaiThanhToan" class="form-label">Trạng Thái Thanh Toán</label>
-            <select class="form-select" id="trangThaiThanhToan" name="trangThaiThanhToan" required>
+            <select class="form-select" id="trangThaiThanhToan" name="trangThaiThanhToan" th:field="*{trangThaiThanhToan}" required>
                 <option value="Chưa thanh toán">Chưa thanh toán</option>
                 <option value="Đã thanh toán">Đã thanh toán</option>
             </select>

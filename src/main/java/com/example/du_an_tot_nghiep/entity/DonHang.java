@@ -44,8 +44,7 @@ public class DonHang {
     @Column(name = "trang_thai_thanh_toan")
     private String trangThaiThanhToan;
 
-    @Column(name = "dia_chi", nullable = false)
-    private String diaChi;
+
 
 
 }
