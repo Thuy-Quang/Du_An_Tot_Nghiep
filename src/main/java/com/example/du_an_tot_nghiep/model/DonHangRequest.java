@@ -1,6 +1,10 @@
 package com.example.du_an_tot_nghiep.model;
 
 import com.example.du_an_tot_nghiep.entity.NguoiDung;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,14 +17,21 @@ import java.util.Date;
 @Getter
 @Setter
 public class DonHangRequest {
-    private Long nguoiDungId;              // ID của người dùng (người đặt hàng)
-    private String trangThai;               // Trạng thái đơn hàng
-    private float tongTien;                 // Tổng tiền của đơn hàng
-    private String phuongThucThanhToan;    // Phương thức thanh toán
-    private Date ngayTao;                   // Ngày tạo đơn hàng
-    private Date ngayCapNhat;                // Ngày cập nhật đơn hàng
-    private String trangThaiThanhToan;      // Trạng thái thanh toán
-    private String diaChi;
-    // Địa chỉ giao hàng
-    private NguoiDung nguoiDung; // ID người dùng
+
+    @NotEmpty(message = "Trạng thái không được để trống")  // Đảm bảo chuỗi không trống
+    private String trangThai;
+
+    @DecimalMin(value = "0.0", message = "Tổng tiền phải lớn hơn hoặc bằng 0")
+    @NotNull(message = "Tổng tiền không được để trống")
+    private Double tongTien;
+
+    @NotEmpty(message = "Trạng thái thanh toán không được để trống")  // Đảm bảo chuỗi không trống
+    private String trangThaiThanhToan;
+
+    @NotEmpty(message = "Phương thức thanh toán không được để trống")  // Đảm bảo chuỗi không trống
+    private String phuongThucThanhToan;
+
+    @NotNull(message = "ID người dùng không được để trống")
+    private Long nguoiDungId;
+
 }

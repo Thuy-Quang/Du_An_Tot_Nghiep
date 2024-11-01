@@ -74,7 +74,7 @@
             <td th:text="${#dates.format(loaiSanPham.ngayTao, 'dd-MM-yyyy')}"></td>
             <td th:text="${#dates.format(loaiSanPham.ngayCapNhat, 'dd-MM-yyyy')}"></td>
             <td>
-                <a class="btn btn-warning btn-sm" th:href="@{/loai-san-pham/edit/{id}(id=${loaiSanPham.id})}">Sửa</a>
+                <a class="btn btn-warning btn-sm" th:onclick="'loadContent(\'/loai-san-pham/edit/' + ${loaiSanPham.id} + '\')'">Sửa</a>
                 <form th:action="@{/loai-san-pham/delete/{id}(id=${loaiSanPham.id})}" method="post" style="display:inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa loại sản phẩm này không?');">
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger btn-sm">Xóa</button>

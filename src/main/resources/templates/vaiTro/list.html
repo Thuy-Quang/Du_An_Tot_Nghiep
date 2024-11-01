@@ -4,6 +4,48 @@
     <title>Danh sách vai trò</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<script>
+    function loadContent(url) {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                document.querySelector('.main-content').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('Lỗi khi tải nội dung: ' + error.message); // Thông báo lỗi cho người dùng
+            });
+    }
+
+    function submitForm(url, formData, callback) {
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    callback(); // Tải lại danh sách hoặc làm gì đó sau khi thành công
+                } else {
+                    alert('Thao tác thất bại: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Lỗi:', error));
+    }
+
+    function handleFormSubmit(event) {
+        event.preventDefault(); // Ngăn không cho trang tải lại
+        const form = event.target;
+        const formData = new FormData(form);
+        const actionUrl = form.getAttribute('action'); // Lấy URL từ thuộc tính action của form
+        submitForm(actionUrl, formData, () => loadContent(form.dataset.reloadUrl));
+    }
+</script>
 <body>
 <div class="container mt-5">
     <h1 class="text-center mb-4">Danh sách vai trò</h1>
@@ -16,7 +58,7 @@
         <span th:text="${errorMessage}"></span>
     </div>
 
-    <a th:href="@{/vai-tro/add}" class="btn btn-primary mb-3">Thêm vai trò mới</a>
+     <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/vai-tro/add')"> Thêm Vai Tro  </a>
 
     <!-- Bảng danh sách vai trò -->
     <table class="table table-bordered table-hover table-striped text-center">
@@ -32,7 +74,7 @@
             <td th:text="${stat.index + 1}"></td>
             <td th:text="${vaiTro.tenVaiTro}"></td>
             <td class="text-center">
-                <a th:href="@{/vai-tro/edit/{id}(id=${vaiTro.id})}" class="btn btn-warning btn-sm">Sửa</a>
+                <a class="btn btn-warning btn-sm" th:onclick="'loadContent(\'/vai-tro/edit/' + ${vaiTro.id} + '\')'">Sửa</a>
                 <a th:href="@{/vai-tro/delete/{id}(id=${vaiTro.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</a>
                 <a th:href="@{/vai-tro/detail/{id}(id=${vaiTro.id})}" class="btn btn-info btn-sm">Chi tiết</a>
             </td>

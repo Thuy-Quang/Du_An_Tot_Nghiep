@@ -55,7 +55,7 @@
         <div class="col-md-8 mx-auto rounded border p-4 m-4">
             <h2 class="text-center mb-5">Cập nhật Đơn Hàng</h2>
 
-            <form id="productForm" th:action="@{'/HienThiDonHang/listDonHang/edit/id/{id}(id=${detail.id})'}" method="post" enctype="multipart/form-data" onsubmit="handleFormSubmit(event)">
+            <form id="productForm" th:action="@{/HienThiDonHang/listDonHang/edit/id=${detail.id}}" method="post" enctype="multipart/form-data" onsubmit="handleFormSubmit(event)">
 
                 <!-- Người dùng -->
                 <div class="mb-3">
@@ -64,7 +64,7 @@
                         <option th:each="nguoiDung : ${listNguoiDung}"
                                 th:value="${nguoiDung.id}"
                                 th:text="${nguoiDung.hoTen}"
-                                th:selected="${nguoiDung.id == ${donHangRequest.nguoiDungId}}"> <!-- Hiển thị người dùng được chọn -->
+                                th:selected="${nguoiDung.id == donHangRequest.nguoiDungId}"> <!-- Hiển thị người dùng được chọn -->
                         </option>
                     </select>
                 </div>
@@ -93,14 +93,6 @@
                         <option value="Chuyển khoản" th:selected="${detail.phuongThucThanhToan == 'Chuyển khoản'}">Chuyển khoản</option>
                     </select>
                 </div>
-
-                <!-- Địa chỉ (commented out) -->
-                <!--
-                <div class="mb-3">
-                    <label for="diaChi" class="form-label">Địa Chỉ</label>
-                    <input type="text" class="form-control" id="diaChi" name="diaChi" th:value="${detail.diaChi}" placeholder="Nhập địa chỉ giao hàng" required>
-                </div>
-                -->
 
                 <!-- Trạng thái thanh toán -->
                 <div class="mb-3">

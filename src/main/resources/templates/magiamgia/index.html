@@ -79,7 +79,7 @@
             <td th:text="${#dates.format(maGiamGia.ngayTao, 'dd-MM-yyyy')}"></td>
             <td th:text="${#dates.format(maGiamGia.ngayCapNhat, 'dd-MM-yyyy')}"></td>
             <td>
-                <a class="btn btn-warning btn-sm" th:href="@{/ma-giam-gia/edit/{id}(id=${maGiamGia.id})}">Sửa</a>
+                <a class="btn btn-warning btn-sm" th:onclick="'loadContent(\'/ma-giam-gia/edit/' + ${maGiamGia.id} + '\')'">Sửa</a>
                 <form th:action="@{/ma-giam-gia/delete/{id}(id=${maGiamGia.id})}" method="post" style="display:inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này không?');">
                     <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                 </form>

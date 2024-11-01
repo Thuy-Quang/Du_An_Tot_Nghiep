@@ -38,8 +38,9 @@ public class DonHangController {
 
     @GetMapping("/create")
     private String getProjectDH(Model model) {
-        model.addAttribute("listNguoiDung", nguoiDungRepository.findAll());
-        return "donhang/add"; // Đường dẫn tới view
+        model.addAttribute("listNguoiDung", nguoiDungRepository.findAll()); // Thêm danh sách người dùng vào model
+        model.addAttribute("donHangRequest", new DonHangRequest()); // Thêm DonHangRequest vào model
+        return "donhang/add"; // Trả về view thêm đơn hàng
     }
 
     @PostMapping("/create")
@@ -60,12 +61,24 @@ public class DonHangController {
 
         return "redirect:/HienThiDonHang/GetAll"; // Chuyển hướng về danh sách đơn hàng
     }
+
     @GetMapping("/listDonHang/edit/id/{id}")
     public String putDonHang(@PathVariable("id") Long id, Model model) {
         DonHang donHang = donHangRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại")); // Kiểm tra xem đơn hàng có tồn tại hay không
+
+        // Khởi tạo DonHangRequest từ thông tin của đơn hàng
+        DonHangRequest donHangRequest = new DonHangRequest();
+        donHangRequest.setTrangThai(donHang.getTrangThai());
+        donHangRequest.setTongTien(donHang.getTongTien());
+        donHangRequest.setTrangThaiThanhToan(donHang.getTrangThaiThanhToan());
+        donHangRequest.setPhuongThucThanhToan(donHang.getPhuongThucThanhToan());
+        donHangRequest.setNguoiDungId(donHang.getNguoiDung().getId()); // Lưu id của người dùng
+
         model.addAttribute("detail", donHang); // Thêm thông tin đơn hàng vào model
+        model.addAttribute("donHangRequest", donHangRequest); // Thêm DonHangRequest vào model
         model.addAttribute("listNguoiDung", nguoiDungRepository.findAll()); // Thêm danh sách người dùng vào model
+
         return "donhang/update"; // Trả về view cập nhật
     }
 
@@ -81,7 +94,7 @@ public class DonHangController {
         donHang.setTongTien(donHangRequest.getTongTien());
         donHang.setTrangThaiThanhToan(donHangRequest.getTrangThaiThanhToan());
         donHang.setPhuongThucThanhToan(donHangRequest.getPhuongThucThanhToan());
-        // Thêm các trường khác nếu cần thiết
+        donHang.setNguoiDung(nguoiDungRepository.findById(donHangRequest.getNguoiDungId()).orElse(null)); // Cập nhật người dùng nếu cần
 
         // Lưu cập nhật vào database
         donHangRepository.save(donHang);

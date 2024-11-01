@@ -28,7 +28,7 @@ public class DonHang {
     private String trangThai;
 
     @Column(name = "tong_tien", nullable = false)
-    private Float tongTien;
+    private Double tongTien;
 
     @Column(name = "phuong_thuc_thanh_toan", nullable = false)
     private String phuongThucThanhToan;

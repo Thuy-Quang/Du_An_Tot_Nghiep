@@ -1,7 +1,7 @@
 package com.example.du_an_tot_nghiep.controller;
 
-
 import com.example.du_an_tot_nghiep.entity.LoaiSanPham;
+import com.example.du_an_tot_nghiep.model.LoaiSanPhamRequest;
 import com.example.du_an_tot_nghiep.service.LoaiSanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,35 +25,50 @@ public class LoaiSanPhamController {
 
     @GetMapping("/add")
     public String addLoaiSanPhamForm(Model model) {
-        model.addAttribute("loaiSanPham", new LoaiSanPham());
+        model.addAttribute("loaiSanPhamRequest", new LoaiSanPhamRequest());
         return "loaisanpham/add";
     }
 
     @PostMapping("/save")
-    public String saveLoaiSanPham(@ModelAttribute("loaiSanPham") LoaiSanPham loaiSanPham) {
+    public String saveLoaiSanPham(@ModelAttribute("loaiSanPhamRequest") LoaiSanPhamRequest loaiSanPhamRequest) {
+        LoaiSanPham loaiSanPham = convertToEntity(loaiSanPhamRequest);
         loaiSanPhamService.saveOrUpdateLoaiSanPham(loaiSanPham);
         return "redirect:/loai-san-pham";
     }
-    @GetMapping("/edit/{id}")
-    public String editLoaiSanPhamForm(@PathVariable Long id, Model model) {
-        Optional<LoaiSanPham> loaiSanPhamOptional = loaiSanPhamService.getLoaiSanPhamById(id);
-        if (loaiSanPhamOptional.isPresent()) {
-            model.addAttribute("loaiSanPham", loaiSanPhamOptional.get());
-            return "loaisanpham/edit"; // Trả về view sửa
-        }
-        return "redirect:/loai-san-pham"; // Nếu không tìm thấy, quay lại danh sách
-    }
 
     @PostMapping("/update/{id}")
-    public String updateLoaiSanPham(@PathVariable Long id, @ModelAttribute LoaiSanPham loaiSanPham) {
-        loaiSanPham.setId(id); // Đảm bảo ID được thiết lập đúng
+    public String updateLoaiSanPham(@PathVariable Long id, @ModelAttribute("loaiSanPhamRequest") LoaiSanPhamRequest loaiSanPhamRequest) {
+        loaiSanPhamRequest.setId(id);
+        LoaiSanPham loaiSanPham = convertToEntity(loaiSanPhamRequest);
         loaiSanPhamService.saveOrUpdateLoaiSanPham(loaiSanPham);
-        return "redirect:/loai-san-pham"; // Quay lại danh sách sau khi cập nhật
+        return "redirect:/loai-san-pham";
     }
+
+
 
     @PostMapping("/delete/{id}")
     public String deleteLoaiSanPham(@PathVariable Long id) {
         loaiSanPhamService.deleteLoaiSanPham(id);
         return "redirect:/loai-san-pham";
+    }
+    private LoaiSanPham convertToEntity(LoaiSanPhamRequest request) {
+        LoaiSanPham loaiSanPham = new LoaiSanPham();
+        loaiSanPham.setId(request.getId());
+        loaiSanPham.setTenLoai(request.getTenLoai());
+        loaiSanPham.setMoTa(request.getMoTa());
+        return loaiSanPham;
+    }
+    @GetMapping("/edit/{id}")
+    public String editLoaiSanPhamForm(@PathVariable Long id, Model model) {
+        Optional<LoaiSanPham> loaiSanPhamOptional = loaiSanPhamService.getLoaiSanPhamById(id);
+        if (loaiSanPhamOptional.isPresent()) {
+            LoaiSanPhamRequest loaiSanPhamRequest = new LoaiSanPhamRequest();
+            loaiSanPhamRequest.setId(loaiSanPhamOptional.get().getId());
+            loaiSanPhamRequest.setTenLoai(loaiSanPhamOptional.get().getTenLoai());
+            loaiSanPhamRequest.setMoTa(loaiSanPhamOptional.get().getMoTa());
+            model.addAttribute("loaiSanPhamRequest", loaiSanPhamRequest);
+            return "loaisanpham/edit"; // Đảm bảo tên view đúng
+        }
+        return "redirect:/loai-san-pham"; // Quay lại trang danh sách nếu không tìm thấy
     }
 }

@@ -53,8 +53,7 @@
 
     <br><br><h1 class="text-center">Danh Sách Đơn Hàng</h1><br><br>
 
- <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/HienThiDonHang/create')"> Thêm Đơn Hàng</a>
-
+    <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/HienThiDonHang/create')"> Thêm Đơn Hàng</a>
 
     <table class="table table-bordered table-hover">
         <thead>
@@ -64,7 +63,6 @@
             <th>Trạng thái đơn hàng</th>
             <th>Tổng tiền</th>
             <th>Phương thức thanh toán</th>
-<!--            <th>Địa chỉ</th>-->
             <th>Ngày tạo</th>
             <th>Trạng thái thanh toán</th>
             <th>Thao tác</th>
@@ -72,21 +70,20 @@
         </thead>
         <tbody>
         <tr th:each="donHang, stat : ${listDonHang}">
-            <td th:text="${stat.index+1}"></td>
+            <td th:text="${stat.index + 1}"></td>
             <td th:text="${donHang.nguoiDung.hoTen}"></td>
             <td th:text="${donHang.trangThai}"></td>
             <td th:text="${donHang.tongTien + ' VND'}"></td>
             <td th:text="${donHang.phuongThucThanhToan}"></td>
-<!--            <td th:text="${donHang.diaChi}"></td>-->
             <td th:text="${#dates.format(donHang.ngayTao, 'dd-MM-yyyy HH:mm')}"></td>
             <td th:text="${donHang.trangThaiThanhToan}"></td>
             <td>
-                <a class="btn btn-warning btn-sm" th:href="@{/HienThiDonHang/listDonHang/edit/id/{id}(id=${donHang != null ? donHang.id : 0})}">Sửa</a>
-                <form th:action="@{/HienThiDonHang/listDonHang/delete/id/{id}(id=${donHang != null ? donHang.id : 0})}" method="post" style="display:inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này không?');">
+                <a class="btn btn-warning btn-sm" href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/HienThiDonHang/listDonHang/edit/id/' + ${donHang.id} + '\')'">Sửa</a>
+                <form th:action="@{/HienThiDonHang/listDonHang/delete/id/{id}(id=${donHang.id})}" method="post" style="display:inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này không?');">
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                 </form>
-
             </td>
         </tr>
         </tbody>
