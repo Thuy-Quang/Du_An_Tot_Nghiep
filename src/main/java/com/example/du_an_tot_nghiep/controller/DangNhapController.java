@@ -7,13 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
 @RequestMapping("/api/xac-thuc")
 public class DangNhapController {
 
@@ -31,26 +33,27 @@ public class DangNhapController {
 
     // Đăng nhập
     @PostMapping("/dang-nhap")
-    public RedirectView dangNhap(@RequestParam String tenDangNhap, @RequestParam String matKhau, RedirectAttributes redirectAttributes, Model model) {
+    public ResponseEntity<?> dangNhap(@RequestParam String tenDangNhap, @RequestParam String matKhau) {
         // Xác thực người dùng
         Boolean isUserInDB = nguoiDungDetailsService.checkUserInDB(tenDangNhap, matKhau);
         if (!isUserInDB) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Tên đăng nhập hoặc mật khẩu không chính xác");
-            return new RedirectView("/dang-nhap/hien-thi");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Tên đăng nhập hoặc mật khẩu không chính xác");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
         // Tạo token JWT
         try {
             String token = jwtUtil.generateToken(tenDangNhap);
-            redirectAttributes.addFlashAttribute("successMessage", "Đăng nhập thành công");
-            // Trả về trang và token cho client thông qua model
-            model.addAttribute("token", token);  // Thêm token vào model
-            return new RedirectView("/index");  // Chuyển hướng về trang chủ
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            response.put("message", "Đăng nhập thành công");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("errorMessage", "Không thể tạo JWT");
-            return new RedirectView("/dang-nhap/hien-thi");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Không thể tạo JWT");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
-
     }
 }

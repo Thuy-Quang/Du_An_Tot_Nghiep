@@ -5,84 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-        }
-
-        .login-container {
-            width: 300px;
-            margin: 100px auto;
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333333;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333333;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #cccccc;
-            border-radius: 4px;
-        }
-
-        input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        .error, .success {
-            text-align: center;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 4px;
-        }
-
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .navbar-brand {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .logo {
-            width: 100px;
-            height: auto;
-        }
+        /* Styling cho trang đăng nhập */
+        body { font-family: Arial, sans-serif; background-color: #f2f2f2; }
+        .login-container { width: 300px; margin: 100px auto; padding: 30px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        h2 { text-align: center; margin-bottom: 20px; color: #333333; }
+        label { display: block; margin-bottom: 8px; color: #333333; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #cccccc; border-radius: 4px; }
+        input[type="submit"] { width: 100%; padding: 10px; background-color: #4CAF50; border: none; border-radius: 4px; color: white; font-size: 16px; cursor: pointer; }
+        input[type="submit"]:hover { background-color: #45a049; }
+        .error, .success { text-align: center; margin-bottom: 10px; padding: 10px; border-radius: 4px; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .success { background-color: #d4edda; color: #155724; }
+        .navbar-brand { display: flex; justify-content: center; align-items: center; text-align: center; }
+        .logo { width: 100px; height: auto; }
     </style>
 </head>
 <body>
@@ -92,11 +27,10 @@
     </a>
     <h2>Đăng Nhập</h2>
 
-    <!-- Thông báo đăng nhập thành công hoặc thất bại -->
-    <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
-    <div th:if="${successMessage}" class="success" th:text="${successMessage}"></div>
+    <!-- Hiển thị thông báo nếu có lỗi hoặc thành công -->
+    <div id="message" class="error" style="display: none;"></div>
 
-    <form action="/api/xac-thuc/dang-nhap" method="post">
+    <form id="loginForm" method="post">
         <label for="tenDangNhap">Username:</label>
         <input type="text" id="tenDangNhap" name="tenDangNhap" placeholder="Enter your username" required>
 
@@ -111,5 +45,41 @@
         <input class="mt-2" type="submit" value="Đăng Nhập">
     </form>
 </div>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const tenDangNhap = document.getElementById("tenDangNhap").value;
+        const matKhau = document.getElementById("matKhau").value;
+
+        try {
+            const response = await fetch("/api/xac-thuc/dang-nhap", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `tenDangNhap=${tenDangNhap}&matKhau=${matKhau}`
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Lưu token vào localStorage
+                localStorage.setItem("token", result.token);
+                alert(result.message);
+
+                // Chuyển hướng đến trang chủ
+                window.location.href = "/index";
+            } else {
+                // Hiển thị thông báo lỗi nếu có
+                const messageDiv = document.getElementById("message");
+                messageDiv.style.display = "block";
+                messageDiv.textContent = result.error;
+            }
+        } catch (error) {
+            console.error("Lỗi khi đăng nhập:", error);
+            alert("Đã xảy ra lỗi khi đăng nhập.");
+        }
+    });
+</script>
 </body>
 </html>

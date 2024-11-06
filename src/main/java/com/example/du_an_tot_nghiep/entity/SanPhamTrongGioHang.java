@@ -34,4 +34,10 @@ public class SanPhamTrongGioHang {
 
     @Column(name = "so_luong", nullable = false)
     private int soluong;
+
+    public SanPhamTrongGioHang(GioHang gioHang, SanPham sanPham, int soluong) {
+        this.gioHang = gioHang;
+        this.sanPham = sanPham;
+        this.soluong = soluong;
+    }
 }

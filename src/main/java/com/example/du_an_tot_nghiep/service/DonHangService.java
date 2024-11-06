@@ -1,7 +1,9 @@
 package com.example.du_an_tot_nghiep.service;
 
 import com.example.du_an_tot_nghiep.entity.DonHang;
+import com.example.du_an_tot_nghiep.entity.GioHang;
 import com.example.du_an_tot_nghiep.entity.NguoiDung;
+import com.example.du_an_tot_nghiep.entity.SanPhamTrongGioHang;
 import com.example.du_an_tot_nghiep.model.DonHangRequest;
 import com.example.du_an_tot_nghiep.repository.DonHangRepository;
 import com.example.du_an_tot_nghiep.repository.NguoiDungRepository;
@@ -11,13 +13,17 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class DonHangService {
-
+    @Autowired
+    private GioHangService gioHangService;
     @Autowired
     private DonHangRepository donHangRepository;
+    @Autowired
+    private MaGiamGiaService maGiamGiaService;
 
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
@@ -79,5 +85,27 @@ public class DonHangService {
         } else {
             throw new RuntimeException("Đơn hàng không tồn tại!");
         }
+    }
+    public DonHang taoDonHang(Long nguoiDungId, Long maGiamGiaId, String phuongThucThanhToan) {
+        GioHang gioHang = gioHangService.layGioHangTheoNguoiDungId(nguoiDungId);
+        List<SanPhamTrongGioHang> sanPhamTrongGioHangs = gioHang.getSanPhamTrongGioHangs();
+
+        double tongTien = sanPhamTrongGioHangs.stream()
+                .mapToDouble(sp -> sp.getSoluong() * sp.getSanPham().getGia())
+                .sum();
+
+        // Áp dụng mã giảm giá nếu có
+        if (maGiamGiaId != null) {
+            tongTien = maGiamGiaService.apDungMaGiamGia(maGiamGiaId, (float) tongTien);
+        }
+
+        DonHang donHang = new DonHang();
+        donHang.setNguoiDung(gioHang.getNguoiDung());
+        donHang.setTongTien(tongTien);
+        donHang.setPhuongThucThanhToan(phuongThucThanhToan);
+        donHang.setNgayTao(new Date());
+        donHang.setTrangThai("Đang xử lý");
+
+        return donHangRepository.save(donHang);
     }
 }

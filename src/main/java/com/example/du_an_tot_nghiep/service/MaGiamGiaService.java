@@ -48,4 +48,14 @@ public class MaGiamGiaService {
     public void deleteMaGiamGia(Long id) {
         maGiamGiaRepository.deleteById(id);
     }
+    public float apDungMaGiamGia(Long maGiamGiaId, float tongTien) {
+        MaGiamGia maGiamGia = maGiamGiaRepository.findById(maGiamGiaId)
+                .orElseThrow(() -> new RuntimeException("Mã giảm giá không hợp lệ"));
+
+        if (new Date().before(maGiamGia.getNgayBatDau()) || new Date().after(maGiamGia.getNgayHetHan())) {
+            throw new RuntimeException("Mã giảm giá đã hết hạn");
+        }
+
+        return tongTien - (tongTien * maGiamGia.getPhanTramGiam() / 100);
+    }
 }
