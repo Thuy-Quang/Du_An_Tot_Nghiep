@@ -85,7 +85,7 @@ public class NguoiDungController {
     // Xem chi tiết người dùng
     @GetMapping("/chi-tiet/{id}")
     public String viewDetail(@PathVariable Long id, Model model) {
-        Optional<NguoiDung> nguoiDung = nguoiDungService.findById(id);
+        Optional<NguoiDung> nguoiDung = Optional.ofNullable(nguoiDungService.findById(id));
         if (nguoiDung.isPresent()) {
             model.addAttribute("nguoiDung", nguoiDung.get());
             return "NguoiDung/detail";

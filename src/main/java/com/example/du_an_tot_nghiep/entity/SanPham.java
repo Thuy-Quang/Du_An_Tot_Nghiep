@@ -34,12 +34,6 @@ public class SanPham {
 
     @Column(name = "hinh_anh")
     private String hinhAnh;
-    @ManyToOne
-    @JoinColumn(name = "mau_sac_id")
-    private MauSac mauSac;
-    @ManyToOne
-    @JoinColumn(name = "kich_co_id")
-    private KichCo kichCo;
 
     @Column(name = "so_luong", nullable = false)
     private int soLuong;
@@ -56,15 +50,8 @@ public class SanPham {
     @JoinColumn(name = "loai_san_pham_id", referencedColumnName = "id", nullable = false)
     private LoaiSanPham loaiSanPham; // Mỗi sản phẩm thuộc một loại sản phẩm
 
-    // Quan hệ One-to-Many với ChiTietDonHang
     @OneToMany(mappedBy = "sanPham", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ChiTietDonHang> chiTietDonHangs; // Một sản phẩm có nhiều chi tiết đơn hàng
-
-    // Quan hệ One-to-Many với SanPhamTrongGioHang
-//    @OneToMany(mappedBy = "sanPham", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private Set<SanPhamTrongGioHang> sanPhamTrongGioHangs; // Một sản phẩm có thể xuất hiện trong nhiều giỏ hàng
-//
-//    // Quan hệ One-to-Many với MaGiamGiaSanPham
-//    @OneToMany(mappedBy = "sanPham", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private Set<MaGiamGiaSanPham> maGiamGiaSanPhams; // Một sản phẩm có thể có nhiều mã giảm giá
+    @OneToMany(mappedBy = "sanPham", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<MaGiamGiaSanPham> maGiamGiaSanPhams; // Một sản phẩm có thể có nhiều mã giảm giá
 }

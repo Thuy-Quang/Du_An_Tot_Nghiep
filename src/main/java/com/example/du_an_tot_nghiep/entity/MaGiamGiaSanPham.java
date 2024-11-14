@@ -1,19 +1,13 @@
 package com.example.du_an_tot_nghiep.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,6 +16,7 @@ import java.util.Date;
 @Entity
 @Table(name = "ma_giam_gia_san_pham")
 public class MaGiamGiaSanPham {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,10 +29,32 @@ public class MaGiamGiaSanPham {
     @JoinColumn(name = "ma_giam_gia_id", referencedColumnName = "id", nullable = false)
     private MaGiamGia maGiamGia;
 
-    @Column(name = "ngay_ap_dung")
-    private Date ngayApDung;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime ngayApDung;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime ngayHetHan;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "ngay_tao", updatable = false)
+    private LocalDateTime ngayTao;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "ngay_cap_nhat")
+    private LocalDateTime ngayCapNhat;
 
     @Column(name = "trang_thai")
     private String trangThai;
 
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        ngayTao = now;
+        ngayCapNhat = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        ngayCapNhat = LocalDateTime.now();
+    }
 }

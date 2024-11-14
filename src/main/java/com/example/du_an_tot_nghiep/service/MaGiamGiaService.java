@@ -14,6 +14,14 @@ public class MaGiamGiaService {
 
     @Autowired
     private MaGiamGiaRepository maGiamGiaRepository;
+    public List<MaGiamGia> findAll() {
+        return maGiamGiaRepository.findAll();
+    }
+
+    // Lấy thông tin mã giảm giá theo ID
+    public MaGiamGia findById(Long id) {
+        return maGiamGiaRepository.findById(id).orElse(null);
+    }
 
     // Lấy tất cả mã giảm giá
     public List<MaGiamGia> getAllMaGiamGia() {
@@ -58,4 +66,5 @@ public class MaGiamGiaService {
 
         return tongTien - (tongTien * maGiamGia.getPhanTramGiam() / 100);
     }
+
 }
