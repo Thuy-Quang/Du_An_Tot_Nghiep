@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Service
@@ -86,5 +87,9 @@ public class SanPhamService {
                 e.printStackTrace();
             }
         }
+    }
+    public List<SanPham> getall(){
+        List<SanPham> list = sanPhamRepository.findAll();
+        return list;
     }
 }

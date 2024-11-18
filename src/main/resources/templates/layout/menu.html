@@ -37,22 +37,18 @@
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a th:href="@{/giohang}" class="nav-link">
-             Home
+             Trang Chủ
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" th:href="@{/giohangdetail}">About</a>
-          </li>
-
           <!-- Menu thả xuống cho Nam -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="a" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Nam
             </a>
             <ul class="dropdown-menu" aria-labelledby="a">
-              <li><a class="dropdown-item" href="/QuanNam">Quần</a></li>
-              <li><a class="dropdown-item" href="/AoNam">Áo</a></li>
-              <li><a class="dropdown-item" href="/AoNamAll">Tất cả</a></li>
+              <li><a class="dropdown-item" th:href="@{/HienThi/QuanNam}">Quần</a></li>
+              <li><a class="dropdown-item" th:href="@{/HienThi/AoNam}">Áo</a></li>
+              <li><a class="dropdown-item" th:href="@{/HienThi/AoNamAll}">Tất cả</a></li>
 
             </ul>
           </li>
@@ -63,14 +59,14 @@
               Nữ
             </a>
             <ul class="dropdown-menu" aria-labelledby="b">
-              <li><a class="dropdown-item" href="/QuanNu">Quần</a></li>
-              <li><a class="dropdown-item" href="/AoNu">Áo</a></li>
-              <li><a class="dropdown-item" href="/TatCa">Tất cả</a></li>
+              <li><a class="dropdown-item" th:href="@{/HienThi/QuanNu}">Quần</a></li>
+              <li><a class="dropdown-item" th:href="@{/HienThi/AoNu}">Áo</a></li>
+              <li><a class="dropdown-item" th:href="@{/HienThi/TatCa}">Tất cả</a></li>
             </ul>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
+            <a class="nav-link" th:href="@{/giohangcuatoi}">Giỏ Hàng Của Tôi</a>
           </li>
         </ul>
 
@@ -88,7 +84,7 @@
           </li>
           <li class="nav-item">
             <a th:href="@{/giohang/giohang.html}" class="nav-link" >
-            <i class="bi bi-cart"></i> Giỏ Hàng
+              <i class="bi bi-box-arrow-right"></i> Đăng Xuất
             </a>
           </li>
         </ul>

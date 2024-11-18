@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index.html :: dynamic(~{::main})}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -61,149 +61,151 @@
             <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
         </div>
 </nav>
-<div>
+<main>
+    <div>
 
-<!--    Hiển thị sản phẩm-->
+        <!--    Hiển thị sản phẩm-->
 
-    <!-- Hiển thị sản phẩm -->
-    <div class="container mt-5">
-        <div class="row g-4">
-            <div class="col-sm-3" th:each="sp : ${lists}">
-                <div class="card">
-                    <img th:src="@{'/images/'+${sp.hinhAnh}}" class="card-img-top" alt="Hình sản phẩm">
-                    <div class="card-body text-center">
-                        <h5 class="card-title" th:text="${sp.tenSanPham}"></h5>
-                        <p class="card-text">
-                            <span style="text-decoration: line-through">500.000đ</span>
-                            <span>-</span>
-                            <span style="color: red" th:text="${sp.gia} + '00đ'"></span>
-                        </p>
+        <!-- Hiển thị sản phẩm -->
+        <div class="container mt-5">
+            <div class="row g-4">
+                <div class="col-sm-3" th:each="sp : ${lists}">
+                    <div class="card">
+                        <img th:src="@{'/images/'+${sp.hinhAnh}}" class="card-img-top" alt="Hình sản phẩm">
+                        <div class="card-body text-center">
+                            <h5 class="card-title" th:text="${sp.tenSanPham}"></h5>
+                            <p class="card-text">
+                                <span style="text-decoration: line-through">500.000đ</span>
+                                <span>-</span>
+                                <span style="color: red" th:text="${sp.gia} + '00đ'"></span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Phân trang -->
+        <div class="container text-center mt-4">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
     </div>
 
-    <!-- Phân trang -->
-    <div class="container text-center mt-4">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
-</div>
 
 
+    <div>
+        <style>
+            .float-contact {
+                position: fixed;
+                bottom: 40px;
+                left: 20px;
+                z-index: 99999;
+                display: flex;
+                flex-direction: column;
+            }
 
-<div>
-    <style>
-        .float-contact {
-            position: fixed;
-            bottom: 40px;
-            left: 20px;
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-        }
+            .contact-item {
+                background-color: #fff;
+                border-radius: 50%; /* Tạo hình tròn */
+                width: 50px; /* Đường kính của biểu tượng */
+                height: 50px; /* Đường kính của biểu tượng */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 10px;
+                box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease;
+                position: relative; /* Để hiển thị tooltip */
+            }
 
-        .contact-item {
-            background-color: #fff;
-            border-radius: 50%; /* Tạo hình tròn */
-            width: 50px; /* Đường kính của biểu tượng */
-            height: 50px; /* Đường kính của biểu tượng */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 10px;
-            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            position: relative; /* Để hiển thị tooltip */
-        }
+            .contact-item:hover {
+                transform: scale(1.1); /* Phóng to khi di chuột */
+            }
 
-        .contact-item:hover {
-            transform: scale(1.1); /* Phóng to khi di chuột */
-        }
+            .contact-item img {
+                width: 24px; /* Kích thước icon */
+                height: 24px; /* Kích thước icon */
+                border-radius: 50%; /* Để biểu tượng cũng hình tròn */
+            }
 
-        .contact-item img {
-            width: 24px; /* Kích thước icon */
-            height: 24px; /* Kích thước icon */
-            border-radius: 50%; /* Để biểu tượng cũng hình tròn */
-        }
+            .zalo {
+                background-color: #8eb22b; /* Màu nền cho Zalo */
+            }
 
-        .zalo {
-            background-color: #8eb22b; /* Màu nền cho Zalo */
-        }
+            .facebook {
+                background-color: #125c9e; /* Màu nền cho Facebook */
+            }
 
-        .facebook {
-            background-color: #125c9e; /* Màu nền cho Facebook */
-        }
+            .hotline {
+                background-color: #d11a59; /* Màu nền cho Hotline */
+            }
 
-        .hotline {
-            background-color: #d11a59; /* Màu nền cho Hotline */
-        }
+            /* Tooltip */
+            .contact-item span {
+                visibility: hidden;
+                width: 100px; /* Chiều rộng tooltip */
+                background-color: #000;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px;
+                position: absolute;
+                bottom: 60px; /* Đặt tooltip phía trên icon */
+                left: -25px; /* Căn giữa tooltip */
+                z-index: 1;
+                opacity: 0;
+                transition: opacity 0.3s;
+                font-size: 12px;
+                white-space: nowrap; /* Ngăn ngắt dòng */
+            }
 
-        /* Tooltip */
-        .contact-item span {
-            visibility: hidden;
-            width: 100px; /* Chiều rộng tooltip */
-            background-color: #000;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            bottom: 60px; /* Đặt tooltip phía trên icon */
-            left: -25px; /* Căn giữa tooltip */
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 12px;
-            white-space: nowrap; /* Ngăn ngắt dòng */
-        }
+            .contact-item:hover span {
+                visibility: visible;
+                opacity: 1; /* Hiển thị tooltip khi hover */
+            }
+        </style>
 
-        .contact-item:hover span {
-            visibility: visible;
-            opacity: 1; /* Hiển thị tooltip khi hover */
-        }
-    </style>
-
-    <div class="float-contact">
-        <div class="contact-item zalo">
-            <a href="http://zalo.me/0338482004" target="_blank">
-                <img th:src="@{/images/zalo.jpg}" alt="Zalo Icon">
-                <span>Chat Zalo</span> <!-- Tooltip -->
-            </a>
-        </div>
-        <div class="contact-item facebook">
-            <a href="https://www.facebook.com/profile.php?id=100038725072291" target="_blank">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png" alt="Facebook">
-                <span>Chat Facebook</span> <!-- Tooltip -->
-            </a>
-        </div>
-        <div class="contact-item hotline">
-            <a href="tel:0338482004">
-                <img th:src="@{/images/hotline.jpg}" alt="Hotline Icon">
-                <span>Hotline: 0338.482.004</span> <!-- Tooltip -->
-            </a>
+        <div class="float-contact">
+            <div class="contact-item zalo">
+                <a href="http://zalo.me/0338482004" target="_blank">
+                    <img th:src="@{/images/zalo.jpg}" alt="Zalo Icon">
+                    <span>Chat Zalo</span> <!-- Tooltip -->
+                </a>
+            </div>
+            <div class="contact-item facebook">
+                <a href="https://www.facebook.com/profile.php?id=100038725072291" target="_blank">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png" alt="Facebook">
+                    <span>Chat Facebook</span> <!-- Tooltip -->
+                </a>
+            </div>
+            <div class="contact-item hotline">
+                <a href="tel:0338482004">
+                    <img th:src="@{/images/hotline.jpg}" alt="Hotline Icon">
+                    <span>Hotline: 0338.482.004</span> <!-- Tooltip -->
+                </a>
+            </div>
         </div>
     </div>
-</div>
 
 
+</main>
 
 
 
