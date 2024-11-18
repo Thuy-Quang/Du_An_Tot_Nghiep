@@ -53,15 +53,15 @@ public class NguoiDungController {
     }
 
     // Form sửa thông tin người dùng
-    @GetMapping("/sua/{id}")
-    public String showUpdateForm(@PathVariable Long id, Model model) {
-        Optional<NguoiDung> nguoiDung = nguoiDungService.findById(id);
-        if (nguoiDung.isPresent()) {
-            model.addAttribute("nguoiDung", nguoiDung.get());
-            return "NguoiDung/edit";
-        }
-        return "redirect:/nguoi-dung";
-    }
+//    @GetMapping("/sua/{id}")
+//    public String showUpdateForm(@PathVariable Long id, Model model) {
+////        Optional<NguoiDung> nguoiDung = nguoiDungService.findById(id);
+//        if (nguoiDung.isPresent()) {
+//            model.addAttribute("nguoiDung", nguoiDung.get());
+//            return "NguoiDung/edit";
+//        }
+//        return "redirect:/nguoi-dung";
+//    }
 
     // Cập nhật người dùng với kiểm tra tính hợp lệ
     @PostMapping("/cap-nhat/{id}")

@@ -1,17 +1,18 @@
 package com.example.du_an_tot_nghiep.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 
 import java.time.LocalDateTime;
-
+@Data
 @Entity
 @Table(name = "kich_co")
 public class KichCo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "ten_kich_co", nullable = false)
     private String tenKichCo;

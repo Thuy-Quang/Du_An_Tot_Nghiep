@@ -12,7 +12,7 @@
             background-color: #f8f9fa;
         }
         .container {
-            max-width: 600px;
+            max-width: 900px;
             background-color: white;
             padding: 30px;
             border-radius: 10px;
@@ -29,6 +29,22 @@
             background-color: #0056b3;
             border-color: #00448c;
         }
+        .add-option {
+            font-size: 20px;
+            color: #007bff;
+            cursor: pointer;
+            border: 2px solid #007bff; /* Add border around the + */
+            padding: 4px 8px;  /* Add some padding to make it look more like a button */
+            border-radius: 5px; /* Rounded corners */
+            text-align: center;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .add-option:hover {
+            background-color: #007bff;
+            color: white; /* Change text color on hover */
+        }
     </style>
 </head>
 <body>
@@ -37,83 +53,87 @@
     <h2 class="text-center mb-4">Thêm Sản Phẩm</h2>
     <form href="/HienThi/create" method="post" enctype="multipart/form-data">
 
-        <!-- Tên Sản Phẩm -->
-        <div class="mb-3">
-            <label for="tenSanPham" class="form-label">Tên Sản Phẩm</label>
-            <input type="text" class="form-control" id="tenSanPham" name="tenSanPham" placeholder="Nhập tên sản phẩm" required>
-        </div>
+        <!-- Row for two-column layout -->
+        <div class="row">
+            <!-- Column 1: Product Details -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="tenSanPham" class="form-label">Tên Sản Phẩm</label>
+                    <input type="text" class="form-control" id="tenSanPham" name="tenSanPham" placeholder="Nhập tên sản phẩm" required>
+                </div>
 
-        <!-- Mô Tả -->
-        <div class="mb-3">
-            <label for="moTa" class="form-label">Mô Tả</label>
-            <textarea class="form-control" id="moTa" name="moTa" rows="3" placeholder="Nhập mô tả sản phẩm" required></textarea>
-        </div>
+                <div class="mb-3">
+                    <label for="moTa" class="form-label">Mô Tả</label>
+                    <textarea class="form-control" id="moTa" name="moTa" rows="3" placeholder="Nhập mô tả sản phẩm" required></textarea>
+                </div>
 
-        <!-- Giá -->
-        <div class="mb-3">
-            <label for="gia" class="form-label">Giá</label>
-            <input type="number" class="form-control" id="gia" name="gia" placeholder="Nhập giá sản phẩm" required>
-        </div>
+                <div class="mb-3">
+                    <label for="gia" class="form-label">Giá</label>
+                    <input type="number" class="form-control" id="gia" name="gia" placeholder="Nhập giá sản phẩm" required>
+                </div>
 
-        <!-- Hình Ảnh -->
-        <div class="mb-3">
-            <label for="hinhAnh" class="form-label">Hình Ảnh</label>
-            <input type="file" class="form-control" id="hinhAnh" name="hinhAnh" required>
-        </div>
+                <div class="mb-3">
+                    <label for="hinhAnh" class="form-label">Hình Ảnh</label>
+                    <input type="file" class="form-control" id="hinhAnh" name="hinhAnh" required>
+                </div>
+            </div>
 
-        <!-- Màu Sắc -->
+            <!-- Column 2: Options -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="mauSac" class="form-label">Màu Sắc</label>
+                    <div class="d-flex justify-content-between">
+                        <select class="form-select" id="mauSac" name="mauSac" required>
+                            <option value="" disabled selected>Chọn Màu Sắc</option>
+                            <option th:each="mau : ${listMauSac}" th:value="${mau.id}" th:text="${mau.tenMau}"></option>
+                        </select>
 
-        <div class="mb-3">
-            <label for="mauSac" class="form-label">Màu Sắc</label>
-            <select class="form-select" id="mauSac" name="mauSac" required>
-                <option value="" disabled selected>Chọn Màu Sắc</option> <!-- Option mặc định -->
-                <option th:each="mau : ${listMauSac}"
-                        th:value="${mau.id}"
-                        th:text="${mau.tenMau}"></option>
-            </select>
-        </div>
+                        <button class="btn btn-outline-primary ms-2 add-option" onclick="window.location.href='/mau-sac/add'">
+                            <span class="fw-bold">+</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="kichCo" class="form-label">Kích Cỡ</label>
+                    <div class="d-flex justify-content-between">
+                        <select class="form-select" id="kichCo" name="kichCo" required>
+                            <option value="" disabled selected>Chọn Kích Cỡ</option>
+                            <option th:each="kc : ${listKichCo}" th:value="${kc.id}" th:text="${kc.tenKichCo}"></option>
+                        </select>
+
+                        <button class="btn btn-outline-primary ms-2 add-option" onclick="window.location.href='/kich-co/add'">
+                            <span class="fw-bold">+</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="soLuong" class="form-label">Số Lượng</label>
+                    <input type="number" class="form-control" id="soLuong" name="soLuong" placeholder="Nhập số lượng sản phẩm" required>
+                </div>
 
 
-        <!-- Kích Cỡ -->
+                <div class="mb-3">
+                    <label for="loaiSanPham" class="form-label">Loại Sản Phẩm</label>
+                    <select class="form-select" id="loaiSanPham" name="loaiSanPham" required>
+                        <option value="" disabled selected>Chọn loại sản phẩm</option>
+                        <option th:each="loai : ${listLSP}" th:value="${loai.id}" th:text="${loai.tenLoai}"></option>
+                    </select>
+                </div>
 
-        <div class="mb-3">
-            <label for="kichCo" class="form-label">Kích Cỡ</label>
-            <select class="form-select" id="kichCo" name="kichCo" required>
-                <option value="" disabled selected>Chọn Kích Cỡ</option> <!-- Option mặc định -->
-                <option th:each="kc : ${listKichCo}"
-                        th:value="${kc.id}"
-                        th:text="${kc.tenKichCo}"></option>
-            </select>
-        </div>
-
-        <!-- Số Lượng -->
-        <div class="mb-3">
-            <label for="soLuong" class="form-label">Số Lượng</label>
-            <input type="number" class="form-control" id="soLuong" name="soLuong" placeholder="Nhập số lượng sản phẩm" required>
-        </div>
-
-        <!-- Trạng Thái -->
-        <div class="mb-3">
-            <label for="trangThai" class="form-label">Trạng Thái</label>
-            <select class="form-select" id="trangThai" name="trangThai" required>
-                <option value="conHang">Còn hàng</option>
-                <option value="hetHang">Hết hàng</option>
-            </select>
-        </div>
-
-        <!-- Loại Sản Phẩm -->
-        <div class="mb-3">
-            <label for="loaiSanPham" class="form-label">Loại Sản Phẩm</label>
-            <select class="form-select" id="loaiSanPham" name="loaiSanPham" required>
-                <option value="" disabled selected>Chọn loại sản phẩm</option> <!-- Option mặc định -->
-                <option th:each="loai : ${listLSP}"
-                        th:value="${loai.id}"
-                        th:text="${loai.tenLoai}"></option>
-            </select>
+                <div class="mb-3">
+                    <label for="trangThai" class="form-label">Trạng Thái</label>
+                    <select class="form-select" id="trangThai" name="trangThai" required>
+                        <option value="conHang">Còn hàng</option>
+                        <option value="hetHang">Hết hàng</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
         <!-- Submit -->
-        <div class="d-grid">
+        <div class="d-grid mt-4">
             <button type="submit" class="btn btn-primary btn-lg">Lưu Sản Phẩm</button>
         </div>
     </form>

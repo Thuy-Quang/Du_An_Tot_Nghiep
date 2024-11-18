@@ -10,8 +10,16 @@ import java.util.List;
 
 @Repository
 public interface SanPhamRepository extends JpaRepository<SanPham,Long> {
-    //List<SanPham> findAllByDeletedFalse();
-    List<SanPham> findByTrangThaiNot(String trangThai);
+    // Lấy danh sách sản phẩm theo loại sản phẩm
     List<SanPham> findByLoaiSanPhamIdIn(List<Long> loaiSanPhamIds);
+
+    // Tìm kiếm sản phẩm theo tên
+    Page<SanPham> findByTenSanPhamContaining(String keyword, Pageable pageable);
+
+    // Lấy tất cả sản phẩm, sắp xếp theo ngày tạo giảm dần (phân trang)
+    Page<SanPham> findAllByOrderByNgayTaoDesc(Pageable pageable);
+
+    // Tìm kiếm sản phẩm theo tên, sắp xếp theo ngày tạo giảm dần (phân trang)
+    Page<SanPham> findByTenSanPhamContainingOrderByNgayTaoDesc(String keyword, Pageable pageable);
 
 }

@@ -16,7 +16,7 @@ public class MauSac {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "ten_mau", nullable = false)
     private String tenMau;

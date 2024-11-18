@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/HienThi")
@@ -99,27 +100,37 @@ public class SanPhamController {
     }
 
 
-//    CRUD
 
 
 
     @GetMapping("/GetAll")
     public String listSanPham(Model model,
                               @RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "10") int size) {
+                              @RequestParam(defaultValue = "10") int size,
+                              @RequestParam(defaultValue = "") String keyword) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<SanPham> sanPhamPage = sanPhamRepository.findAll(pageable);
+        Page<SanPham> sanPhamPage;
+
+        if (keyword.isEmpty()) {
+            sanPhamPage = sanPhamRepository.findAllByOrderByNgayTaoDesc(pageable);
+        } else {
+            sanPhamPage = sanPhamRepository.findByTenSanPhamContainingOrderByNgayTaoDesc(keyword, pageable);
+        }
 
         model.addAttribute("listSPham", sanPhamPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", sanPhamPage.getTotalPages());
-        model.addAttribute("listLSP",loaiSanPhamRepository.findAll());
-        model.addAttribute("listMauSac",mauSacRepository.findAll());
-        model.addAttribute("listKichCo",kichCoRepository.findAll());
+        model.addAttribute("size", size); // Truyền biến size vào model
+        model.addAttribute("listLSP", loaiSanPhamRepository.findAll());
+        model.addAttribute("listMauSac", mauSacRepository.findAll());
+        model.addAttribute("listKichCo", kichCoRepository.findAll());
+        model.addAttribute("keyword", keyword);
 
-        return "SanPham/HienThiSP/index"; // Return to your Thymeleaf template
+        return "SanPham/HienThiSP/index";
     }
+
+
 
     @GetMapping("/create")
     private  String getProject(Model model){
@@ -138,30 +149,26 @@ public class SanPhamController {
 
     @GetMapping("/listSPham/edit/id/{id}")
     private String putSanPham(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("detail", sanPhamRepository.findById(id).get());
-        model.addAttribute("listLSP",loaiSanPhamRepository.findAll());
-        model.addAttribute("listMauSac",mauSacRepository.findAll());
-        model.addAttribute("listKichCo",kichCoRepository.findAll());
+        Optional<SanPham> optionalSanPham = sanPhamRepository.findById(id);
+        if (optionalSanPham.isPresent()) {
+            SanPham sanPham = optionalSanPham.get();
+            System.out.println("Trạng thái hiện tại của sản phẩm: " + sanPham.getTrangThai());
+            model.addAttribute("detail", sanPham);
+        } else {
+            throw new RuntimeException("Product not found");
+        }
+        model.addAttribute("listLSP", loaiSanPhamRepository.findAll());
+        model.addAttribute("listMauSac", mauSacRepository.findAll());
+        model.addAttribute("listKichCo", kichCoRepository.findAll());
         return "SanPham/HienThiSP/Update";
     }
 
     @PostMapping("/listSPham/edit/id/{id}")
     private String putSanPham(@PathVariable Long id, SanPhamRequest sanPhamRequest) {
+        System.out.println("Updating product with ID: " + id);
+        System.out.println("Trạng Thái received: " + sanPhamRequest.getTrangThai());
         sanPhamService.updateSanPham(id, sanPhamRequest);
         return "redirect:/HienThi/GetAll";
-    }
-
-
-    @GetMapping("/listSPham/detail/id/{id}")
-    private String detail(@PathVariable Long  id,Model model){
-
-        SanPham sanPham = sanPhamRepository.findById(id).get();
-        model.addAttribute("detail",sanPham);
-        model.addAttribute("listSPham",sanPhamRepository.findAll());
-        model.addAttribute("listLSP",loaiSanPhamRepository.findAll());
-        model.addAttribute("listMauSac",mauSacRepository.findAll());
-        model.addAttribute("listKichCo",kichCoRepository.findAll());
-        return "SanPham/HienThiSP/Detail";
     }
 
     @PostMapping("/listSPham/delete/id/{id}")
@@ -169,6 +176,5 @@ public class SanPhamController {
         sanPhamRepository.delete(sanPhamRepository.findById(id).get());
         return "redirect:/HienThi/GetAll";
     }
-
 
 }
