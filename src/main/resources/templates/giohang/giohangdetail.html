@@ -3,12 +3,58 @@
       th:replace="~{/layout/index.html :: dynamic(~{::main})}">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>Giỏ Hàng</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 </head>
 <body>
-<main>
-  <h3>Giỏ Hàng Của Tôi  </h3>
-  <i>Chưa có sản phẩm nào </i>
+<main ng-app="cartApp" ng-controller="CartController">
+  <h2>Giỏ Hàng Của Bạn</h2>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Sản Phẩm</th>
+      <th>Màu Sắc</th>
+      <th>Kích Cỡ</th>
+      <th>Số Lượng</th>
+      <th>Giá</th>
+      <th>Tổng</th>
+      <th>Chức Năng </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in cart.items track by $index">
+      <td>{{item.tenSanPham}}</td>
+      <!-- Dropdown Màu Sắc -->
+      <td>
+        <select id="color" ng-model="selectedColor">
+          <option ng-repeat="color in cart.colors" value="{{color.id}}">{{color.tenMau}}</option>
+        </select>
+      </td>
+      <!-- Dropdown Kích Cỡ -->
+      <td>
+        <select id="size" ng-model="selectedSize">
+          <option ng-repeat="size in cart.sizes" value="{{size.id}}">{{size.tenKichCo}}</option>
+        </select>
+      </td>
+      <td>
+        <input type="number" ng-model="item.soLuong" class="form-control" min="1" ng-change="cart.saveToLocalStorage()">
+      </td>
+      <td>{{item.gia | number:2}}</td>
+      <td>{{item.soLuong * item.gia | number:2}}</td>
+      <td><button class="btn btn-danger" ng-click="cart.remove(item.id)">xoá</button></td>
+
+    </tr>
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-between">
+    <a th:href="@{/giohang}" class="btn btn-primary">Tiếp Tục Mua Sắm</a>
+    <button class="btn btn-success" ng-click="cart.dathang()">Đặt Hàng</button>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script th:src="@{/js/addgiohang.js}"></script>
+
 </main>
+
+
 </body>
 </html>

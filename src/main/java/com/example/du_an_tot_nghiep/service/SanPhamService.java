@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -91,5 +92,8 @@ public class SanPhamService {
     public List<SanPham> getall(){
         List<SanPham> list = sanPhamRepository.findAll();
         return list;
+    }
+    public Optional<SanPham> laySanPhamTheoId(Long idsp) {
+        return sanPhamRepository.findById(idsp);
     }
 }

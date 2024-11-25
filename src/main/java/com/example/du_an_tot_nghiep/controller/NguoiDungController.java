@@ -1,10 +1,14 @@
 package com.example.du_an_tot_nghiep.controller;
 
 import com.example.du_an_tot_nghiep.entity.NguoiDung;
+import com.example.du_an_tot_nghiep.model.NguoiDungRequest;
+import com.example.du_an_tot_nghiep.security.JwtUtil;
 import com.example.du_an_tot_nghiep.service.NguoiDungService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +23,8 @@ public class NguoiDungController {
 
     @Autowired
     private NguoiDungService nguoiDungService;
+    @Autowired
+    JwtUtil jwtUtil;
 
     // Hiển thị danh sách người dùng
     @GetMapping
@@ -30,6 +36,35 @@ public class NguoiDungController {
         model.addAttribute("currentPage", page);
         return "NguoiDung/list";
     }
+
+    @GetMapping("/thong-tin")
+    public ResponseEntity<NguoiDungRequest> getUserInfo(@RequestHeader("Authorization") String token) {
+        // Kiểm tra và trích xuất token từ header
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  // Trả về lỗi nếu token không hợp lệ
+        }
+
+        // Trích xuất username từ token
+        String jwtToken = token.replace("Bearer ", "");
+        String username = jwtUtil.extractUsername(jwtToken);
+
+        // Tìm người dùng từ username
+        Optional<NguoiDung> user = nguoiDungService.findByUsername(username);
+
+        // Kiểm tra nếu người dùng tồn tại
+        if (user.isPresent()) {
+            // Tạo đối tượng NguoiDungRequest từ đối tượng NguoiDung
+            NguoiDungRequest userRequest = new NguoiDungRequest(user.get());
+            return ResponseEntity.ok(userRequest);  // Trả về thông tin người dùng nếu tìm thấy
+        } else {
+            // Trả về lỗi nếu không tìm thấy người dùng
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // Trả về lỗi Unauthorized nếu không tìm thấy người dùng
+        }
+    }
+
+
+
+
 
     // Form thêm mới người dùng
     @GetMapping("/them")

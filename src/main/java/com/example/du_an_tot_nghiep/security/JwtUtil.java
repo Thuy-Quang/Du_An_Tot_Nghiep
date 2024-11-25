@@ -20,7 +20,7 @@ public class JwtUtil {
          */
         return Jwts.builder()
                 .setSubject(username)
-                .claim("roles", List.of("ROLE_Admin","ROLE_User"))
+                .claim("roles", List.of("admin","staff","customer"))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 giờ
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)

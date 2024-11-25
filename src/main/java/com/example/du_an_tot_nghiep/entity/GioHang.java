@@ -40,4 +40,10 @@ public class GioHang {
     public GioHang(Date ngayTao) {
         this.ngayTao = ngayTao;
     }
+
+
+    public GioHang(Date date, NguoiDung nguoiDung) {
+        this.ngayTao = ngayTao;
+        this.nguoiDung = nguoiDung;
+    }
 }

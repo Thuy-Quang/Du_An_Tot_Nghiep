@@ -87,7 +87,7 @@ public class DonHangService {
         }
     }
     public DonHang taoDonHang(Long nguoiDungId, Long maGiamGiaId, String phuongThucThanhToan) {
-        GioHang gioHang = gioHangService.layGioHangTheoNguoiDungId(nguoiDungId);
+        GioHang gioHang = gioHangService.layGioHangCuaNguoiDung(String.valueOf(nguoiDungId));
         List<SanPhamTrongGioHang> sanPhamTrongGioHangs = gioHang.getSanPhamTrongGioHangs();
 
         double tongTien = sanPhamTrongGioHangs.stream()

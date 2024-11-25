@@ -1,16 +1,24 @@
 package com.example.du_an_tot_nghiep.controller;
 
+import com.example.du_an_tot_nghiep.entity.KichCo;
+import com.example.du_an_tot_nghiep.entity.MauSac;
 import com.example.du_an_tot_nghiep.entity.SanPham;
+import com.example.du_an_tot_nghiep.model.SanPhamDTO;
 import com.example.du_an_tot_nghiep.model.SanPhamRequest;
 import com.example.du_an_tot_nghiep.repository.KichCoRepository;
 import com.example.du_an_tot_nghiep.repository.LoaiSanPhamRepository;
 import com.example.du_an_tot_nghiep.repository.MauSacRepository;
 import com.example.du_an_tot_nghiep.repository.SanPhamRepository;
+import com.example.du_an_tot_nghiep.service.KichCoService;
+import com.example.du_an_tot_nghiep.service.MauSacService;
 import com.example.du_an_tot_nghiep.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +38,14 @@ public class SanPhamController {
     LoaiSanPhamRepository loaiSanPhamRepository;
 
     @Autowired
+    KichCoService kichCoService;
+    @Autowired
+    MauSacRepository mauSacRepository;
+    @Autowired
     KichCoRepository kichCoRepository;
 
     @Autowired
-    MauSacRepository mauSacRepository;
+    MauSacService mauSacService;
 
     @Autowired
     SanPhamService sanPhamService;
@@ -176,5 +188,47 @@ public class SanPhamController {
         sanPhamRepository.delete(sanPhamRepository.findById(id).get());
         return "redirect:/HienThi/GetAll";
     }
+    @GetMapping("/getone/{id}")
+    public ResponseEntity<?> getOne(@PathVariable("id") Long id) {
+        Optional<SanPham> optionalSanPham = sanPhamRepository.findById(id);
+
+        if (optionalSanPham.isPresent()) {
+            SanPham sanPham = optionalSanPham.get();
+
+            // Chuyển đổi sang DTO
+            SanPhamDTO dto = new SanPhamDTO();
+            dto.setId(sanPham.getId());
+            dto.setTenSanPham(sanPham.getTenSanPham());
+            dto.setGia(sanPham.getGia());
+            dto.setMoTa(sanPham.getMoTa());
+            dto.setHinhAnh(sanPham.getHinhAnh());
+
+            return ResponseEntity.ok(dto); // Trả về DTO
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Không tìm thấy sản phẩm với id: " + id);
+        }
+    }
+    @GetMapping("/mau-sac")
+    public ResponseEntity<List<MauSac>> getAllColors() {
+        List<MauSac> list = mauSacService.getAllColors();
+        if (list.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204 nếu danh sách rỗng
+        }
+        return ResponseEntity.ok(list); // 200 trả về danh sách
+    }
+
+    @GetMapping("/kich-co")
+    public ResponseEntity<List<KichCo>> getAllSizes() {
+        List<KichCo> list = kichCoService.getAllSizes();
+        if (list.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Trả về HTTP 204 nếu danh sách rỗng
+        }
+        return ResponseEntity.ok(list); // Trả về HTTP 200 với dữ liệu JSON
+    }
+
+
+
+
 
 }

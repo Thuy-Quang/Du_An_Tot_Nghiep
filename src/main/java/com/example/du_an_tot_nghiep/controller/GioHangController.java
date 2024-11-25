@@ -1,6 +1,8 @@
 package com.example.du_an_tot_nghiep.controller;
 
+import com.example.du_an_tot_nghiep.entity.GioHang;
 import com.example.du_an_tot_nghiep.entity.SanPham;
+import com.example.du_an_tot_nghiep.model.GioHangDTO;
 import com.example.du_an_tot_nghiep.service.GioHangService;
 import com.example.du_an_tot_nghiep.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,19 +28,16 @@ public class GioHangController {
     @GetMapping("/giohang")
     public String hienThiDanhSachSanPham(Model model) {
         List<SanPham> sanPhams = sanPhamService.getall();
-        Long currentUserId = getCurrentUserId(); // Giả sử phương thức này trả về ID của người dùng hiện tại
         model.addAttribute("sanPhams", sanPhams);
-        model.addAttribute("currentUserId", currentUserId); // Truyền userId vào model
         return "giohang/giohang";
     }
-
-    private Long getCurrentUserId() {
-        // Giả lập ID người dùng hiện tại
-        return 1L; // Ví dụ ID = 1
-    }
-    @GetMapping("/giohangcuatoi")
-    public String giohangcuatoi(){
+    @GetMapping("/giohangdetail")
+    public String hienThiSanPhamTrongGioHang(){
         return "giohang/giohangdetail";
+    }
+    @GetMapping("/dat-hang")
+    public String datHang() {
+        return "giohang/dathang";  // Trả về view hoặc chuyển hướng đến trang đặt hàng
     }
 
 }

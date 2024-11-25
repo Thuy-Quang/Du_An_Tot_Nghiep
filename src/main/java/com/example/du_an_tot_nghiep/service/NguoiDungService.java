@@ -32,6 +32,9 @@ public class NguoiDungService {
         Pageable pageable = PageRequest.of(page, size);
         return nguoiDungRepository.findAll(pageable);
     }
+    public Optional<NguoiDung> findByUsername(String username) {
+        return nguoiDungRepository.findByTenDangNhap(username);
+    }
 
 
 
