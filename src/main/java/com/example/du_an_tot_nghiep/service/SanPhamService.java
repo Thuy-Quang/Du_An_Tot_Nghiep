@@ -7,6 +7,8 @@ import com.example.du_an_tot_nghiep.repository.LoaiSanPhamRepository;
 import com.example.du_an_tot_nghiep.repository.MauSacRepository;
 import com.example.du_an_tot_nghiep.repository.SanPhamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,6 +53,15 @@ public class SanPhamService {
         handleFileUpload(sanPham, sanPhamRequest.getHinhAnh());
 
         return sanPhamRepository.save(sanPham);
+    }
+
+    public List<SanPham> getAll() {
+        return sanPhamRepository.findAll();
+    }
+
+    // Lấy sản phẩm theo phân trang
+    public Page<SanPham> getAll(Pageable pageable) {
+        return sanPhamRepository.findAll(pageable);
     }
 
     public SanPham updateSanPham(Long idSanPham, SanPhamRequest sanPhamRequest) {

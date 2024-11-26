@@ -114,11 +114,6 @@ app.controller('CartController', function($scope, $http) {
             window.location.href = "/dang-nhap/hien-thi";
         }
     }
-
-
-
-
-
 };
 
 

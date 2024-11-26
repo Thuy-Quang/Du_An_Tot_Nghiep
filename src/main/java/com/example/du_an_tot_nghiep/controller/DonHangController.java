@@ -1,21 +1,18 @@
 package com.example.du_an_tot_nghiep.controller;
 
 import com.example.du_an_tot_nghiep.entity.DonHang;
+import com.example.du_an_tot_nghiep.entity.NguoiDung;
 import com.example.du_an_tot_nghiep.model.DonHangRequest;
 import com.example.du_an_tot_nghiep.repository.DonHangRepository;
 import com.example.du_an_tot_nghiep.repository.NguoiDungRepository;
-import com.example.du_an_tot_nghiep.service.DonHangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/HienThiDonHang")
@@ -27,22 +24,26 @@ public class DonHangController {
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
 
-    @Autowired
-    private DonHangService donHangService;
-
+    // Hiển thị danh sách đơn hàng
     @GetMapping("/GetAll")
     public String showDH(Model model) {
         model.addAttribute("listDonHang", donHangRepository.findAll());
-        return "donhang/index"; // Cập nhật đường dẫn tới view tương ứng
+        return "donhang/index"; // Trả về giao diện danh sách đơn hàng
     }
 
+    // Hiển thị form thêm đơn hàng
     @GetMapping("/create")
-    private String getProjectDH(Model model) {
-        model.addAttribute("listNguoiDung", nguoiDungRepository.findAll()); // Thêm danh sách người dùng vào model
-        model.addAttribute("donHangRequest", new DonHangRequest()); // Thêm DonHangRequest vào model
-        return "donhang/add"; // Trả về view thêm đơn hàng
+    public String showCreateForm(Model model) {
+        // Lấy danh sách tất cả khách hàng
+        List<NguoiDung> listNguoiDung = nguoiDungRepository.findAll();
+
+        // Gửi danh sách khách hàng đến view
+        model.addAttribute("listNguoiDung", listNguoiDung);
+        model.addAttribute("donHangRequest", new DonHangRequest());
+        return "donhang/add"; // Giao diện thêm đơn hàng
     }
 
+    // Xử lý thêm đơn hàng
     @PostMapping("/create")
     public String createDonHang(@ModelAttribute DonHangRequest donHangRequest) {
         // Tạo một đối tượng DonHang mới từ donHangRequest
@@ -62,50 +63,46 @@ public class DonHangController {
         return "redirect:/HienThiDonHang/GetAll"; // Chuyển hướng về danh sách đơn hàng
     }
 
+    // Hiển thị form chỉnh sửa đơn hàng
     @GetMapping("/listDonHang/edit/id/{id}")
-    public String putDonHang(@PathVariable("id") Long id, Model model) {
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
         DonHang donHang = donHangRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại")); // Kiểm tra xem đơn hàng có tồn tại hay không
+                .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
 
-        // Khởi tạo DonHangRequest từ thông tin của đơn hàng
         DonHangRequest donHangRequest = new DonHangRequest();
         donHangRequest.setTrangThai(donHang.getTrangThai());
         donHangRequest.setTongTien(donHang.getTongTien());
         donHangRequest.setTrangThaiThanhToan(donHang.getTrangThaiThanhToan());
         donHangRequest.setPhuongThucThanhToan(donHang.getPhuongThucThanhToan());
-        donHangRequest.setNguoiDungId(donHang.getNguoiDung().getId()); // Lưu id của người dùng
+        donHangRequest.setNguoiDungId(donHang.getNguoiDung().getId());
 
         model.addAttribute("detail", donHang); // Thêm thông tin đơn hàng vào model
-        model.addAttribute("donHangRequest", donHangRequest); // Thêm DonHangRequest vào model
-        model.addAttribute("listNguoiDung", nguoiDungRepository.findAll()); // Thêm danh sách người dùng vào model
+        model.addAttribute("donHangRequest", donHangRequest); // Thêm thông tin để chỉnh sửa
+        model.addAttribute("listNguoiDung", nguoiDungRepository.findAll()); // Thêm danh sách người dùng
 
-        return "donhang/update"; // Trả về view cập nhật
+        return "donhang/update"; // Trả về giao diện cập nhật đơn hàng
     }
 
-    // Phương thức để xử lý cập nhật đơn hàng
+    // Xử lý cập nhật đơn hàng
     @PostMapping("/listDonHang/edit/id/{id}")
     public String updateDonHang(@PathVariable("id") Long id, @ModelAttribute DonHangRequest donHangRequest) {
-        // Tìm đơn hàng theo ID
         DonHang donHang = donHangRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại")); // Kiểm tra xem đơn hàng có tồn tại hay không
+                .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
 
-        // Cập nhật thông tin đơn hàng
         donHang.setTrangThai(donHangRequest.getTrangThai());
         donHang.setTongTien(donHangRequest.getTongTien());
         donHang.setTrangThaiThanhToan(donHangRequest.getTrangThaiThanhToan());
         donHang.setPhuongThucThanhToan(donHangRequest.getPhuongThucThanhToan());
-        donHang.setNguoiDung(nguoiDungRepository.findById(donHangRequest.getNguoiDungId()).orElse(null)); // Cập nhật người dùng nếu cần
+        donHang.setNguoiDung(nguoiDungRepository.findById(donHangRequest.getNguoiDungId()).orElse(null));
 
-        // Lưu cập nhật vào database
-        donHangRepository.save(donHang);
-
-        return "redirect:/HienThiDonHang/GetAll"; // Quay lại danh sách đơn hàng
+        donHangRepository.save(donHang); // Lưu cập nhật
+        return "redirect:/HienThiDonHang/GetAll"; // Chuyển hướng về danh sách đơn hàng
     }
 
-    // Thêm phương thức xóa nếu cần
+    // Xóa đơn hàng
     @PostMapping("/listDonHang/delete/id/{id}")
-    private String delete(@PathVariable("id") Long id) {
-        donHangRepository.deleteById(id); // Xóa đơn hàng theo ID
-        return "redirect:/HienThiDonHang/GetAll"; // Quay lại danh sách đơn hàng
+    public String deleteDonHang(@PathVariable("id") Long id) {
+        donHangRepository.deleteById(id); // Xóa đơn hàng
+        return "redirect:/HienThiDonHang/GetAll"; // Chuyển hướng về danh sách đơn hàng
     }
 }

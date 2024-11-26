@@ -8,8 +8,10 @@ import com.example.du_an_tot_nghiep.model.DonHangRequest;
 import com.example.du_an_tot_nghiep.repository.DonHangRepository;
 import com.example.du_an_tot_nghiep.repository.NguoiDungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -31,6 +33,15 @@ public class DonHangService {
         this.nguoiDungRepository = nguoiDungRepository;
         this.donHangRepository = donHangRepository;
     }
+    // Lấy tất cả đơn hàng
+//    public List<DonHang> getAll() {
+//        return donHangRepository.findAll();
+//    }
+//
+//    // L
+//    public Page<DonHang> getAll(Pageable pageable) {
+//        return donHangRepository.findAll(pageable);
+//    }
 
     public DonHang addDonHang(DonHangRequest donHangRequest) {
         DonHang donHang = new DonHang();
