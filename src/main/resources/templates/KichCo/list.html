@@ -11,7 +11,7 @@
 <div class="container mt-5">
     <h1 class="mb-4">
         Danh sách Kích Cỡ</h1>
-    <a class="btn btn-primary mb-3" th:href="@{/kich-co/add}"><i class="fas fa-plus"></i>Thêm Kích Cỡ</a>
+    <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/kich-co/add')">Thêm kích cỡ</a>
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <thead class="thead-dark">
@@ -28,10 +28,14 @@
                 <td th:text="${kichCo.tenKichCo}"></td>
                 <td th:text="${kichCo.trangThai}"></td>
                 <td class="text-center">
-                    <a class="btn btn-sm btn-warning" th:href="@{/kich-co/edit/{id}(id=${kichCo.id})}">
-                        <i class="fas fa-edit"></i> Edit
+                    <a class="btn btn-warning btn-sm" href="javascript:void(0);"
+                       th:onclick="'loadContent(\'/kich-co/edit/' + ${kichCo.id} + '\')'">
+                    <i class="fas fa-edit"></i> Sửa
+
+
                     </a>
-                    <a class="btn btn-sm btn-danger" th:href="@{/kich-co/delete/{id}(id=${kichCo.id})}" onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
+                    <a class="btn btn-danger btn-sm" th:href="@{/kich-co/delete/{id}(id=${kichCo.id})}"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
                         <i class="fas fa-trash-alt"></i> Delete
                     </a>
                 </td>

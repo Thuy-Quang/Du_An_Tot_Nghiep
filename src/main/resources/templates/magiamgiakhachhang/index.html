@@ -8,7 +8,11 @@
 <body>
 <div class="container mt-5">
     <h1 class="text-center">Danh Sách Mã Giảm Giá Khách Hàng</h1>
-    <a href="/ma-giam-gia-kh/add" class="btn btn-success mb-3">Thêm Mới</a>
+    <div class="d-flex justify-content-end mb-3">
+        <a href="javascript:void(0);" onclick="submitForm(event, '/ma-giam-gia-kh/add', document.getElementById('maGiamGiaForm'))" class="btn btn-primary">
+            Thêm Mã Giảm Giá
+        </a>
+    </div>
     <table class="table table-hover table-bordered">
         <thead class="table-primary">
         <tr>
@@ -30,13 +34,22 @@
             <td th:text="${item.ngayHetHan}"></td>
             <td th:text="${item.trangThai}"></td>
             <td>
-                <a th:href="@{/ma-giam-gia-kh/detail/{id}(id=${item.id})}" class="btn btn-info btn-sm">Chi Tiết</a>
-                <a th:href="@{/ma-giam-gia-kh/edit/{id}(id=${item.id})}" class="btn btn-warning btn-sm">Sửa</a>
-                <form th:action="@{/ma-giam-gia-kh/delete/{id}(id=${item.id})}" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
-                    <input type="hidden" name="_method" value="DELETE" />
-                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
-                </form>
+                <!-- Chi tiết mã giảm giá khách hàng -->
+                <a href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/ma-giam-gia-kh/detail/' + ${item.id} + '\')'"
+                   class="btn btn-info btn-sm">Chi Tiết</a>
+
+                <!-- Sửa mã giảm giá khách hàng -->
+                <a href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/ma-giam-gia-kh/edit/' + ${item.id} + '\')'"
+                   class="btn btn-warning btn-sm">Sửa</a>
+
+                <!-- Xóa mã giảm giá khách hàng -->
+                <a href="javascript:void(0);"
+                   th:onclick="'deleteItem(\'/ma-giam-gia-kh/delete/' + ${item.id} + '\')'"
+                   class="btn btn-danger btn-sm">Xóa</a>
             </td>
+
         </tr>
         </tbody>
     </table>

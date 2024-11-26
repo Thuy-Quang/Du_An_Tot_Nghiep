@@ -11,7 +11,11 @@
 <div class="container mt-5">
     <h1 class="text-center mb-4">Danh Sách Mã Giảm Giá Sản Phẩm</h1>
     <div class="d-flex justify-content-end mb-3">
-        <a href="/ma-giam-gia-san-pham/add" class="btn btn-primary">Thêm Mã Giảm Giá Mới</a>
+        <div class="d-flex justify-content-end mb-3">
+            <a href="javascript:void(0);" onclick="submitForm(event, '/ma-giam-gia-san-pham/add', document.getElementById('maGiamGiaForm'))" class="btn btn-primary">
+                Thêm Mã Giảm Giá
+            </a>
+        </div>
     </div>
     <table class="table table-bordered table-striped table-hover">
         <thead class="table-primary">
@@ -33,13 +37,22 @@
             <td th:text="${#temporals.format(maGiamGiaSanPham.ngayHetHan, 'dd-MM-yyyy')}"></td>
             <td th:text="${maGiamGiaSanPham.trangThai}"></td>
             <td class="d-flex">
-                <a th:href="@{/ma-giam-gia-san-pham/detail/{id}(id=${maGiamGiaSanPham.id})}" class="btn btn-info btn-sm me-2">Chi tiết</a>
-                <a th:href="@{/ma-giam-gia-san-pham/edit/{id}(id=${maGiamGiaSanPham.id})}" class="btn btn-warning btn-sm me-2">Sửa</a>
-                <form th:action="@{/ma-giam-gia-san-pham/delete/{id}(id=${maGiamGiaSanPham.id})}" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
-                    <input type="hidden" name="_method" value="DELETE" />
-                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
-                </form>
+                <!-- Chi tiết mã giảm giá sản phẩm -->
+                <a href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/ma-giam-gia-san-pham/detail/' + ${maGiamGiaSanPham.id} + '\')'"
+                   class="btn btn-info btn-sm me-2">Chi tiết</a>
+
+                <!-- Sửa mã giảm giá sản phẩm -->
+                <a href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/ma-giam-gia-san-pham/edit/' + ${maGiamGiaSanPham.id} + '\')'"
+                   class="btn btn-warning btn-sm me-2">Sửa</a>
+
+                <!-- Xóa mã giảm giá sản phẩm -->
+                <a href="javascript:void(0);"
+                   th:onclick="'deleteItem(\'/ma-giam-gia-san-pham/delete/' + ${maGiamGiaSanPham.id} + '\')'"
+                   class="btn btn-danger btn-sm">Xóa</a>
             </td>
+
         </tr>
         </tbody>
     </table>

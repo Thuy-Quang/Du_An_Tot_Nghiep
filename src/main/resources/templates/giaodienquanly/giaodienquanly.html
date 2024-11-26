@@ -142,10 +142,16 @@
 </script>
 
 <body class="container-fluid">
-<header class="bg-dark text-white text-center p-3">
-    <h2>Trang quản lý SH Shop</h2>
+<header class="bg-dark text-white p-3">
+    <div class="d-flex justify-content-between align-items-center">
+        <div></div> <!-- Khoảng trống để cân đối -->
+        <h2 class="mb-0 text-center flex-grow-1">Trang quản lý SH Shop</h2>
+        <div class="d-flex align-items-center">
+            <i class="fas fa-user-circle fs-4 me-2"></i>
+            <span>Xin chào, Admin</span>
+        </div>
+    </div>
 </header>
-
 <!-- Sidebar -->
 <div class="sidebar">
     <ul class="nav flex-column">
@@ -156,7 +162,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/HienThi/getall')">
+            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/HienThi/GetAll')">
                 <i class="fas fa-boxes"></i>
                 <span>Sản Phẩm</span>
             </a>
@@ -180,13 +186,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/mau-sac')">
+            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/mau-sac/list')">
                 <i class="fas fa-paint-brush"></i>
                 <span>Màu Sắc</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/kich-co')">
+            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/kich-co/list')">
                 <i class="fas fa-ruler-combined"></i>
                 <span>Kích Cỡ</span>
             </a>
@@ -203,7 +209,26 @@
                 <span>Vai Trò</span>
             </a>
         </li>
+        <!-- Mã Giảm Giá Khách Hàng -->
+        <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/ma-giam-gia-kh/hienthi')">
+                <i class="fas fa-gift"></i>
+                <span>Mã Giảm Giá Khách Hàng</span>
+            </a>
+        </li>
+
+        <!-- Mã Giảm Giá Sản Phẩm -->
+        <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/ma-giam-gia-san-pham/hienthi')">
+                <i class="fas fa-percentage"></i>
+                <span>Mã Giảm Giá Sản Phẩm</span>
+            </a>
+        </li>
+
+
     </ul>
+</div>
+
 </div>
 
 <!-- Nội dung chính -->

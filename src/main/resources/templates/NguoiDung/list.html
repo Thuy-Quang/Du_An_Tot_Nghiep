@@ -10,7 +10,7 @@
 <div class="container mt-5">
     <h1 class="text-center">Danh sách Người dùng</h1>
     <div class="d-flex justify-content-end mb-3">
-        <a th:href="@{/nguoi-dung/them}" class="btn btn-primary">Thêm Người dùng</a>
+      <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/nguoi-dung/them')"> Thêm Người Dùng</a>
     </div>
 
     <table class="table table-bordered table-hover table-striped">
@@ -34,10 +34,22 @@
             <td th:text="${nguoiDung.soDienThoai != null ? nguoiDung.soDienThoai : 'Chưa có SĐT'}"></td>
             <td th:text="${nguoiDung.diaChi != null ? nguoiDung.diaChi : 'Chưa có địa chỉ'}"></td> <!-- Hiển thị Địa chỉ -->
             <td class="text-center align-middle">
-                <a th:href="@{/nguoi-dung/chi-tiet/{id}(id=${nguoiDung.id})}" class="btn btn-info btn-sm">Chi tiết</a>
-                <a th:href="@{/nguoi-dung/sua/{id}(id=${nguoiDung.id})}" class="btn btn-warning btn-sm mx-1">Sửa</a>
-                <a th:href="@{/nguoi-dung/xoa/{id}(id=${nguoiDung.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</a>
+                <!-- Chi tiết người dùng -->
+                <a href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/nguoi-dung/chi-tiet/' + ${nguoiDung.id} + '\')'"
+                   class="btn btn-info btn-sm">Chi tiết</a>
+
+                <!-- Sửa người dùng -->
+                <a href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/nguoi-dung/cap-nhat/' + ${nguoiDung.id} + '\')'"
+                   class="btn btn-warning btn-sm mx-1">Sửa</a>
+
+                <!-- Xóa người dùng -->
+                <a href="javascript:void(0);"
+                   th:onclick="'return confirm(\'Bạn có chắc chắn muốn xóa không?\') ? loadContent(\'/nguoi-dung/xoa/' + ${nguoiDung.id} + '\') : false;'"
+                   class="btn btn-danger btn-sm">Xóa</a>
             </td>
+
         </tr>
         </tbody>
     </table>
@@ -45,13 +57,19 @@
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/nguoi-dung(page=${currentPage - 1})}">Trước</a>
+                <a class="page-link" href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/nguoi-dung?page=' + (${currentPage - 1}) + '\')'">Trước</a>
             </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:text="${i + 1}" th:href="@{/nguoi-dung(page=${i})}"></a>
+
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/nguoi-dung?page=' + (${i}) + '\')'" th:text="${i + 1}"></a>
             </li>
+
             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/nguoi-dung(page=${currentPage + 1})}">Tiếp</a>
+                <a class="page-link" href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/nguoi-dung?page=' + (${currentPage + 1}) + '\')'">Tiếp</a>
             </li>
         </ul>
     </nav>

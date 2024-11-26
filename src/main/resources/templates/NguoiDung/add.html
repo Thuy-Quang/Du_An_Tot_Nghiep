@@ -36,7 +36,7 @@
             <input type="text" class="form-control" id="diaChi" th:field="*{diaChi}" pattern="^[a-zA-Z0-9\s,.-]{5,100}$" title="Địa chỉ phải bao gồm chữ cái, số và ít nhất 5 ký tự" required />
         </div>
         <button type="submit" class="btn btn-primary">Lưu</button>
-        <a th:href="@{/nguoi-dung}" class="btn btn-secondary">Quay lại</a>
+        <a href="javascript:void(0);" th:onclick="'loadContent(\'/nguoi-dung\')'" class="btn btn-primary">Quay lại</a>
     </form>
 </div>
 

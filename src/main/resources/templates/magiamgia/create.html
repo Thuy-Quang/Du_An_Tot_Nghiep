@@ -84,7 +84,7 @@
             <input type="text" class="form-control" id="trangThai" th:field="*{trangThai}" required>
         </div>
         <button type="submit" class="btn btn-primary">Lưu</button>
-        <a class="btn btn-secondary" th:href="@{/ma-giam-gia}">Hủy Bỏ</a>
+        <a href="javascript:void(0);" th:onclick="'loadContent(\'/ma-giam-gia\')'" class="btn btn-primary">Quay lại</a>
     </form>
 
 </div>

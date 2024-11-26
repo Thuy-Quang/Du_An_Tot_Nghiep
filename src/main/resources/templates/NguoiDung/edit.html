@@ -7,7 +7,7 @@
 <body>
 <div class="container mt-5">
     <h1 class="text-center">Sửa Người dùng</h1>
-    <form th:action="@{/nguoi-dung/luu}" th:object="${nguoiDung}" method="post" class="mt-4" onsubmit="return validateForm()">
+    <form th:action="@{/nguoi-dung/cap-nhat/{id}(id=${nguoiDung.id})}" th:object="${nguoiDung}" method="post" class="mt-4" onsubmit="return validateForm()">
         <input type="hidden" th:field="*{id}"/>
 
         <div class="mb-3">
@@ -42,7 +42,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Lưu</button>
-        <a th:href="@{/nguoi-dung}" class="btn btn-secondary">Quay lại</a>
+        <a href="javascript:void(0);" th:onclick="'loadContent(\'/nguoi-dung\')'" class="btn btn-primary">Quay lại</a>
     </form>
 </div>
 

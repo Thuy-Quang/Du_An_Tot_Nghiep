@@ -58,13 +58,13 @@
         <span th:text="${errorMessage}"></span>
     </div>
 
-     <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/vai-tro/add')"> Thêm Vai Tro  </a>
+     <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/vai-tro/add')"> Thêm Vai Trò  </a>
 
     <!-- Bảng danh sách vai trò -->
     <table class="table table-bordered table-hover table-striped text-center">
         <thead class="thead-dark">
         <tr>
-            <th>STT</th>
+            <th>STT</th>ò
             <th>Tên vai trò</th>
             <th>Thao tác</th>
         </tr>
@@ -75,15 +75,21 @@
             <td th:text="${vaiTro.tenVaiTro}"></td>
             <td class="text-center">
                 <a class="btn btn-warning btn-sm" th:onclick="'loadContent(\'/vai-tro/edit/' + ${vaiTro.id} + '\')'">Sửa</a>
-                <a th:href="@{/vai-tro/delete/{id}(id=${vaiTro.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</a>
-                <a th:href="@{/vai-tro/detail/{id}(id=${vaiTro.id})}" class="btn btn-info btn-sm">Chi tiết</a>
+                <a href="javascript:void(0);"
+                   th:onclick="'return confirm(\'Bạn có chắc chắn muốn xóa không?\') ? loadContent(\'/vai-tro/xoa/' + ${vaiTro.id} + '\') : false;'"
+                   class="btn btn-danger btn-sm">Xóa</a>
+
+                <!-- Chi tiết vai trò người dùng -->
+                <a href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/vai-tro/detail/' + ${vaiTro.id} + '\')'"
+                   class="btn btn-info btn-sm">Chi Tiết</a>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <!-- Nút quay lại trang chủ -->
-    <a th:href="@{/}" class="btn btn-secondary mt-3">Quay lại trang chủ</a>
+<!--    &lt;!&ndash; Nút quay lại trang chủ &ndash;&gt;-->
+<!--    <a th:href="@{/}" class="btn btn-secondary mt-3">Quay lại trang chủ</a>-->
 </div>
 
 <!-- Thư viện JavaScript của Bootstrap -->
