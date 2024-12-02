@@ -41,10 +41,11 @@ public class DangNhapController {
             errorResponse.put("error", "Tên đăng nhập hoặc mật khẩu không chính xác");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
+        Long userId = nguoiDungDetailsService.getUserIdByUsername(tenDangNhap);
 
         // Tạo token JWT
         try {
-            String token = jwtUtil.generateToken(tenDangNhap);
+            String token = jwtUtil.generateToken(tenDangNhap,userId);
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             response.put("message", "Đăng nhập thành công");

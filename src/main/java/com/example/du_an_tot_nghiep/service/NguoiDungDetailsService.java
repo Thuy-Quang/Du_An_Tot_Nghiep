@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class NguoiDungDetailsService implements UserDetailsService {
@@ -59,5 +60,10 @@ public class NguoiDungDetailsService implements UserDetailsService {
         }
         return false;
 
+    }
+
+    public Long getUserIdByUsername(String tenDangNhap) {
+        Optional<NguoiDung> nguoiDung = nguoiDungRepository.findByTenDangNhap(tenDangNhap);
+        return nguoiDung != null ? nguoiDung.get().getId() : null;  // Trả về ID người dùng
     }
 }

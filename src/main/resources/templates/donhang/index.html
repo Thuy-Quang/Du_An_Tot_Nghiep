@@ -84,6 +84,53 @@
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                 </form>
+                <a th:href="@{/magiamgia/khachhang/nguoiDungID/{id}(id=${donHang.nguoiDung.id})}" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#discountModal">Thêm mã giảm giá</a>
+
+                <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="discountModalLabel">Danh sách mã giảm giá</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="discountList">
+
+
+                                    <!-- Danh sách mã giảm giá sẽ được tải động tại đây -->
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Mã giảm giá</th>
+                                            <th>Giá trị</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="mggkh : ${listMaGiamGiaKhachHang}">
+                                            <td th:text="${mggkh.maGiamGia}"></td>
+                                            <td th:text="${mggkh.trangThai}"></td>
+                                            <td th:text="${mggkh.nguoiDung.hoTen}"></td>
+                                            <td th:text="${mggkh.maGiamGia.phanTramGiam}"></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm select-discount">Chọn</button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div th:if="${listMaGiamGiaKhachHang == null or #lists.isEmpty(listMaGiamGiaKhachHang)}">
+                                        <p>Không có mã giảm giá cho người dùng này.</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">xác nhận đơn hàng</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
         </tbody>

@@ -9,7 +9,7 @@
 <body>
 <main ng-app="cartApp" ng-controller="CartController">
   <h2>Giỏ Hàng Của Bạn</h2>
-  <table class="table">
+  <table class="table" th:fragment="shoppingcart">
     <thead>
     <tr>
       <th>Sản Phẩm</th>
@@ -17,34 +17,40 @@
       <th>Kích Cỡ</th>
       <th>Số Lượng</th>
       <th>Giá</th>
-      <th>Tổng</th>
       <th>Chức Năng </th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="item in cart.items track by $index">
       <td>{{item.tenSanPham}}</td>
-      <!-- Dropdown Màu Sắc -->
+
+      <!-- Hiển thị Màu Sắc đã chọn -->
       <td>
-        <select id="color" ng-model="selectedColor">
-          <option ng-repeat="color in cart.colors" value="{{color.id}}">{{color.tenMau}}</option>
-        </select>
+        {{item.color}}
       </td>
-      <!-- Dropdown Kích Cỡ -->
+
+      <!-- Hiển thị Kích Cỡ đã chọn -->
       <td>
-        <select id="size" ng-model="selectedSize">
-          <option ng-repeat="size in cart.sizes" value="{{size.id}}">{{size.tenKichCo}}</option>
-        </select>
+        {{item.size}}
       </td>
+
       <td>
         <input type="number" ng-model="item.soLuong" class="form-control" min="1" ng-change="cart.saveToLocalStorage()">
       </td>
       <td>{{item.gia | number:2}}</td>
-      <td>{{item.soLuong * item.gia | number:2}}</td>
-      <td><button class="btn btn-danger" ng-click="cart.remove(item.id)">xoá</button></td>
-
+      <td>
+        <button class="btn btn-danger" ng-click="cart.remove(item.id)">xoá</button>
+      </td>
     </tr>
     </tbody>
+    <tfoot>
+    <tr>
+      <td colspan="5" class="text-right"><strong>Tổng Tiền:</strong></td>
+      <td>
+        <strong>{{cart.calculateTotal() | number:2}}</strong>
+      </td>
+    </tr>
+    </tfoot>
   </table>
   <div class="d-flex justify-content-between">
     <a th:href="@{/giohang}" class="btn btn-primary">Tiếp Tục Mua Sắm</a>
@@ -54,7 +60,5 @@
   <script th:src="@{/js/addgiohang.js}"></script>
 
 </main>
-
-
 </body>
 </html>

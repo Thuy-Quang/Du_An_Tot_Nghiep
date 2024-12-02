@@ -1,12 +1,11 @@
 package com.example.du_an_tot_nghiep.service;
 
-import com.example.du_an_tot_nghiep.entity.DonHang;
-import com.example.du_an_tot_nghiep.entity.GioHang;
-import com.example.du_an_tot_nghiep.entity.NguoiDung;
-import com.example.du_an_tot_nghiep.entity.SanPhamTrongGioHang;
+import com.example.du_an_tot_nghiep.entity.*;
 import com.example.du_an_tot_nghiep.model.DonHangRequest;
+import com.example.du_an_tot_nghiep.repository.ChiTietDonHangRepository;
 import com.example.du_an_tot_nghiep.repository.DonHangRepository;
 import com.example.du_an_tot_nghiep.repository.NguoiDungRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,8 @@ import java.util.Optional;
 
 @Service
 public class DonHangService {
+    @Autowired
+    private ChiTietDonHangRepository chiTietDonHangRepository;
     @Autowired
     private GioHangService gioHangService;
     @Autowired
@@ -119,4 +120,21 @@ public class DonHangService {
 
         return donHangRepository.save(donHang);
     }
+    public List<DonHang> getOrdersByCustomerId(Long nguoiDungID) {
+        return donHangRepository.findByNguoiDungId(nguoiDungID);
+    }
+    @Transactional
+    public DonHang luuDonHang(DonHang donHang, List<ChiTietDonHang> chiTietDonHangs) {
+        // Lưu đơn hàng
+        DonHang savedDonHang = donHangRepository.save(donHang);
+
+        // Lưu chi tiết đơn hàng
+        for (ChiTietDonHang chiTiet : chiTietDonHangs) {
+            chiTiet.setDonHang(savedDonHang);
+            chiTietDonHangRepository.save(chiTiet);
+        }
+
+        return savedDonHang;
+    }
+
 }

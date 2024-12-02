@@ -24,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -189,26 +190,41 @@ public class SanPhamController {
         return "redirect:/HienThi/GetAll";
     }
     @GetMapping("/getone/{id}")
-    public ResponseEntity<?> getOne(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getOne(
+            @PathVariable("id") Long id,
+            @RequestParam("color") Long colorId,
+            @RequestParam("size") Long sizeId
+    )  {
         Optional<SanPham> optionalSanPham = sanPhamRepository.findById(id);
 
         if (optionalSanPham.isPresent()) {
             SanPham sanPham = optionalSanPham.get();
 
-            // Chuyển đổi sang DTO
-            SanPhamDTO dto = new SanPhamDTO();
-            dto.setId(sanPham.getId());
-            dto.setTenSanPham(sanPham.getTenSanPham());
-            dto.setGia(sanPham.getGia());
-            dto.setMoTa(sanPham.getMoTa());
-            dto.setHinhAnh(sanPham.getHinhAnh());
+            // Lấy màu sắc và kích thước từ database
+            Optional<MauSac> mauSac = mauSacRepository.findById(colorId);
+            Optional<KichCo> kichCo = kichCoRepository.findById(sizeId);
 
-            return ResponseEntity.ok(dto); // Trả về DTO
+            if (mauSac.isPresent() && kichCo.isPresent()) {
+                // Chuyển đổi sang DTO và thêm thông tin màu sắc, kích thước
+                SanPhamDTO dto = new SanPhamDTO();
+                dto.setId(sanPham.getId());
+                dto.setTenSanPham(sanPham.getTenSanPham());
+                dto.setGia(sanPham.getGia());
+                dto.setHinhAnh(sanPham.getHinhAnh());
+                dto.setMauSacs(Collections.singletonList(mauSac.get().getTenMau())); // Thêm tên màu sắc
+                dto.setKichCo(Collections.singletonList(kichCo.get().getTenKichCo())); // Thêm tên kích cỡ
+
+                return ResponseEntity.ok(dto); // Trả về DTO
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Không tìm thấy màu sắc hoặc kích cỡ.");
+            }
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Không tìm thấy sản phẩm với id: " + id);
         }
     }
+
     @GetMapping("/mau-sac")
     public ResponseEntity<List<MauSac>> getAllColors() {
         List<MauSac> list = mauSacService.getAllColors();

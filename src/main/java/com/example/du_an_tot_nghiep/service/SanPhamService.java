@@ -1,6 +1,9 @@
 package com.example.du_an_tot_nghiep.service;
 
+import com.example.du_an_tot_nghiep.entity.KichCo;
+import com.example.du_an_tot_nghiep.entity.MauSac;
 import com.example.du_an_tot_nghiep.entity.SanPham;
+import com.example.du_an_tot_nghiep.model.SanPhamDTO;
 import com.example.du_an_tot_nghiep.model.SanPhamRequest;
 import com.example.du_an_tot_nghiep.repository.KichCoRepository;
 import com.example.du_an_tot_nghiep.repository.LoaiSanPhamRepository;
@@ -19,6 +22,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -107,4 +111,15 @@ public class SanPhamService {
     public Optional<SanPham> laySanPhamTheoId(Long idsp) {
         return sanPhamRepository.findById(idsp);
     }
+    public List<SanPhamDTO> getDanhSachSanPham() {
+        return sanPhamRepository.findAll().stream().map(sanPham -> {
+            SanPhamDTO dto = new SanPhamDTO();
+            dto.setId(sanPham.getId());
+            dto.setTenSanPham(sanPham.getTenSanPham());
+            dto.setHinhAnh(sanPham.getHinhAnh());
+            dto.setGia(sanPham.getGia());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
 }

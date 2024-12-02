@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 
 public class SanPhamRequest {
+    private Long id;
     private String tenSanPham;
 
     private String moTa;

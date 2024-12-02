@@ -11,7 +11,7 @@ import java.util.List;
 public class JwtUtil {
     private final String SECRET_KEY = "9d23bcd7121b4e37a8f67e8c5a774301d3f6b2bb35c85a05d5c531947f1b8baf";
 
-    public String generateToken(String username) {
+    public String generateToken(String username,Long userId) {
         /**
          * TODO: Chỗ này cần truyền thêm thông tin về role thay vì fix cứng để build token dùng để xác thực quyền
          * Role bắt buộc phải bắt đầu bằng ROLE_
@@ -20,6 +20,7 @@ public class JwtUtil {
          */
         return Jwts.builder()
                 .setSubject(username)
+                .claim("userId", userId)
                 .claim("roles", List.of("admin","staff","customer"))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 giờ

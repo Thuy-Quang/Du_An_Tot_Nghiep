@@ -45,7 +45,7 @@
             </button>
         </form>
 
-       <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/HienThi/create')">  Thêm Sản Phẩm  </a>
+       <a class="btn btn-primary mb-4" >  Thêm Sản Phẩm  </a>
 
     </div>
 
@@ -135,20 +135,7 @@
         </nav>
     </div>
 
-    <script>
-        function loadContent(url) {
-            // Thực hiện một yêu cầu fetch đến URL và cập nhật nội dung
-            fetch(url)
-                .then(response => response.text())  // Lấy dữ liệu dưới dạng văn bản (HTML)
-                .then(data => {
-                    // Cập nhật nội dung trong phần tử có ID "main-content"
-                    document.getElementById('main-content').innerHTML = data;
-                })
-                .catch(error => {
-                    console.error('Lỗi khi tải dữ liệu:', error);
-                });
-        }
-    </script>
+
 </div>
 </body>
 </html>

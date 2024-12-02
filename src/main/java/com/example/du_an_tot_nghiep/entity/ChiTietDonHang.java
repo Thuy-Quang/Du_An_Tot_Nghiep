@@ -21,7 +21,7 @@ public class ChiTietDonHang {
 
     @ManyToOne
     @JoinColumn(name = "don_hang_id", referencedColumnName = "id", nullable = false)
-    private ChiTietDonHang donHang; // Đối tượng DonHang liên kết với chi tiết đơn hàng
+    private DonHang donHang; // Đối tượng DonHang liên kết với chi tiết đơn hàng
 
     @ManyToOne
     @JoinColumn(name = "san_pham_id", referencedColumnName = "id", nullable = false)

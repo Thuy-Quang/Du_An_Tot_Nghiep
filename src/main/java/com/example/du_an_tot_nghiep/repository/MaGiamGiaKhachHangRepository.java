@@ -1,6 +1,7 @@
 package com.example.du_an_tot_nghiep.repository;
 
 import com.example.du_an_tot_nghiep.entity.MaGiamGiaKH;
+import com.example.du_an_tot_nghiep.model.MaGiamGiaKhachHangDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,4 +23,6 @@ public interface MaGiamGiaKhachHangRepository extends JpaRepository<MaGiamGiaKH,
 
     // Xóa mã giảm giá theo mã giảm giá ID và người dùng ID
     void deleteByMaGiamGiaIdAndNguoiDungId(Long maGiamGiaId, Long nguoiDungId);
+
+
 }

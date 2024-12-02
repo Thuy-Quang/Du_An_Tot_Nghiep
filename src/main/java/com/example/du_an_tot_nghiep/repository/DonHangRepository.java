@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface DonHangRepository extends JpaRepository<DonHang,Long> {
     List<DonHang> findAll();
+    List<DonHang> findByNguoiDungId(Long nguoiDungId);
 
 }

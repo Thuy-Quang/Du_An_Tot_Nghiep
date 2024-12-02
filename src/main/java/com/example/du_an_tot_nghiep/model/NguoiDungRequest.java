@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class NguoiDungRequest {
+    private Long id;
     private String hoTen;
     private String email;
     private String diaChi;
@@ -12,6 +13,7 @@ public class NguoiDungRequest {
 
     // Constructor nhận đối tượng NguoiDung
     public NguoiDungRequest(NguoiDung nguoiDung) {
+        this.id = nguoiDung.getId();
         this.hoTen = nguoiDung.getHoTen();
         this.email = nguoiDung.getEmail();
         this.diaChi = nguoiDung.getDiaChi();
