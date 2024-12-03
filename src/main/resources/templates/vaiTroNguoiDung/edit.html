@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <title>Chi Tiết Vai Trò Người Dùng</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container mt-5">
+<div class="container mt-5" th:fragment="quanly">
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">Chi Tiết Vai Trò Người Dùng</h4>

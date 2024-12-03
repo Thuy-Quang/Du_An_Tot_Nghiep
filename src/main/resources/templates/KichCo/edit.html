@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <title>Edit Kích Cỡ</title>
     <!-- Bootstrap CSS -->
@@ -8,7 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-5">
+<div class="container mt-5" th:fragment="quanly">
     <h1 class="mb-4">Edit Kích Cỡ</h1>
     <form th:action="@{/kich-co/edit/{id}(id=${kichCo.id})}" th:object="${kichCo}" method="post" class="needs-validation" novalidate>
         <div class="form-group">

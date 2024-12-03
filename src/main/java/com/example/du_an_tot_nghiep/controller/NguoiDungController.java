@@ -27,7 +27,7 @@ public class NguoiDungController {
     JwtUtil jwtUtil;
 
     // Hiển thị danh sách người dùng
-    @GetMapping
+    @GetMapping("/hienthi")
     public String listNguoiDung(@RequestParam(defaultValue = "0") int page, Model model) {
         int size = 5; // Số lượng người dùng trên mỗi trang
         Page<NguoiDung> nguoiDungPage = nguoiDungService.getAllNguoiDung(page, size);

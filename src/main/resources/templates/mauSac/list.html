@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <title>Danh Sách Màu Sắc</title>
     <!-- Bootstrap CSS -->
@@ -9,7 +9,7 @@
 </head>
 
 <body>
-<div class="container mt-5">
+<div class="container mt-5" th:fragment="quanly">
     <h1 class="mb-4">Danh Sách Màu Sắc</h1>
     <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/mau-sac/add')">Thêm màu sắc</a>
 

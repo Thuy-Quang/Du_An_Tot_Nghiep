@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class QuanLyController {
     @GetMapping("/quan-ly")
-    public String quanly(Model model){
+    public String quanly(){
         return "giaodienquanly/giaodienquanly";
     }
 

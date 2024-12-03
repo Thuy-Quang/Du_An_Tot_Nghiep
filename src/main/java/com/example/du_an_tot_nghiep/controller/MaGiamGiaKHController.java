@@ -1,10 +1,12 @@
 package com.example.du_an_tot_nghiep.controller;
 
 import com.example.du_an_tot_nghiep.entity.MaGiamGiaKH;
+import com.example.du_an_tot_nghiep.repository.MaGiamGiaKhachHangRepository;
 import com.example.du_an_tot_nghiep.service.MaGiamGiaKHService; // Đã sửa tên class
 import com.example.du_an_tot_nghiep.service.NguoiDungService;
 import com.example.du_an_tot_nghiep.service.MaGiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,8 @@ public class MaGiamGiaKHController {
 
     @Autowired
     private MaGiamGiaService maGiamGiaService;
+    @Autowired
+    MaGiamGiaKhachHangRepository maGiamGiaKhachHangRepository;
 
     // Hiển thị danh sách mã giảm giá khách hàng
     @GetMapping("/hienthi")
@@ -33,6 +37,8 @@ public class MaGiamGiaKHController {
         model.addAttribute("maGiamGiaKHList", list);
         return "magiamgiakhachhang/index";
     }
+
+
 
     // Hiển thị form thêm mới
     @GetMapping("/add")

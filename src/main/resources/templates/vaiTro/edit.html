@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <title>Chỉnh sửa vai trò</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-5">
+<div class="container mt-5" th:fragment="quanly">
     <h1 class="text-center mb-4">Chỉnh sửa vai trò</h1>
 
     <!-- Hiển thị thông báo -->

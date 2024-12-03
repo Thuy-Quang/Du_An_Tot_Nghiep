@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -7,7 +7,7 @@
     <title>Thêm Người Dùng</title>
 </head>
 <body>
-<div class="container mt-5">
+<div class="container mt-5" th:fragment="quanly">
     <h1 class="mb-4 text-center">Thêm Người Dùng</h1>
     <form th:action="@{/nguoi-dung/luu}" th:object="${nguoiDung}" method="post" onsubmit="return validateForm()">
         <div class="form-group">

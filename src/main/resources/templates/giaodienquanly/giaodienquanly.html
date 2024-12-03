@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="dynamic(quanly)"  >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -98,48 +98,7 @@
         }
     </style>
 </head>
-<script>
-    function loadContent(url) {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(data => {
-                document.querySelector('.main-content').innerHTML = data;
-            })
-            .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
-                alert('Lỗi khi tải nội dung: ' + error.message); // Thông báo lỗi cho người dùng
-            });
-    }
 
-    function submitForm(url, formData, callback) {
-        fetch(url, {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    callback(); // Tải lại danh sách hoặc làm gì đó sau khi thành công
-                } else {
-                    alert('Thao tác thất bại: ' + data.message);
-                }
-            })
-            .catch(error => console.error('Lỗi:', error));
-    }
-
-    function handleFormSubmit(event) {
-        event.preventDefault(); // Ngăn không cho trang tải lại
-        const form = event.target;
-        const formData = new FormData(form);
-        const actionUrl = form.getAttribute('action'); // Lấy URL từ thuộc tính action của form
-        submitForm(actionUrl, formData, () => loadContent(form.dataset.reloadUrl));
-    }
-</script>
 
 <body class="container-fluid">
 <header class="bg-dark text-white p-3">
@@ -156,62 +115,62 @@
 <div class="sidebar">
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/loai-san-pham')">
+            <a class="nav-link" th:href="@{/loai-san-pham}">
                 <i class="fas fa-tags"></i>
                 <span>Loại Sản Phẩm</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/HienThi/GetAll')">
+            <a class="nav-link" th:href="@{/HienThi/GetAll}">
                 <i class="fas fa-boxes"></i>
                 <span>Sản Phẩm</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/HienThiDonHang/GetAll')">
+            <a class="nav-link" th:href="@{/HienThiDonHang/GetAll}">
                 <i class="fas fa-file-invoice-dollar"></i>
                 <span>Đơn Hàng</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/khach-hang')">
+            <a class="nav-link" th:href="@{/nguoi-dung}">
                 <i class="fas fa-users"></i>
                 <span>Khách Hàng</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/nguoi-dung')">
+            <a class="nav-link" th:href="@{/nguoi-dung/hienthi}">
                 <i class="fas fa-user"></i>
                 <span>Người Dùng</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/mau-sac/list')">
+            <a class="nav-link" th:href="@{/mau-sac/list}">
                 <i class="fas fa-paint-brush"></i>
                 <span>Màu Sắc</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/kich-co/list')">
+            <a class="nav-link" th:href="@{/kich-co/list}">
                 <i class="fas fa-ruler-combined"></i>
                 <span>Kích Cỡ</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/ma-giam-gia')">
+            <a class="nav-link" th:href="@{/ma-giam-gia}">
                 <i class="fas fa-tag"></i>
                 <span>Mã Giảm Giá</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/vai-tro')">
+            <a class="nav-link" th:href="@{/vai-tro}">
                 <i class="fas fa-user-shield"></i>
                 <span>Vai Trò</span>
             </a>
         </li>
         <!-- Mã Giảm Giá Khách Hàng -->
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/ma-giam-gia-kh/hienthi')">
+            <a class="nav-link" th:href="@{/ma-giam-gia-kh/hienthi}">
                 <i class="fas fa-gift"></i>
                 <span>Mã Giảm Giá Khách Hàng</span>
             </a>
@@ -219,28 +178,21 @@
 
         <!-- Mã Giảm Giá Sản Phẩm -->
         <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0);" onclick="loadContent('/ma-giam-gia-san-pham/hienthi')">
+            <a class="nav-link" th:href="@{/ma-giam-gia-san-pham/hienthi}">
                 <i class="fas fa-percentage"></i>
                 <span>Mã Giảm Giá Sản Phẩm</span>
             </a>
         </li>
-
-
     </ul>
 </div>
 
 </div>
-
 <!-- Nội dung chính -->
 <div class="main-content col">
-    <article>
-        <div th:fragment="dynamic(main)">
-            <h3>Quản lý Loại Sản Phẩm</h3>
-            <!-- Nội dung quản lý sẽ hiển thị ở đây -->
+        <div >
+            <div th:replace="${quanly}" ></div>
         </div>
-    </article>
 </div>
-
 <!-- Footer -->
 <footer>
     <p>&copy; 2024 SH Shop - Quản lý</p>

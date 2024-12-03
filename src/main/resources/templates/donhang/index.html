@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <meta charset="UTF-8">
     <title>Danh sách đơn hàng</title>
@@ -8,7 +8,7 @@
 </head>
 
 <body>
-<div class="container">
+<div class="container" th:fragment="quanly">
     <br><br><h1 class="text-center">Danh Sách Đơn Hàng</h1><br><br>
 
     <!-- Nút thêm đơn hàng -->
@@ -47,9 +47,14 @@
                 </form>
 
                 <!-- Thêm mã giảm giá -->
-                <a th:href="@{/magiamgia/khachhang/nguoiDungID/{id}(id=${donHang.nguoiDung.id})}" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#discountModal">Thêm mã giảm giá</a>
+                <a class="btn btn-info btn-sm open-discount-modal"
+                   th:href="@{/HienThiDonHang/magiamgia/khachhang/nguoiDungID/{id}(id=${donHang.nguoiDung.id})}"
+                   data-bs-toggle="modal"
+                   data-bs-target="#discountModal">
+                    Thêm mã giảm giá
+                </a>
 
-                <!-- Modal mã giảm giá -->
+                <!-- Modal hiển thị danh sách mã giảm giá -->
                 <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -58,39 +63,39 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
+                                <!-- Thêm mã giảm giá -->
                                 <div id="discountList">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered table-custom text-center">
                                         <thead>
                                         <tr>
-                                            <th>Mã giảm giá</th>
-                                            <th>Giá trị</th>
-                                            <th>Trạng thái</th>
-                                            <th>Thao tác</th>
+                                            <th>ID</th>
+                                            <th>Mã Giảm Giá </th>
+                                            <th>Tên Người Dùng </th>
+                                            <th>Trang Thái</th>
+                                            <th>Phần Trăm Giảm </th>
+                                            <th>Hàng Động </th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:each="mggkh : ${listMaGiamGiaKhachHang}">
-                                            <td th:text="${mggkh.maGiamGia}"></td>
-                                            <td th:text="${mggkh.trangThai}"></td>
-                                            <td th:text="${mggkh.nguoiDung.hoTen}"></td>
-                                            <td th:text="${mggkh.maGiamGia.phanTramGiam}"></td>
+                                        <tr th:each="maGiamGiaKhachHang, stat : ${listMaGiamGiaKhachHang}">
+                                            <td th:text="${maGiamGiaKhachHang.id}"></td>
+                                            <td th:text="${maGiamGiaKhachHang.maGiamGia.ma}"></td>
+                                            <td th:text="${maGiamGiaKhachHang.nguoiDung.hoTen}"></td>
+                                            <td th:text="${maGiamGiaKhachHang.trangThai}"></td>
+                                            <td th:text="${maGiamGiaKhachHang.maGiamGia.phanTramGiam}"></td>
                                             <td>
-                                                <button class="btn btn-primary btn-sm select-discount">Chọn</button>
+                                                <button class="btn btn-danger btn-sm">chọn</button>
                                             </td>
                                         </tr>
                                         </tbody>
                                     </table>
-                                    <div th:if="${listMaGiamGiaKhachHang == null or #lists.isEmpty(listMaGiamGiaKhachHang)}">
-                                        <p>Không có mã giảm giá cho người dùng này.</p>
-                                    </div>
+                                    <!-- Nội dung sẽ được thay thế bằng Thymeleaf fragment -->
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">xác nhận đơn hàng</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </td>
         </tr>
         </tbody>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <meta charset="UTF-8">
     <title>Chi tiết sản phẩm</title>
@@ -49,7 +49,7 @@
 </head>
 <body>
 
-<div class="container d-flex justify-content-center">
+<div class="container d-flex justify-content-center" th:fragment="quanly">
 
     <div class="product-details-container">
         <h2 class="heading">Chi tiết sản phẩm</h2>

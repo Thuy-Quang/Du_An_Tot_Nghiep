@@ -66,60 +66,6 @@
             border-color: #218838;
         }
 
-        /* Thêm hiệu ứng hover cho giỏ hàng */
-        .cart-icon-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .cart-link {
-            text-decoration: none;
-            color: inherit;
-            text-align: center;
-        }
-
-        .cart-icon-wrapper {
-            position: relative;
-            width: 60px;
-            height: 60px;
-            background-color: #fff;
-            border: 2px solid #ddd;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .cart-icon-wrapper:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .cart-icon {
-            font-size: 24px;
-            color: #4CAF50;
-        }
-
-        .cart-badge {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #ff3e3e;
-            color: #fff;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 50%;
-            padding: 4px 6px;
-            text-align: center;
-        }
 
         .form-row {
             display: flex;
@@ -154,15 +100,15 @@
 
     <div class="row">
         <!-- Biểu tượng giỏ hàng -->
-        <div class="cart-icon-container">
-            <a th:href="@{/giohangdetail}" class="cart-link">
-                <div class="cart-icon-wrapper">
-                    <i class="fas fa-shopping-cart cart-icon"></i>
-                    <span class="cart-badge" ng-bind="cart.count"></span>
-                </div>
-                <div class="cart-label">Giỏ hàng</div>
-            </a>
-        </div>
+<!--        <div class="cart-icon-container">-->
+<!--            <a th:href="@{/giohangdetail}" class="cart-link">-->
+<!--                <div class="cart-icon-wrapper">-->
+<!--                    <i class="fas fa-shopping-cart cart-icon"></i>-->
+<!--                    <span class="cart-badge" ng-bind="cart.count"></span>-->
+<!--                </div>-->
+<!--                <div class="cart-label">Giỏ hàng</div>-->
+<!--            </a>-->
+<!--        </div>-->
 
         <!-- Danh sách sản phẩm -->
         <div class="col-md-4 mb-4" th:each="sanPham : ${sanPhams}">

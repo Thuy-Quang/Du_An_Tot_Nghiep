@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,7 +42,7 @@
 </script>
 <body>
 
-<div class="container mt-5">
+<div class="container mt-5" th:fragment="quanly">
     <h2 class="mb-4">Thêm Đơn Hàng</h2>
     <form th:action="@{/HienThiDonHang/create}" th:object="${donHangRequest}" method="post" onsubmit="return validateForm();">
         <!-- Hiển thị thông báo lỗi nếu có -->

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,7 +54,7 @@
 </head>
 <body>
 
-<div class="container mt-5">
+<div class="container mt-5" th:fragment="quanly">
     <h1 class="text-center mb-4 custom-title">Thêm Sản Phẩm</h1>
     <form href="/HienThi/create" method="post" enctype="multipart/form-data">
 

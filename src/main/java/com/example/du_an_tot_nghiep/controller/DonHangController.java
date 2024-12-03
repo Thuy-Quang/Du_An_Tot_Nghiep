@@ -45,20 +45,9 @@ public class DonHangController {
     }
     @GetMapping("/magiamgia/khachhang/nguoiDungID/{id}")
     public String showMaGiamGiaKh(@PathVariable("id") Long nguoiDungID , Model model){
-        System.out.println("NguoiDungID nhận được: " + nguoiDungID);
         List<MaGiamGiaKH> listMaGiamGiaKhachHang = maGiamGiaKhachHangRepository.findByNguoiDungId(nguoiDungID);
-        if (listMaGiamGiaKhachHang != null) {
-            listMaGiamGiaKhachHang.forEach(maGiamGiaKH -> {
-                System.out.println("Mã giảm giá: " + maGiamGiaKH.getMaGiamGia());
-                System.out.println("Trạng thái: " + maGiamGiaKH.getTrangThai());
-                System.out.println("Người dùng: " + maGiamGiaKH.getNguoiDung().getHoTen());
-                System.out.println("Phần trăm giảm: " + maGiamGiaKH.getMaGiamGia().getPhanTramGiam());
-            });
-        } else {
-            System.out.println("Danh sách mã giảm giá trống.");
-        }
         model.addAttribute("listMaGiamGiaKhachHang", listMaGiamGiaKhachHang);
-
+        model.addAttribute("listDonHang", donHangRepository.findAll());
         return "donhang/index"; // Trả về giao diện danh sách đơn hàng
 
     }

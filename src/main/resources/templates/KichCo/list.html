@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <title>List of Kích Cỡ</title>
     <!-- Bootstrap CSS -->
@@ -8,7 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-5">
+<div class="container mt-5" th:fragment="quanly">
     <h1 class="mb-4">
         Danh sách Kích Cỡ</h1>
     <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/kich-co/add')">Thêm kích cỡ</a>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
 <head>
     <title>Danh sách Người dùng</title>
     <!-- Bootstrap CSS -->
@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<div class="container mt-5">
+<div class="container mt-5" th:fragment="quanly">
     <h1 class="text-center">Danh sách Người dùng</h1>
     <div class="d-flex justify-content-end mb-3">
         <a class="btn btn-primary mb-4" th:href="@{/nguoi-dung/them}">Thêm Người Dùng</a>
