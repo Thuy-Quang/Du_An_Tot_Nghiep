@@ -45,8 +45,8 @@
             </button>
         </form>
 
-       <a class="btn btn-primary mb-4" >  Thêm Sản Phẩm  </a>
-
+        <a class="btn btn-custom" href="/HienThi/create"><i class="bi bi-plus-circle"></i> Thêm Sản Phẩm
+        </a>
     </div>
 
     <table class="table table-bordered table-hover table-striped align-middle text-center">
@@ -83,51 +83,42 @@
             <td th:text="${sanPham.loaiSanPham.tenLoai}"></td>
             <td th:text="${sanPham.trangThai}"></td>
 
-            <td class="text-center align-middle">
-                <!-- Chi tiết sản phẩm -->
-                <a href="javascript:void(0);"
-                   th:onclick="'loadContent(\'/HienThi/listSPham/detail/id/' + ${sanPham.id} + '\')'"
-                   class="btn btn-info btn-sm">Chi tiết</a>
-
-                <!-- Sửa sản phẩm -->
-                <a href="javascript:void(0);"
-                   th:onclick="'loadContent(\'/HienThi/listSPham/edit/id/' + ${sanPham.id} + '\')'"
-                   class="btn btn-warning btn-sm mx-1">Sửa</a>
-
-                <!-- Xóa sản phẩm -->
-                <a href="javascript:void(0);"
-                   th:onclick="'return confirm(\'Bạn có chắc chắn muốn xóa không?\') ? loadContent(\'/HienThi/listSPham/delete/id/' + ${sanPham.id} + '\') : false;'"
-                   class="btn btn-danger btn-sm">Xóa</a>
+            <td style="white-space: nowrap;">
+                <a class="btn btn-warning btn-sm mb-1" th:href="@{/HienThi/listSPham/edit/id/{id}(id=${sanPham.id})}">
+                    <i class="bi bi-pencil-square"></i> Sửa
+                </a>
+                <a class="btn btn-success btn-sm mb-1" th:href="@{/HienThi/listSPham/detail/id/{id}(id=${sanPham.id})}">
+                    <i class="bi bi-eye"></i> Chi tiết
+                </a>
+                <form th:action="@{/HienThi/listSPham/delete/id/{id}(id=${sanPham.id})}" method="POST" style="display: inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Xóa
+                    </button>
+                </form>
             </td>
         </tr>
         </tbody>
     </table>
-
-    <!-- Phân trang sản phẩm -->
+    <!--//phân trang-->
     <div class="text-center">
         <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <!-- Nút "Trước" -->
+            <ul class="pagination justify-content-center"> <!-- Thêm lớp justify-content-center -->
+                <!-- Previous button -->
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" href="javascript:void(0);"
-                       th:onclick="'loadContent(\'/HienThi/GetAll?page=' + (${currentPage - 1}) + '&size=' + ${listSPham.size} + '\')'"
-                       aria-label="Previous">
+                    <a class="page-link" th:href="@{/HienThi/GetAll(page=${currentPage - 1}, size=${listSPham.size})}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
 
-                <!-- Các trang -->
+                <!-- Page numbers -->
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i} ? 'active'">
-                    <a class="page-link" href="javascript:void(0);"
-                       th:onclick="'loadContent(\'/HienThi/GetAll?page=' + (${i}) + '&size=' + ${listSPham.size} + '\')'"
-                       th:text="${i + 1}"></a>
+                    <a class="page-link" th:text="${i + 1}" th:href="@{/HienThi/GetAll(page=${i}, size=${listSPham.size})}"></a>
                 </li>
 
-                <!-- Nút "Tiếp" -->
+                <!-- Next button -->
                 <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                    <a class="page-link" href="javascript:void(0);"
-                       th:onclick="'loadContent(\'/HienThi/GetAll?page=' + (${currentPage + 1}) + '&size=' + ${listSPham.size} + '\')'"
-                       aria-label="Next">
+                    <a class="page-link" th:href="@{/HienThi/GetAll(page=${currentPage + 1}, size=${listSPham.size})}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>

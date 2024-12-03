@@ -7,52 +7,11 @@
     <!-- Font Awesome cho icon -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 </head>
-<script>
-    function loadContent(url) {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(data => {
-                document.querySelector('.main-content').innerHTML = data;
-            })
-            .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
-                alert('Lỗi khi tải nội dung: ' + error.message); // Thông báo lỗi cho người dùng
-            });
-    }
 
-    function submitForm(url, formData, callback) {
-        fetch(url, {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    callback(); // Tải lại danh sách hoặc làm gì đó sau khi thành công
-                } else {
-                    alert('Thao tác thất bại: ' + data.message);
-                }
-            })
-            .catch(error => console.error('Lỗi:', error));
-    }
-
-    function handleFormSubmit(event) {
-        event.preventDefault(); // Ngăn không cho trang tải lại
-        const form = event.target;
-        const formData = new FormData(form);
-        const actionUrl = form.getAttribute('action'); // Lấy URL từ thuộc tính action của form
-        submitForm(actionUrl, formData, () => loadContent(form.dataset.reloadUrl));
-    }
-</script>
 <body>
 <div class="container mt-5">
     <h1 class="mb-4">Danh Sách Màu Sắc</h1>
-     <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/mau-sac/add')">Thêm màu sắc</a>
+    <a class="btn btn-primary mb-4" href="javascript:void(0);" onclick="loadContent('/mau-sac/add')">Thêm màu sắc</a>
 
     </a>
     <table class="table table-bordered table-hover">
@@ -70,9 +29,9 @@
             <td th:text="${mauSac.tenMau}"></td>
             <td th:text="${mauSac.trangThai}"></td>
             <td class="text-center">
-             <a class="btn btn-warning btn-sm" href="javascript:void(0);"
-                th:onclick="'loadContent(\'/mau-sac/edit/' + ${mauSac.id} + '\')'">
-                <i class="fas fa-edit"></i> Sửa
+                <a class="btn btn-warning btn-sm" href="javascript:void(0);"
+                   th:onclick="'loadContent(\'/mau-sac/edit/' + ${mauSac.id} + '\')'">
+                    <i class="fas fa-edit"></i> Sửa
 
 
                 </a>
