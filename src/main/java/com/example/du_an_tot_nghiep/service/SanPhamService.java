@@ -11,6 +11,7 @@ import com.example.du_an_tot_nghiep.repository.MauSacRepository;
 import com.example.du_an_tot_nghiep.repository.SanPhamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -121,5 +123,54 @@ public class SanPhamService {
             return dto;
         }).collect(Collectors.toList());
     }
+    public Page<SanPham> filterByPrice(String[] priceRanges, Pageable pageable) {
+        List<SanPham> filteredProducts = new ArrayList<>();
+
+        // Lặp qua các khoảng giá và thực hiện truy vấn lọc sản phẩm
+        for (String priceRange : priceRanges) {
+            String[] bounds = priceRange.split("-");
+            if (bounds.length == 2) {
+                // Nếu khoảng giá có 2 phần (ví dụ 0-500)
+                int minPrice = Integer.parseInt(bounds[0]);
+                int maxPrice = Integer.parseInt(bounds[1]);
+                filteredProducts.addAll(sanPhamRepository.findByGiaBetween(minPrice, maxPrice));
+            } else if (priceRange.equals("2000+")) {
+                // Nếu khoảng giá là "2000+" (giá từ 2000 trở lên)
+                filteredProducts.addAll(sanPhamRepository.findByGiaGreaterThanEqual(2000));
+            }
+        }
+
+        return new PageImpl<>(filteredProducts, pageable, filteredProducts.size());
+    }
+
+    public Page<SanPham> filterByPriceAndKeyword(String[] priceRanges, String keyword, Pageable pageable) {
+        List<SanPham> filteredProducts = new ArrayList<>();
+
+        // Lọc sản phẩm theo mức giá
+        if (priceRanges != null && priceRanges.length > 0) {
+            for (String priceRange : priceRanges) {
+                String[] bounds = priceRange.split("-");
+                int minPrice = Integer.parseInt(bounds[0]);
+                int maxPrice = priceRange.equals("2000+") ? Integer.MAX_VALUE : Integer.parseInt(bounds[1]);
+
+                // Tìm sản phẩm trong khoảng giá
+                List<SanPham> productsInRange = sanPhamRepository.findByGiaBetween(minPrice, maxPrice);
+                filteredProducts.addAll(productsInRange);
+            }
+        }
+
+        // Lọc thêm theo từ khóa (nếu có)
+        if (!keyword.isEmpty()) {
+            filteredProducts = filteredProducts.stream()
+                    .filter(sp -> sp.getTenSanPham().toLowerCase().contains(keyword.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Convert thành Page
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), filteredProducts.size());
+        return new PageImpl<>(filteredProducts.subList(start, end), pageable, filteredProducts.size());
+    }
+
 
 }

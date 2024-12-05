@@ -114,27 +114,35 @@ public class SanPhamController {
 
 
 
-
-
-    @GetMapping("/GetAll")
+    @RequestMapping("/GetAll")
     public String listSanPham(Model model,
                               @RequestParam(defaultValue = "0") int page,
                               @RequestParam(defaultValue = "10") int size,
-                              @RequestParam(defaultValue = "") String keyword) {
+                              @RequestParam(defaultValue = "") String keyword,
+                              @RequestParam(value = "price", defaultValue = "") String[] price) {
+
+        // Kiểm tra giá trị của price
+        System.out.println("Price filters: " + Arrays.toString(price));
 
         Pageable pageable = PageRequest.of(page, size);
         Page<SanPham> sanPhamPage;
 
-        if (keyword.isEmpty()) {
-            sanPhamPage = sanPhamRepository.findAllByOrderByNgayTaoDesc(pageable);
+        if (price.length > 0) {
+            // Lọc sản phẩm theo giá từ service
+            sanPhamPage = sanPhamService.filterByPriceAndKeyword(price, keyword, pageable);
         } else {
-            sanPhamPage = sanPhamRepository.findByTenSanPhamContainingOrderByNgayTaoDesc(keyword, pageable);
+            // Lọc sản phẩm theo tên hoặc hiển thị tất cả sản phẩm
+            if (keyword.isEmpty()) {
+                sanPhamPage = sanPhamRepository.findAllByOrderByNgayTaoDesc(pageable);
+            } else {
+                sanPhamPage = sanPhamRepository.findByTenSanPhamContainingOrderByNgayTaoDesc(keyword, pageable);
+            }
         }
 
         model.addAttribute("listSPham", sanPhamPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", sanPhamPage.getTotalPages());
-        model.addAttribute("size", size); // Truyền biến size vào model
+        model.addAttribute("size", size);
         model.addAttribute("listLSP", loaiSanPhamRepository.findAll());
         model.addAttribute("listMauSac", mauSacRepository.findAll());
         model.addAttribute("listKichCo", kichCoRepository.findAll());

@@ -21,5 +21,21 @@ public interface SanPhamRepository extends JpaRepository<SanPham,Long> {
 
     // Tìm kiếm sản phẩm theo tên, sắp xếp theo ngày tạo giảm dần (phân trang)
     Page<SanPham> findByTenSanPhamContainingOrderByNgayTaoDesc(String keyword, Pageable pageable);
+    // Phương thức tìm sản phẩm theo khoảng giá
+    List<SanPham> findByGiaBetween(int minPrice, int maxPrice);
+
+    // Phương thức tìm sản phẩm có giá lớn hơn hoặc bằng một giá trị
+    List<SanPham> findByGiaGreaterThanEqual(int price);
+
+    // Phương thức tìm sản phẩm theo khoảng giá và tên sản phẩm chứa từ khóa
+    List<SanPham> findByGiaBetweenAndTenSanPhamContaining(int minPrice, int maxPrice, String keyword);
+
+    // Phương thức tìm sản phẩm có giá lớn hơn hoặc bằng và tên sản phẩm chứa từ khóa
+    List<SanPham> findByGiaGreaterThanEqualAndTenSanPhamContaining(int price, String keyword);
+
+    // Phương thức tìm tất cả sản phẩm theo từ khóa (dùng cho tìm kiếm)
+
+
+    // Phương thức tìm tất cả sản phẩm, sắp xếp theo ngày tạo
 
 }
