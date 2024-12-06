@@ -14,27 +14,28 @@ import lombok.Setter;
 @Entity
 @Table(name = "chi_tiet_don_hang")
 public class ChiTietDonHang {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "don_hang_id", referencedColumnName = "id", nullable = false)
-    private DonHang donHang; // Đối tượng DonHang liên kết với chi tiết đơn hàng
+    @JoinColumn(name = "don_hang_id", nullable = false)
+    private DonHang donHang;
 
     @ManyToOne
-    @JoinColumn(name = "san_pham_id", referencedColumnName = "id", nullable = false)
-    private SanPham sanPham; // Đối tượng SanPham liên kết với chi tiết đơn hàng
+    @JoinColumn(name = "san_pham_chi_tiet_id", nullable = false)
+    private SanPhamChiTiet sanPhamChiTiet;
 
     @Column(name = "so_luong", nullable = false)
-    private int soLuong;
+    private Integer soLuong;
 
     @Column(name = "gia_don_vi", nullable = false)
-    private float giaDonVi;
+    private Float giaDonVi;
 
-    // Computed column for total price per product
-    public float getTongGia() {
+    @Transient
+    public Float getTongGia() {
         return soLuong * giaDonVi;
     }
+
+    // Getters and setters
 }

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +15,6 @@ import java.util.List;
 @Entity
 @Table(name = "loai_san_pham")
 public class LoaiSanPham {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,10 +22,10 @@ public class LoaiSanPham {
     @Column(name = "ten_loai", nullable = false)
     private String tenLoai;
 
-    @Column(name = "mo_ta", columnDefinition = "TEXT")
+    @Column(name = "mo_ta")
     private String moTa;
 
-    @Column(name = "ngay_tao", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "ngay_tao", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date ngayTao;
 
@@ -35,7 +33,5 @@ public class LoaiSanPham {
     @Temporal(TemporalType.TIMESTAMP)
     private Date ngayCapNhat;
 
-    // Liên kết với Sản Phẩm
-    @OneToMany(mappedBy = "loaiSanPham")
-    private List<SanPham> sanPhams;
+    // Getters and Setters
 }

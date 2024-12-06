@@ -51,7 +51,7 @@ public class MaGiamGiaSPController {
     public String add(@ModelAttribute MaGiamGiaSanPham maGiamGiaSanPham, Model model) {
         try {
             // Kiểm tra ngày áp dụng và ngày hết hạn
-            if (maGiamGiaSanPham.getNgayApDung().isAfter(maGiamGiaSanPham.getNgayHetHan())) {
+            if (maGiamGiaSanPham.getNgayApDung().isAfter(maGiamGiaSanPham.getMaGiamGia().getNgayHetHan())) {
                 model.addAttribute("error", "Ngày áp dụng phải trước ngày hết hạn.");
                 model.addAttribute("maGiamGiaSanPham", maGiamGiaSanPham);
                 model.addAttribute("sanPhams", sanPhamRepository.findAll());
@@ -90,7 +90,7 @@ public class MaGiamGiaSPController {
             System.out.println("Bắt đầu cập nhật mã giảm giá sản phẩm với ID: " + id);
 
             // Kiểm tra ngày áp dụng và ngày hết hạn
-            if (maGiamGiaSanPham.getNgayApDung().isAfter(maGiamGiaSanPham.getNgayHetHan())) {
+            if (maGiamGiaSanPham.getNgayApDung().isAfter(maGiamGiaSanPham.getMaGiamGia().getNgayHetHan())) {
                 model.addAttribute("error", "Ngày áp dụng phải trước ngày hết hạn.");
                 model.addAttribute("maGiamGiaSanPham", maGiamGiaSanPham);
                 model.addAttribute("sanPhams", sanPhamRepository.findAll());
@@ -126,43 +126,43 @@ public class MaGiamGiaSPController {
     }
 
     // Phương thức chi tiết mã giảm giá sản phẩm
-    @GetMapping("/detail/{id}")
-    public String showDetail(@PathVariable Long id, Model model) {
-        MaGiamGiaSanPham maGiamGiaSanPham = maGiamGiaSanPhamService.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid ID: " + id));
-
-        // Định dạng ngày giờ
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
-        // Định dạng ngày áp dụng
-        String ngayApDungFormatted = (maGiamGiaSanPham.getNgayApDung() != null)
-                ? maGiamGiaSanPham.getNgayApDung().format(dateTimeFormatter)
-                : "Không xác định";
-
-        // Định dạng ngày hết hạn
-        String ngayHetHanFormatted = (maGiamGiaSanPham.getNgayHetHan() != null)
-                ? maGiamGiaSanPham.getNgayHetHan().format(dateTimeFormatter)
-                : "Không xác định";
-
-        // Định dạng ngày tạo
-        String ngayTaoFormatted = (maGiamGiaSanPham.getNgayTao() != null)
-                ? LocalDateTime.ofInstant(maGiamGiaSanPham.getNgayTao().toInstant(ZoneOffset.UTC), ZoneId.systemDefault())
-                .format(dateTimeFormatter)
-                : "Không xác định";
-
-        // Định dạng ngày cập nhật
-        String ngayCapNhatFormatted = (maGiamGiaSanPham.getNgayCapNhat() != null)
-                ? LocalDateTime.ofInstant(maGiamGiaSanPham.getNgayCapNhat().toInstant(ZoneOffset.UTC), ZoneId.systemDefault())
-                .format(dateTimeFormatter)
-                : "Không xác định";
-
-        // Thêm thuộc tính vào model
-        model.addAttribute("maGiamGiaSanPham", maGiamGiaSanPham);
-        model.addAttribute("ngayApDungFormatted", ngayApDungFormatted);
-        model.addAttribute("ngayHetHanFormatted", ngayHetHanFormatted);
-        model.addAttribute("ngayTaoFormatted", ngayTaoFormatted);
-        model.addAttribute("ngayCapNhatFormatted", ngayCapNhatFormatted);
-
-        return "magiamgiasanpham/detail";
-    }
+//    @GetMapping("/detail/{id}")
+//    public String showDetail(@PathVariable Long id, Model model) {
+//        MaGiamGiaSanPham maGiamGiaSanPham = maGiamGiaSanPhamService.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid ID: " + id));
+//
+//        // Định dạng ngày giờ
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+//
+//        // Định dạng ngày áp dụng
+//        String ngayApDungFormatted = (maGiamGiaSanPham.getNgayApDung() != null)
+//                ? maGiamGiaSanPham.getNgayApDung().format(dateTimeFormatter)
+//                : "Không xác định";
+//
+//        // Định dạng ngày hết hạn
+//        String ngayHetHanFormatted = (maGiamGiaSanPham.getNgayHetHan() != null)
+//                ? maGiamGiaSanPham.getNgayHetHan().format(dateTimeFormatter)
+//                : "Không xác định";
+//
+//        // Định dạng ngày tạo
+//        String ngayTaoFormatted = (maGiamGiaSanPham.getNgayTao() != null)
+//                ? LocalDateTime.ofInstant(maGiamGiaSanPham.getNgayTao().toInstant(ZoneOffset.UTC), ZoneId.systemDefault())
+//                .format(dateTimeFormatter)
+//                : "Không xác định";
+//
+//        // Định dạng ngày cập nhật
+//        String ngayCapNhatFormatted = (maGiamGiaSanPham.getNgayCapNhat() != null)
+//                ? LocalDateTime.ofInstant(maGiamGiaSanPham.getNgayCapNhat().toInstant(ZoneOffset.UTC), ZoneId.systemDefault())
+//                .format(dateTimeFormatter)
+//                : "Không xác định";
+//
+//        // Thêm thuộc tính vào model
+//        model.addAttribute("maGiamGiaSanPham", maGiamGiaSanPham);
+//        model.addAttribute("ngayApDungFormatted", ngayApDungFormatted);
+//        model.addAttribute("ngayHetHanFormatted", ngayHetHanFormatted);
+//        model.addAttribute("ngayTaoFormatted", ngayTaoFormatted);
+//        model.addAttribute("ngayCapNhatFormatted", ngayCapNhatFormatted);
+//
+//        return "magiamgiasanpham/detail";
+//    }
 }

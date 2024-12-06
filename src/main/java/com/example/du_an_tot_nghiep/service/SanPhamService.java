@@ -44,22 +44,22 @@ public class SanPhamService {
 
     private static final String UPLOAD_DIR = "C:\\images";
 
-    public SanPham addSanPham(SanPhamRequest sanPhamRequest) {
-        SanPham sanPham = new SanPham();
-        sanPham.setTenSanPham(sanPhamRequest.getTenSanPham());
-        sanPham.setMoTa(sanPhamRequest.getMoTa());
-        sanPham.setGia(sanPhamRequest.getGia());
-        sanPham.setMauSac(mauSacRepository.findById(sanPhamRequest.getMauSac()).orElse(null));
-        sanPham.setKichCo(kichCoRepository.findById(sanPhamRequest.getKichCo()).orElse(null));
-        sanPham.setSoLuong(sanPhamRequest.getSoLuong());
-        sanPham.setNgayTao(LocalDate.now());
-        sanPham.setTrangThai(sanPhamRequest.getTrangThai());
-        sanPham.setLoaiSanPham(loaiSanPhamRepository.findById(sanPhamRequest.getLoaiSanPham()).orElse(null));
-
-        handleFileUpload(sanPham, sanPhamRequest.getHinhAnh());
-
-        return sanPhamRepository.save(sanPham);
-    }
+//    public SanPham addSanPham(SanPhamRequest sanPhamRequest) {
+//        SanPham sanPham = new SanPham();
+//        sanPham.setTenSanPham(sanPhamRequest.getTenSanPham());
+//        sanPham.setMoTa(sanPhamRequest.getMoTa());
+//        sanPham.setGia(sanPhamRequest.getGia());
+//        sanPham.setMauSac(mauSacRepository.findById(sanPhamRequest.getMauSac()).orElse(null));
+//        sanPham.setKichCo(kichCoRepository.findById(sanPhamRequest.getKichCo()).orElse(null));
+//        sanPham.setSoLuong(sanPhamRequest.getSoLuong());
+//        sanPham.setNgayTao(LocalDate.now());
+//        sanPham.setTrangThai(sanPhamRequest.getTrangThai());
+//        sanPham.setLoaiSanPham(loaiSanPhamRepository.findById(sanPhamRequest.getLoaiSanPham()).orElse(null));
+//
+//        handleFileUpload(sanPham, sanPhamRequest.getHinhAnh());
+//
+//        return sanPhamRepository.save(sanPham);
+//    }
 
     public List<SanPham> getAll() {
         return sanPhamRepository.findAll();
@@ -70,25 +70,25 @@ public class SanPhamService {
         return sanPhamRepository.findAll(pageable);
     }
 
-    public SanPham updateSanPham(Long idSanPham, SanPhamRequest sanPhamRequest) {
-        SanPham sanPham = sanPhamRepository.findById(idSanPham).orElse(null);
-        if (sanPham == null) return null;
-
-        sanPham.setTenSanPham(sanPhamRequest.getTenSanPham());
-        sanPham.setMoTa(sanPhamRequest.getMoTa());
-        sanPham.setGia(sanPhamRequest.getGia());
-        sanPham.setMauSac(mauSacRepository.findById(sanPhamRequest.getMauSac()).orElse(null));
-        sanPham.setKichCo(kichCoRepository.findById(sanPhamRequest.getKichCo()).orElse(null));
-        sanPham.setSoLuong(sanPhamRequest.getSoLuong());
-        sanPham.setTrangThai(sanPhamRequest.getTrangThai());
-        sanPham.setLoaiSanPham(loaiSanPhamRepository.findById(sanPhamRequest.getLoaiSanPham()).orElse(null));
-
-        if (sanPhamRequest.getHinhAnh() != null && !sanPhamRequest.getHinhAnh().isEmpty()) {
-            handleFileUpload(sanPham, sanPhamRequest.getHinhAnh());
-        }
-
-        return sanPhamRepository.save(sanPham);
-    }
+//    public SanPham updateSanPham(Long idSanPham, SanPhamRequest sanPhamRequest) {
+//        SanPham sanPham = sanPhamRepository.findById(idSanPham).orElse(null);
+//        if (sanPham == null) return null;
+//
+//        sanPham.setTenSanPham(sanPhamRequest.getTenSanPham());
+//        sanPham.setMoTa(sanPhamRequest.getMoTa());
+//        sanPham.setGia(sanPhamRequest.getGia());
+//        sanPham.setMauSac(mauSacRepository.findById(sanPhamRequest.getMauSac()).orElse(null));
+//        sanPham.setKichCo(kichCoRepository.findById(sanPhamRequest.getKichCo()).orElse(null));
+//        sanPham.setSoLuong(sanPhamRequest.getSoLuong());
+//        sanPham.setTrangThai(sanPhamRequest.getTrangThai());
+//        sanPham.setLoaiSanPham(loaiSanPhamRepository.findById(sanPhamRequest.getLoaiSanPham()).orElse(null));
+//
+//        if (sanPhamRequest.getHinhAnh() != null && !sanPhamRequest.getHinhAnh().isEmpty()) {
+//            handleFileUpload(sanPham, sanPhamRequest.getHinhAnh());
+//        }
+//
+//        return sanPhamRepository.save(sanPham);
+//    }
 
     private void handleFileUpload(SanPham sanPham, MultipartFile hinhAnhFile) {
         if (hinhAnhFile != null && !hinhAnhFile.isEmpty()) {

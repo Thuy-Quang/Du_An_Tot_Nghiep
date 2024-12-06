@@ -164,7 +164,7 @@ public class SanPhamController {
 
     @PostMapping("/create")
     private String postSanPham(SanPhamRequest sanPhamRequest) {
-        sanPhamService.addSanPham(sanPhamRequest);
+//        sanPhamService.addSanPham(sanPhamRequest);
         return "redirect:/HienThi/GetAll";
     }
 
@@ -188,8 +188,8 @@ public class SanPhamController {
     private String putSanPham(@PathVariable Long id, SanPhamRequest sanPhamRequest) {
         System.out.println("Updating product with ID: " + id);
         System.out.println("Trạng Thái received: " + sanPhamRequest.getTrangThai());
-        sanPhamService.updateSanPham(id, sanPhamRequest);
-        return "redirect:/HienThi/GetAll";
+//        sanPhamService.updateSanPham(id, sanPhamRequest);
+       return "redirect:/HienThi/GetAll";
     }
 
     @PostMapping("/listSPham/delete/id/{id}")

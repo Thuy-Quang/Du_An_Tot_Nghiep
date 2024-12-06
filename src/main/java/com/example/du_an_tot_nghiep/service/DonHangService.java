@@ -98,28 +98,28 @@ public class DonHangService {
             throw new RuntimeException("Đơn hàng không tồn tại!");
         }
     }
-    public DonHang taoDonHang(Long nguoiDungId, Long maGiamGiaId, String phuongThucThanhToan) {
-        GioHang gioHang = gioHangService.layGioHangCuaNguoiDung(String.valueOf(nguoiDungId));
-        List<SanPhamTrongGioHang> sanPhamTrongGioHangs = gioHang.getSanPhamTrongGioHangs();
-
-        double tongTien = sanPhamTrongGioHangs.stream()
-                .mapToDouble(sp -> sp.getSoluong() * sp.getSanPham().getGia())
-                .sum();
-
-        // Áp dụng mã giảm giá nếu có
-        if (maGiamGiaId != null) {
-            tongTien = maGiamGiaService.apDungMaGiamGia(maGiamGiaId, (float) tongTien);
-        }
-
-        DonHang donHang = new DonHang();
-        donHang.setNguoiDung(gioHang.getNguoiDung());
-        donHang.setTongTien(tongTien);
-        donHang.setPhuongThucThanhToan(phuongThucThanhToan);
-        donHang.setNgayTao(new Date());
-        donHang.setTrangThai("Đang xử lý");
-
-        return donHangRepository.save(donHang);
-    }
+//    public DonHang taoDonHang(Long nguoiDungId, Long maGiamGiaId, String phuongThucThanhToan) {
+//        GioHang gioHang = gioHangService.layGioHangCuaNguoiDung(String.valueOf(nguoiDungId));
+//        List<SanPhamTrongGioHang> sanPhamTrongGioHangs = gioHang.getSanPhamTrongGioHangs();
+//
+//        double tongTien = sanPhamTrongGioHangs.stream()
+//                .mapToDouble(sp -> sp.getSoluong() * sp.getSanPham().getGia())
+//                .sum();
+//
+//        // Áp dụng mã giảm giá nếu có
+//        if (maGiamGiaId != null) {
+//            tongTien = maGiamGiaService.apDungMaGiamGia(maGiamGiaId, (float) tongTien);
+//        }
+//
+//        DonHang donHang = new DonHang();
+//        donHang.setNguoiDung(gioHang.getNguoiDung());
+//        donHang.setTongTien(tongTien);
+//        donHang.setPhuongThucThanhToan(phuongThucThanhToan);
+//        donHang.setNgayTao(new Date());
+//        donHang.setTrangThai("Đang xử lý");
+//
+//        return donHangRepository.save(donHang);
+//    }
     public List<DonHang> getOrdersByCustomerId(Long nguoiDungID) {
         return donHangRepository.findByNguoiDungId(nguoiDungID);
     }

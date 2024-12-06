@@ -34,37 +34,37 @@ public class MaGiamGiaService {
     }
 
     // Thêm hoặc cập nhật mã giảm giá
-    public MaGiamGia saveOrUpdateMaGiamGia(MaGiamGia maGiamGia) {
-        if (maGiamGia.getId() != null) {
-            // Nếu ID không null, đây là một bản cập nhật
-            MaGiamGia existingMaGiamGia = maGiamGiaRepository.findById(maGiamGia.getId()).orElse(null);
-            if (existingMaGiamGia != null) {
-                // Giữ lại ngày tạo cũ
-                maGiamGia.setNgayTao(existingMaGiamGia.getNgayTao());
-                // Cập nhật ngày cập nhật
-                maGiamGia.setNgayCapNhat(new Date()); // Cập nhật ngày hiện tại
-            }
-        } else {
-            // Nếu ID null, đây là bản ghi mới, thiết lập ngày tạo
-            maGiamGia.setNgayTao(new Date());
-            maGiamGia.setNgayCapNhat(new Date());
-        }
-        return maGiamGiaRepository.save(maGiamGia);
-    }
+//    public MaGiamGia saveOrUpdateMaGiamGia(MaGiamGia maGiamGia) {
+//        if (maGiamGia.getId() != null) {
+//            // Nếu ID không null, đây là một bản cập nhật
+//            MaGiamGia existingMaGiamGia = maGiamGiaRepository.findById(maGiamGia.getId()).orElse(null);
+//            if (existingMaGiamGia != null) {
+//                // Giữ lại ngày tạo cũ
+//                maGiamGia.setNgayTao(existingMaGiamGia.getNgayTao());
+//                // Cập nhật ngày cập nhật
+//                maGiamGia.setNgayCapNhat(new Date()); // Cập nhật ngày hiện tại
+//            }
+//        } else {
+//            // Nếu ID null, đây là bản ghi mới, thiết lập ngày tạo
+//            maGiamGia.setNgayTao(new Date());
+//            maGiamGia.setNgayCapNhat(new Date());
+//        }
+//        return maGiamGiaRepository.save(maGiamGia);
+//    }
 
     // Xóa mã giảm giá
     public void deleteMaGiamGia(Long id) {
         maGiamGiaRepository.deleteById(id);
     }
-    public float apDungMaGiamGia(Long maGiamGiaId, float tongTien) {
-        MaGiamGia maGiamGia = maGiamGiaRepository.findById(maGiamGiaId)
-                .orElseThrow(() -> new RuntimeException("Mã giảm giá không hợp lệ"));
-
-        if (new Date().before(maGiamGia.getNgayBatDau()) || new Date().after(maGiamGia.getNgayHetHan())) {
-            throw new RuntimeException("Mã giảm giá đã hết hạn");
-        }
-
-        return tongTien - (tongTien * maGiamGia.getPhanTramGiam() / 100);
-    }
+//    public float apDungMaGiamGia(Long maGiamGiaId, float tongTien) {
+//        MaGiamGia maGiamGia = maGiamGiaRepository.findById(maGiamGiaId)
+//                .orElseThrow(() -> new RuntimeException("Mã giảm giá không hợp lệ"));
+//
+//        if (new Date().before(maGiamGia.getNgayBatDau()) || new Date().after(maGiamGia.getNgayHetHan())) {
+//            throw new RuntimeException("Mã giảm giá đã hết hạn");
+//        }
+//
+//        return tongTien - (tongTien * maGiamGia.getPhanTramGiam() / 100);
+//    }
 
 }

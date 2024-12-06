@@ -1,19 +1,12 @@
 package com.example.du_an_tot_nghiep.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,38 +17,28 @@ import java.util.Date;
 public class MaGiamGia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(name = "ma", nullable = false)
+    @Column(name = "ma", nullable = false, unique = true)
     private String ma;
 
-    @Column(name = "phan_tram_giam", nullable = false)
-    private float phanTramGiam;
+    @Column(name = "phan_tram_giam")
+    private Float phanTramGiam;
 
     @Column(name = "ngay_bat_dau", nullable = false)
-    private Date ngayBatDau;
+    private LocalDateTime ngayBatDau;
 
     @Column(name = "ngay_het_han", nullable = false)
-    private Date ngayHetHan;
+    private LocalDateTime ngayHetHan;
 
     @Column(name = "trang_thai", nullable = false)
     private String trangThai;
 
-    @Column(name = "ngay_tao", nullable = false)
-    private Date ngayTao;
+    @Column(name = "ngay_tao")
+    private LocalDateTime ngayTao;
 
-    @Column(name = "ngay_cap_nhat", nullable = false)
-    private Date ngayCapNhat;
+    @Column(name = "ngay_cap_nhat")
+    private LocalDateTime ngayCapNhat;
 
-    //đảm bảo ngày tạo và ngày cập nhật được tự động thiết lập
-    @PrePersist
-    protected void onCreate() {
-        ngayTao = new Date();
-        ngayCapNhat = new Date();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        ngayCapNhat = new Date();
-    }
+    // Getters and setters
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -42,7 +43,8 @@ public class DonHang {
     @Column(name = "trang_thai_thanh_toan")
     private String trangThaiThanhToan;
 
-
+    @OneToMany(mappedBy = "donHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChiTietDonHang> chiTietDonHangs;
 
 
 }

@@ -26,30 +26,30 @@ public class GioHangService {
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
 
-    public boolean themSanPhamVaoGioHang(String tenNguoiDung, Long sanPhamId, int soLuong) {
-        NguoiDung nguoiDung = nguoiDungRepository.findByTenDangNhap(tenNguoiDung)
-                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
-
-        GioHang gioHang = gioHangRepository.findByNguoiDung(nguoiDung)
-                .orElseGet(() -> gioHangRepository.save(new GioHang(new Date(), nguoiDung)));
-
-        SanPham sanPham = sanPhamRepository.findById(sanPhamId)
-                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
-
-        Optional<SanPhamTrongGioHang> spTrongGio = gioHang.getSanPhamTrongGioHangs()
-                .stream()
-                .filter(sp -> sp.getSanPham().equals(sanPham))
-                .findFirst();
-
-        if (spTrongGio.isPresent()) {
-            spTrongGio.get().setSoluong(spTrongGio.get().getSoluong() + soLuong);
-        } else {
-            gioHang.getSanPhamTrongGioHangs().add(new SanPhamTrongGioHang(gioHang, sanPham, soLuong));
-        }
-
-        gioHangRepository.save(gioHang);
-        return true;
-    }
+//    public boolean themSanPhamVaoGioHang(String tenNguoiDung, Long sanPhamId, int soLuong) {
+//        NguoiDung nguoiDung = nguoiDungRepository.findByTenDangNhap(tenNguoiDung)
+//                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+//
+//        GioHang gioHang = gioHangRepository.findByNguoiDung(nguoiDung)
+//                .orElseGet(() -> gioHangRepository.save(new GioHang(new Date(), nguoiDung)));
+//
+//        SanPham sanPham = sanPhamRepository.findById(sanPhamId)
+//                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
+//
+//        Optional<SanPhamTrongGioHang> spTrongGio = gioHang.getSanPhamTrongGioHangs()
+//                .stream()
+//                .filter(sp -> sp.getSanPham().equals(sanPham))
+//                .findFirst();
+//
+//        if (spTrongGio.isPresent()) {
+//            spTrongGio.get().setSoluong(spTrongGio.get().getSoluong() + soLuong);
+//        } else {
+//            gioHang.getSanPhamTrongGioHangs().add(new SanPhamTrongGioHang(gioHang, sanPham, soLuong));
+//        }
+//
+//        gioHangRepository.save(gioHang);
+//        return true;
+//    }
 
 //    public GioHang layGioHangCuaNguoiDung(String tenNguoiDung) {
 //        NguoiDung nguoiDung = nguoiDungRepository.findByTenDangNhap(tenNguoiDung)

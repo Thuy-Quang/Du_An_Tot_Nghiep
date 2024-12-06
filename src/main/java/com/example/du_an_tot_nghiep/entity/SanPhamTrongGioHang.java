@@ -1,13 +1,6 @@
 package com.example.du_an_tot_nghiep.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,19 +18,15 @@ public class SanPhamTrongGioHang {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "gio_hang_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "gio_hang_id", nullable = false)
     private GioHang gioHang;
 
     @ManyToOne
-    @JoinColumn(name = "san_pham_id", referencedColumnName = "id", nullable = false)
-    private SanPham sanPham;
+    @JoinColumn(name = "san_pham_chi_tiet_id", nullable = false)
+    private SanPhamChiTiet sanPhamChiTiet;
 
     @Column(name = "so_luong", nullable = false)
-    private int soluong;
+    private Integer soLuong;
 
-    public SanPhamTrongGioHang(GioHang gioHang, SanPham sanPham, int soluong) {
-        this.gioHang = gioHang;
-        this.sanPham = sanPham;
-        this.soluong = soluong;
-    }
+    // Getters and setters
 }

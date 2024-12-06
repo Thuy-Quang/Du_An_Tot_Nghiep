@@ -13,11 +13,12 @@ import lombok.Setter;
 @Entity
 @Table(name = "vai_tro")
 public class VaiTro {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "ten_vai_tro", nullable = false)
     private String tenVaiTro;
+
+    // Getters and setters
 }

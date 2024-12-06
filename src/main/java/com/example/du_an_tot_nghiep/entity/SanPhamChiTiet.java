@@ -1,24 +1,30 @@
 package com.example.du_an_tot_nghiep.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Entity
-@Table(name = "mau_sac")
-public class MauSac {
+@Table(name = "san_pham_chi_tiet")
+public class SanPhamChiTiet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "ten_mau", nullable = false)
-    private String tenMau;
+    @ManyToOne
+    @JoinColumn(name = "san_pham_id", nullable = false)
+    private SanPham sanPham;
+
+    @ManyToOne
+    @JoinColumn(name = "mau_sac_id", nullable = false)
+    private MauSac mauSac;
+
+    @ManyToOne
+    @JoinColumn(name = "kich_co_id", nullable = false)
+    private KichCo kichCo;
+
+    @Column(name = "so_luong", nullable = false)
+    private Integer soLuong;
 
     @Column(name = "trang_thai", nullable = false)
     private String trangThai;
@@ -33,3 +39,4 @@ public class MauSac {
 
     // Getters and Setters
 }
+

@@ -1,6 +1,6 @@
 package com.example.du_an_tot_nghiep.repository;
 
-import com.example.du_an_tot_nghiep.entity.MaGiamGiaKH;
+import com.example.du_an_tot_nghiep.entity.MaGiamGiaKhachHang;
 import com.example.du_an_tot_nghiep.model.MaGiamGiaKhachHangDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,16 +10,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MaGiamGiaKhachHangRepository extends JpaRepository<MaGiamGiaKH,Long> {
+public interface MaGiamGiaKhachHangRepository extends JpaRepository<MaGiamGiaKhachHang,Long> {
     // Lấy danh sách mã giảm giá theo ID người dùng
-    List<MaGiamGiaKH> findByNguoiDungId(Long nguoiDungId);
+    List<MaGiamGiaKhachHang> findByNguoiDungId(Long nguoiDungId);
 
     // Lấy danh sách mã giảm giá đang hoạt động
-    @Query("SELECT m FROM MaGiamGiaKH m WHERE m.trangThai = 'Hoạt động'")
-    List<MaGiamGiaKH> findActiveMaGiamGia();
+    @Query("SELECT m FROM MaGiamGiaKhachHang m WHERE m.trangThai = 'Hoạt động'")
+    List<MaGiamGiaKhachHang> findActiveMaGiamGia();
 
     // Lấy mã giảm giá theo mã giảm giá ID và người dùng ID
-    Optional<MaGiamGiaKH> findByMaGiamGiaIdAndNguoiDungId(Long maGiamGiaId, Long nguoiDungId);
+    Optional<MaGiamGiaKhachHang> findByMaGiamGiaIdAndNguoiDungId(Long maGiamGiaId, Long nguoiDungId);
 
     // Xóa mã giảm giá theo mã giảm giá ID và người dùng ID
     void deleteByMaGiamGiaIdAndNguoiDungId(Long maGiamGiaId, Long nguoiDungId);

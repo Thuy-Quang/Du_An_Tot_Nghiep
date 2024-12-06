@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.persistence.*;
 
 @Getter
 @Setter
@@ -14,17 +13,17 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "vai_tro_nguoi_dung")
 public class VaiTroNguoiDung {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "nguoi_dung_id", referencedColumnName = "id", nullable = false)
-    private NguoiDung nguoiDung; // Đối tượng User liên kết với vai trò người dùng
+    @JoinColumn(name = "nguoi_dung_id", nullable = false)
+    private NguoiDung nguoiDung;
 
     @ManyToOne
-    @JoinColumn(name = "vai_tro_id", referencedColumnName = "id", nullable = false)
-    private VaiTro vaiTro; // Đối tượng VaiTro liên kết với vai trò
+    @JoinColumn(name = "vai_tro_id", nullable = false)
+    private VaiTro vaiTro;
+
+    // Getters and setters
 }
-

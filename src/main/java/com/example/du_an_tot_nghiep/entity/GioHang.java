@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,34 +15,19 @@ import java.util.List;
 @Entity
 @Table(name = "gio_hang")
 public class GioHang {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "nguoi_dung_id", referencedColumnName = "id", nullable = false)
-    private NguoiDung nguoiDung; // Đối tượng NguoiDung liên kết với giỏ hàng
+    @JoinColumn(name = "nguoi_dung_id", nullable = false)
+    private NguoiDung nguoiDung;
 
-    @Column(name = "ngay_tao", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date ngayTao;
+    @Column(name = "ngay_tao")
+    private LocalDateTime ngayTao;
 
     @Column(name = "ngay_cap_nhat")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date ngayCapNhat;
+    private LocalDateTime ngayCapNhat;
 
-    @OneToMany(mappedBy = "gioHang", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<SanPhamTrongGioHang> sanPhamTrongGioHangs; // Danh sách sản phẩm trong giỏ hàng
-
-    // Constructor
-    public GioHang(Date ngayTao) {
-        this.ngayTao = ngayTao;
-    }
-
-
-    public GioHang(Date date, NguoiDung nguoiDung) {
-        this.ngayTao = ngayTao;
-        this.nguoiDung = nguoiDung;
-    }
+    // Getters and setters
 }

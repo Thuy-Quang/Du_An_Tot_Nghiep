@@ -40,11 +40,11 @@ public class MaGiamGiaController {
         return "magiamgia/create"; // Trả về view thêm mới
     }
 
-    @PostMapping("/save")
-    public String saveMaGiamGia(@ModelAttribute MaGiamGia maGiamGia) {
-        maGiamGiaService.saveOrUpdateMaGiamGia(maGiamGia);
-        return "redirect:/ma-giam-gia"; // Quay lại danh sách
-    }
+//    @PostMapping("/save")
+//    public String saveMaGiamGia(@ModelAttribute MaGiamGia maGiamGia) {
+//        maGiamGiaService.saveOrUpdateMaGiamGia(maGiamGia);
+//        return "redirect:/ma-giam-gia"; // Quay lại danh sách
+//    }
 
     @GetMapping("/edit/{id}")
     public String editMaGiamGiaForm(@PathVariable Long id, Model model) {
@@ -56,12 +56,12 @@ public class MaGiamGiaController {
         return "redirect:/ma-giam-gia"; // Nếu không tìm thấy, quay lại danh sách
     }
 
-    @PostMapping("/update/{id}")
-    public String updateMaGiamGia(@PathVariable Long id, @ModelAttribute MaGiamGia maGiamGia) {
-        maGiamGia.setId(id); // Đặt ID để cập nhật
-        maGiamGiaService.saveOrUpdateMaGiamGia(maGiamGia);
-        return "redirect:/ma-giam-gia"; // Quay lại danh sách
-    }
+//    @PostMapping("/update/{id}")
+//    public String updateMaGiamGia(@PathVariable Long id, @ModelAttribute MaGiamGia maGiamGia) {
+//        maGiamGia.setId(id); // Đặt ID để cập nhật
+//        maGiamGiaService.saveOrUpdateMaGiamGia(maGiamGia);
+//        return "redirect:/ma-giam-gia"; // Quay lại danh sách
+//    }
 
     @PostMapping("/delete/{id}")
     public String deleteMaGiamGia(@PathVariable Long id) {

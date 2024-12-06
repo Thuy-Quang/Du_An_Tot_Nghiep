@@ -3,13 +3,12 @@ package com.example.du_an_tot_nghiep.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
 
-import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "kich_co")
 public class KichCo {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,13 +17,15 @@ public class KichCo {
     private String tenKichCo;
 
     @Column(name = "trang_thai", nullable = false)
-    private String trangThai = "Còn Hàng"; // Mặc định là Còn Hàng
+    private String trangThai;
 
-    @Column(name = "ngay_tao", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime ngayTao;
+    @Column(name = "ngay_tao", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date ngayTao;
 
     @Column(name = "ngay_cap_nhat")
-    private LocalDateTime ngayCapNhat;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date ngayCapNhat;
 
-    // Getters và Setters
+    // Getters and Setters
 }

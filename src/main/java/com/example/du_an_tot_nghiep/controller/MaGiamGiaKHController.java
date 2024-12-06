@@ -1,6 +1,6 @@
 package com.example.du_an_tot_nghiep.controller;
 
-import com.example.du_an_tot_nghiep.entity.MaGiamGiaKH;
+import com.example.du_an_tot_nghiep.entity.MaGiamGiaKhachHang;
 import com.example.du_an_tot_nghiep.repository.MaGiamGiaKhachHangRepository;
 import com.example.du_an_tot_nghiep.service.MaGiamGiaKHService; // Đã sửa tên class
 import com.example.du_an_tot_nghiep.service.NguoiDungService;
@@ -33,7 +33,7 @@ public class MaGiamGiaKHController {
     // Hiển thị danh sách mã giảm giá khách hàng
     @GetMapping("/hienthi")
     public String listMaGiamGiaKH(Model model) {
-        List<MaGiamGiaKH> list = maGiamGiaKHService.findAll();
+        List<MaGiamGiaKhachHang> list = maGiamGiaKHService.findAll();
         model.addAttribute("maGiamGiaKHList", list);
         return "magiamgiakhachhang/index";
     }
@@ -43,7 +43,7 @@ public class MaGiamGiaKHController {
     // Hiển thị form thêm mới
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        model.addAttribute("maGiamGiaKH", new MaGiamGiaKH());
+        model.addAttribute("maGiamGiaKH", new MaGiamGiaKhachHang());
         model.addAttribute("nguoiDungList", nguoiDungService.findAll());
         model.addAttribute("maGiamGiaList", maGiamGiaService.findAll());
         return "magiamgiakhachhang/add";
@@ -51,7 +51,7 @@ public class MaGiamGiaKHController {
 
     // Xử lý thêm mới mã giảm giá khách hàng
     @PostMapping("/add")
-    public String addMaGiamGiaKH(@ModelAttribute MaGiamGiaKH maGiamGiaKH, RedirectAttributes redirectAttributes) {
+    public String addMaGiamGiaKH(@ModelAttribute MaGiamGiaKhachHang maGiamGiaKH, RedirectAttributes redirectAttributes) {
         maGiamGiaKHService.save(maGiamGiaKH);
         redirectAttributes.addFlashAttribute("message", "Thêm mã giảm giá khách hàng thành công!");
         return "redirect:/ma-giam-gia-kh/hienthi";
@@ -60,7 +60,7 @@ public class MaGiamGiaKHController {
     // Hiển thị form sửa
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-        Optional<MaGiamGiaKH> maGiamGiaKH = maGiamGiaKHService.findById(id);
+        Optional<MaGiamGiaKhachHang> maGiamGiaKH = maGiamGiaKHService.findById(id);
         if (maGiamGiaKH.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy mã giảm giá khách hàng!");
             return "redirect:/ma-giam-gia-kh/hienthi";
@@ -73,8 +73,8 @@ public class MaGiamGiaKHController {
 
     // Xử lý cập nhật mã giảm giá khách hàng
     @PostMapping("/edit/{id}")
-    public String editMaGiamGiaKH(@PathVariable Long id, @ModelAttribute MaGiamGiaKH maGiamGiaKH, RedirectAttributes redirectAttributes) {
-        Optional<MaGiamGiaKH> existing = maGiamGiaKHService.findById(id);
+    public String editMaGiamGiaKH(@PathVariable Long id, @ModelAttribute MaGiamGiaKhachHang maGiamGiaKH, RedirectAttributes redirectAttributes) {
+        Optional<MaGiamGiaKhachHang> existing = maGiamGiaKHService.findById(id);
         if (existing.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy mã giảm giá khách hàng để cập nhật!");
             return "redirect:/ma-giam-gia-kh/hienthi";
@@ -88,7 +88,7 @@ public class MaGiamGiaKHController {
     // Xóa mã giảm giá khách hàng
     @PostMapping("/delete/{id}")
     public String deleteMaGiamGiaKH(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        Optional<MaGiamGiaKH> existing = maGiamGiaKHService.findById(id);
+        Optional<MaGiamGiaKhachHang> existing = maGiamGiaKHService.findById(id);
         if (existing.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy mã giảm giá khách hàng để xóa!");
             return "redirect:/ma-giam-gia-kh/hienthi";
@@ -101,7 +101,7 @@ public class MaGiamGiaKHController {
     // Hiển thị chi tiết
     @GetMapping("/detail/{id}")
     public String viewDetail(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-        Optional<MaGiamGiaKH> maGiamGiaKH = maGiamGiaKHService.findById(id);
+        Optional<MaGiamGiaKhachHang> maGiamGiaKH = maGiamGiaKHService.findById(id);
         if (maGiamGiaKH.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy mã giảm giá khách hàng!");
             return "redirect:/ma-giam-gia-kh/hienthi";

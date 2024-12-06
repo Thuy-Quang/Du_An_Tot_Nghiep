@@ -1,27 +1,24 @@
 package com.example.du_an_tot_nghiep.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
-
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
-@Table(name = "ma_giam_gia_san_pham")
-public class MaGiamGiaSanPham {
+@Table(name = "ma_giam_gia_khach_hang")
+public class MaGiamGiaKhachHang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "san_pham_chi_tiet_id", nullable = false)
-    private SanPhamChiTiet sanPhamChiTiet;
+    @JoinColumn(name = "nguoi_dung_id", nullable = false)
+    private NguoiDung nguoiDung;
 
     @ManyToOne
     @JoinColumn(name = "ma_giam_gia_id", nullable = false)

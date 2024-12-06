@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface SanPhamTrongGioHangRepository extends JpaRepository< SanPhamTrongGioHang,Long> {
-    Optional<SanPhamTrongGioHang> findByGioHangIdAndSanPhamId(Long gioHangId, Long sanPhamId);
+//    Optional<SanPhamTrongGioHang> findByGioHangIdAndSanPhamId(Long gioHangId, Long sanPhamId);
 }
 

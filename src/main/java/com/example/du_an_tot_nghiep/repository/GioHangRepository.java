@@ -14,8 +14,8 @@ import java.util.Optional;
 public interface GioHangRepository extends JpaRepository< GioHang,Long> {
 
 
-    @Query("SELECT g FROM GioHang g JOIN g.sanPhamTrongGioHangs sp WHERE g.id = :gioHangId AND sp.sanPham.id = :sanPhamId")
-    Optional<GioHang> findByGioHangIdAndSanPhamId(@Param("gioHangId") Long gioHangId, @Param("sanPhamId") Long sanPhamId);
-    Optional<GioHang> findByNguoiDung(NguoiDung nguoiDung);
+//    @Query("SELECT g FROM GioHang g JOIN g.sanPhamTrongGioHangs sp WHERE g.id = :gioHangId AND sp.sanPham.id = :sanPhamId")
+//    Optional<GioHang> findByGioHangIdAndSanPhamId(@Param("gioHangId") Long gioHangId, @Param("sanPhamId") Long sanPhamId);
+   Optional<GioHang> findByNguoiDung(NguoiDung nguoiDung);
 
 }

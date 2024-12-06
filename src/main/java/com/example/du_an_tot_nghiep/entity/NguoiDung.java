@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -17,12 +15,11 @@ import java.util.Set;
 @Entity
 @Table(name = "nguoi_dung")
 public class NguoiDung {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "ten_dang_nhap", unique = true, nullable = false)
+    @Column(name = "ten_dang_nhap", nullable = false, unique = true)
     private String tenDangNhap;
 
     @Column(name = "mat_khau", nullable = false)
@@ -31,7 +28,7 @@ public class NguoiDung {
     @Column(name = "ho_ten", nullable = false)
     private String hoTen;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "so_dien_thoai", nullable = false)
@@ -40,7 +37,7 @@ public class NguoiDung {
     @Column(name = "dia_chi")
     private String diaChi;
 
-    @Column(name = "ngay_tao", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "ngay_tao", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date ngayTao;
 
@@ -48,21 +45,5 @@ public class NguoiDung {
     @Temporal(TemporalType.TIMESTAMP)
     private Date ngayCapNhat;
 
-    // Quan hệ với DonHang (One-to-Many)
-    @OneToMany(mappedBy = "nguoiDung", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<DonHang> donHangs;
-
-    // Quan hệ với GioHang (One-to-One)
-    @OneToOne(mappedBy = "nguoiDung", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private GioHang gioHang;
-
-    // Quan hệ với VaiTro (Many-to-Many)
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "vai_tro_nguoi_dung",
-            joinColumns = @JoinColumn(name = "nguoi_dung_id"),
-            inverseJoinColumns = @JoinColumn(name = "vai_tro_id")
-    )
-    private Set<VaiTro> vaiTros;
-
+    // Getters and Setters
 }
