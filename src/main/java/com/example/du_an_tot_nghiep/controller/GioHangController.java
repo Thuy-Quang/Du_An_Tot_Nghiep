@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class GioHangController {
@@ -34,15 +36,51 @@ public class GioHangController {
     private GioHangService gioHangService;
 
     @GetMapping("/giohang")
-    public String hienThiDanhSachSanPham(Model model) {
+    public String hienThiDanhSachSanPham(Model model,
+                                         @RequestParam(defaultValue = "") String searchQuery,
+                                         @RequestParam(value = "price", defaultValue = "") String[] price) {
+        // Lấy tất cả sản phẩm
         List<SanPham> sanPhams = sanPhamService.getall();
+
+        // Lọc theo giá nếu có
+        if (price.length > 0) {
+            sanPhams = sanPhams.stream()
+                    .filter(sanPham -> {
+                        double productPrice = sanPham.getGia();  // Lấy giá của sản phẩm
+                        for (String priceRange : price) {
+                            String[] range = priceRange.split("-");
+
+                            // Nếu giá trong phạm vi này
+                            if (range.length == 2) {
+                                double minPrice = Double.parseDouble(range[0]);
+                                double maxPrice = Double.parseDouble(range[1]);
+                                if (productPrice >= minPrice && productPrice <= maxPrice) {
+                                    return true;
+                                }
+                            } else if (range[0].equals("2000+")) {
+                                // Xử lý cho giá trên 2000
+                                if (productPrice > 2000) {
+                                    return true;
+                                }
+                            }
+                        }
+                        return false;
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        // Lấy tất cả màu sắc và kích cỡ để hiển thị trong form lọc
         List<MauSac> mauSacs = mauSacRepository.findAll();
-        List<KichCo> kichCos = kichCoRepository.findAll();
-        model.addAttribute("sanPhams", sanPhams);
-        model.addAttribute("mauSacs", mauSacs);
-        model.addAttribute("kichxCos", kichCos);
-        return "giohang/giohang";
+
+        // Thêm dữ liệu vào model
+        model.addAttribute("sanPhams", sanPhams);  // Danh sách sản phẩm sau khi lọc
+        model.addAttribute("mauSacs", mauSacs);    // Danh sách màu sắc để hiển thị
+        model.addAttribute("searchQuery", searchQuery);  // Từ khóa tìm kiếm
+        model.addAttribute("price", price);         // Bộ lọc giá
+
+        return "giohang/giohang";  // Trả về trang giỏ hàng
     }
+
     @GetMapping("/giohangdetail")
     public String hienThiSanPhamTrongGioHang(){
         return "giohang/giohangdetail";
@@ -55,4 +93,5 @@ public class GioHangController {
     public  String donhangcuakhachhang(){
         return "giohang/donhang";
     }
+
 }

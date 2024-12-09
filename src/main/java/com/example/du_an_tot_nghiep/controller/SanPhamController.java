@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/HienThi")
@@ -113,43 +114,52 @@ public class SanPhamController {
     }
 
 
+    @GetMapping("/giohang")
+    public String hienThiDanhSachSanPham(Model model,
+                                         @RequestParam(defaultValue = "") String searchQuery,
+                                         @RequestParam(value = "price", defaultValue = "") String[] price) {
+        // Lấy tất cả sản phẩm
+        List<SanPham> sanPhams = sanPhamService.getall();
 
-    @RequestMapping("/GetAll")
-    public String listSanPham(Model model,
-                              @RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "10") int size,
-                              @RequestParam(defaultValue = "") String keyword,
-                              @RequestParam(value = "price", defaultValue = "") String[] price) {
-
-        // Kiểm tra giá trị của price
-        System.out.println("Price filters: " + Arrays.toString(price));
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<SanPham> sanPhamPage;
-
+        // Lọc theo giá nếu có
         if (price.length > 0) {
-            // Lọc sản phẩm theo giá từ service
-            sanPhamPage = sanPhamService.filterByPriceAndKeyword(price, keyword, pageable);
-        } else {
-            // Lọc sản phẩm theo tên hoặc hiển thị tất cả sản phẩm
-            if (keyword.isEmpty()) {
-                sanPhamPage = sanPhamRepository.findAllByOrderByNgayTaoDesc(pageable);
-            } else {
-                sanPhamPage = sanPhamRepository.findByTenSanPhamContainingOrderByNgayTaoDesc(keyword, pageable);
-            }
+            sanPhams = sanPhams.stream()
+                    .filter(sanPham -> {
+                        double productPrice = sanPham.getGia();  // Lấy giá của sản phẩm
+                        for (String priceRange : price) {
+                            String[] range = priceRange.split("-");
+
+                            // Xử lý cho các dải giá
+                            if (range.length == 2) {
+                                double minPrice = Double.parseDouble(range[0]);
+                                double maxPrice = Double.parseDouble(range[1]);
+                                if (productPrice >= minPrice && productPrice <= maxPrice) {
+                                    return true;
+                                }
+                            } else if (range[0].equals("2000000+")) {
+                                // Xử lý cho giá trên 2000
+                                if (productPrice > 2000000) {
+                                    return true;
+                                }
+                            }
+                        }
+                        return false;
+                    })
+                    .collect(Collectors.toList());
         }
 
-        model.addAttribute("listSPham", sanPhamPage);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", sanPhamPage.getTotalPages());
-        model.addAttribute("size", size);
-        model.addAttribute("listLSP", loaiSanPhamRepository.findAll());
-        model.addAttribute("listMauSac", mauSacRepository.findAll());
-        model.addAttribute("listKichCo", kichCoRepository.findAll());
-        model.addAttribute("keyword", keyword);
+        // Lấy tất cả màu sắc và kích cỡ để hiển thị trong form lọc
+        List<MauSac> mauSacs = mauSacRepository.findAll();
 
-        return "SanPham/HienThiSP/index";
+        // Thêm dữ liệu vào model
+        model.addAttribute("sanPhams", sanPhams);  // Danh sách sản phẩm sau khi lọc
+        model.addAttribute("mauSacs", mauSacs);    // Danh sách màu sắc để hiển thị
+        model.addAttribute("searchQuery", searchQuery);  // Từ khóa tìm kiếm
+        model.addAttribute("price", price);         // Bộ lọc giá
+
+        return "giohang/giohang";  // Trả về trang giỏ hàng
     }
+
 
 
 
