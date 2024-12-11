@@ -25,19 +25,14 @@
       <td>{{item.tenSanPham}}</td>
 
       <!-- Hiển thị Màu Sắc đã chọn -->
-      <td>
-        {{item.color}}
-      </td>
+      <td>{{getColorName(item.color)}}</td>
 
-      <!-- Hiển thị Kích Cỡ đã chọn -->
-      <td>
-        {{item.size}}
-      </td>
-
+      <!-- Hiển thị Kích Cỡ (Tên) thay vì ID -->
+      <td>{{getSizeName(item.size)}}</td>
       <td>
         <input type="number" ng-model="item.soLuong" class="form-control" min="1" ng-change="cart.saveToLocalStorage()">
       </td>
-      <td>{{item.gia | number:2}}</td>
+      <td>{{item.gia | number:0}}</td> <!-- Hiển thị giá không có số thập phân -->
       <td>
         <button class="btn btn-danger" ng-click="cart.remove(item.id)">xoá</button>
       </td>
@@ -46,9 +41,7 @@
     <tfoot>
     <tr>
       <td colspan="5" class="text-right"><strong>Tổng Tiền:</strong></td>
-      <td>
-        <strong>{{cart.calculateTotal() | number:2}}</strong>
-      </td>
+      <td><strong>{{cart.calculateTotal() | number:0}}</strong></td> <!-- Hiển thị tổng tiền không có số thập phân -->
     </tr>
     </tfoot>
   </table>

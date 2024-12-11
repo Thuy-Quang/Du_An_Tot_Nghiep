@@ -3,15 +3,16 @@ package com.example.du_an_tot_nghiep.controller;
 import com.example.du_an_tot_nghiep.entity.KichCo;
 import com.example.du_an_tot_nghiep.entity.MauSac;
 import com.example.du_an_tot_nghiep.entity.SanPham;
+import com.example.du_an_tot_nghiep.entity.SanPhamChiTiet;
+import com.example.du_an_tot_nghiep.model.ChiTietSanPhamDTO;
 import com.example.du_an_tot_nghiep.model.SanPhamDTO;
 import com.example.du_an_tot_nghiep.model.SanPhamRequest;
-import com.example.du_an_tot_nghiep.repository.KichCoRepository;
-import com.example.du_an_tot_nghiep.repository.LoaiSanPhamRepository;
-import com.example.du_an_tot_nghiep.repository.MauSacRepository;
-import com.example.du_an_tot_nghiep.repository.SanPhamRepository;
+import com.example.du_an_tot_nghiep.repository.*;
 import com.example.du_an_tot_nghiep.service.KichCoService;
 import com.example.du_an_tot_nghiep.service.MauSacService;
+import com.example.du_an_tot_nghiep.service.SanPhamChiTietService;
 import com.example.du_an_tot_nghiep.service.SanPhamService;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,8 +34,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/HienThi")
 public class SanPhamController {
 
+
     @Autowired
     SanPhamRepository sanPhamRepository;
+    @Autowired
+    SanPhamChiTietRepository sanPhamChiTietRepository;
 
     @Autowired
     LoaiSanPhamRepository loaiSanPhamRepository;
@@ -52,7 +56,28 @@ public class SanPhamController {
     @Autowired
     SanPhamService sanPhamService;
 
+    @Autowired
+    private SanPhamChiTietService sanPhamChiTietService;
 
+    @GetMapping("/sanpham/{id}")
+    public String hienThiChiTietSanPham(@PathVariable Long id, Model model) {
+        try {
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietService.getSanPhamChiTietBySanPhamId(id);
+            List<MauSac> danhSachMauSac = sanPhamChiTietService.getMauSacBySanPhamId(id);
+            List<KichCo> danhSachKichCo = sanPhamChiTietService.getKichCoBySanPhamId(id);
+            if (sanPhamChiTiet == null) {
+                throw new IllegalArgumentException("Không tìm thấy sản phẩm chi tiết với id: " + id);
+            }
+            model.addAttribute("danhSachMauSac", danhSachMauSac);
+            model.addAttribute("danhSachKichCo", danhSachKichCo);
+            model.addAttribute("sanPhamChiTiet", sanPhamChiTiet);
+            return "sanphamchitiet/hienthi"; // Tên template
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Đã xảy ra lỗi khi lấy chi tiết sản phẩm");
+            return "error";
+        }
+    }
 
     @RequestMapping("/index")
     public String index(){
@@ -212,34 +237,30 @@ public class SanPhamController {
             @PathVariable("id") Long id,
             @RequestParam("color") Long colorId,
             @RequestParam("size") Long sizeId
-    )  {
-        Optional<SanPham> optionalSanPham = sanPhamRepository.findById(id);
+    ) {
+        Optional<SanPhamChiTiet> optionalSanPhamChiTiet = sanPhamChiTietRepository.findBySanPhamIdAndMauSacIdAndKichCoId(id, colorId, sizeId);
 
-        if (optionalSanPham.isPresent()) {
-            SanPham sanPham = optionalSanPham.get();
+        if (optionalSanPhamChiTiet.isPresent()) {
+            SanPhamChiTiet sanPhamChiTiet = optionalSanPhamChiTiet.get();
 
-            // Lấy màu sắc và kích thước từ database
-            Optional<MauSac> mauSac = mauSacRepository.findById(colorId);
-            Optional<KichCo> kichCo = kichCoRepository.findById(sizeId);
+            // Chuyển đổi sang DTO và trả về chi tiết sản phẩm
+            ChiTietSanPhamDTO dto = new ChiTietSanPhamDTO();
+            dto.setId(sanPhamChiTiet.getId());
+            dto.setTenSanPham(sanPhamChiTiet.getSanPham().getTenSanPham());
+            dto.setGia(sanPhamChiTiet.getSanPham().getGia());
+            dto.setHinhAnh(sanPhamChiTiet.getSanPham().getHinhAnh());
+            dto.setMauSac(sanPhamChiTiet.getMauSac().getTenMau());
+            dto.setKichCo(sanPhamChiTiet.getKichCo().getTenKichCo());
+            dto.setSoLuong(sanPhamChiTiet.getSoLuong());
+            dto.setTrangThai(sanPhamChiTiet.getTrangThai());
+            dto.setMoTa(sanPhamChiTiet.getSanPham().getMoTa()); // Thêm mô tả chi tiết sản phẩm
+            dto.setNgayTao(sanPhamChiTiet.getNgayTao());
+            dto.setNgayCapNhat(sanPhamChiTiet.getNgayCapNhat());
 
-            if (mauSac.isPresent() && kichCo.isPresent()) {
-                // Chuyển đổi sang DTO và thêm thông tin màu sắc, kích thước
-                SanPhamDTO dto = new SanPhamDTO();
-                dto.setId(sanPham.getId());
-                dto.setTenSanPham(sanPham.getTenSanPham());
-                dto.setGia(sanPham.getGia());
-                dto.setHinhAnh(sanPham.getHinhAnh());
-                dto.setMauSacs(Collections.singletonList(mauSac.get().getTenMau())); // Thêm tên màu sắc
-                dto.setKichCo(Collections.singletonList(kichCo.get().getTenKichCo())); // Thêm tên kích cỡ
-
-                return ResponseEntity.ok(dto); // Trả về DTO
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Không tìm thấy màu sắc hoặc kích cỡ.");
-            }
+            return ResponseEntity.ok(dto); // Trả về chi tiết sản phẩm
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Không tìm thấy sản phẩm với id: " + id);
+                    .body("Không tìm thấy sản phẩm chi tiết với các tham số yêu cầu.");
         }
     }
 
@@ -263,6 +284,27 @@ public class SanPhamController {
 
 
 
+    @GetMapping("/colors/{colorId}")
+    public ResponseEntity<?> getColor(@PathVariable Long colorId) {
+        Optional<MauSac> colorOptional = mauSacRepository.findById(colorId);
 
+        if (colorOptional.isPresent()) {
+            return ResponseEntity.ok(colorOptional.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Color not found");
+        }
+    }
+
+    // API để lấy tên kích cỡ theo sizeId
+    @GetMapping("/sizes/{sizeId}")
+    public ResponseEntity<?> getSize(@PathVariable Long sizeId) {
+        Optional<KichCo> sizeOptional = kichCoRepository.findById(sizeId);
+
+        if (sizeOptional.isPresent()) {
+            return ResponseEntity.ok(sizeOptional.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Size not found");
+        }
+    }
 
 }

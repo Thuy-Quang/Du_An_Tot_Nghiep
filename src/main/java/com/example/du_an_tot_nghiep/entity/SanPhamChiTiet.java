@@ -1,9 +1,14 @@
 package com.example.du_an_tot_nghiep.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Date;
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "san_pham_chi_tiet")
 public class SanPhamChiTiet {

@@ -12,6 +12,7 @@ public class SanPhamDTO {
         private Float gia;
         private List<String> mauSacs; // Danh sách tên màu sắc
         private List<String> kichCo; // Danh sách tên kích cỡ
+        private Integer soLuong;
 
 
         // Constructor, getter, setter

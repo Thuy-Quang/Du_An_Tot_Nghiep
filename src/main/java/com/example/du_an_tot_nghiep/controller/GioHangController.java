@@ -85,6 +85,12 @@ public class GioHangController {
     public String hienThiSanPhamTrongGioHang(){
         return "giohang/giohangdetail";
     }
+    @GetMapping("/sanpham/{id}")
+    public String chiTietSanPham(@PathVariable Long id, Model model) {
+//        SanPham sanPham = sanPhamService.findById(id); // Tìm sản phẩm theo ID
+//        model.addAttribute("sanPham", sanPham);
+        return "sanphamchitiet/hienthi"; // Tên file HTML chi tiết
+    }
     @GetMapping("/dat-hang")
     public String datHang() {
         return "giohang/dathang";  // Trả về view hoặc chuyển hướng đến trang đặt hàng

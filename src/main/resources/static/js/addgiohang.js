@@ -9,41 +9,63 @@
 
             // Hàm thêm sản phẩm vào giỏ hàng
             add(id) {
-                var color = $scope.selectedColor;  // Màu sắc đã chọn
-                var size = $scope.selectedSize;    // Kích cỡ đã chọn
+                var colorId = $scope.selectedColor;  // Màu sắc đã chọn (ID)
+                var sizeId = $scope.selectedSize;    // Kích cỡ đã chọn (ID)
+                var quantity = $scope.selectedQuantity;  // Số lượng đã chọn
 
-                // Hiển thị thông tin trên console (có thể thay thế bằng logic xử lý giỏ hàng)
-                console.log("ID Sản phẩm:", id);
-                console.log("Màu sắc:", color);
-                console.log("Kích cỡ:", size);
-
-                var item = this.items.find(item => item.id == id && item.color == color && item.size == size);
-
-                if (item) {
-                    // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng
-                    item.soLuong++;
-                    this.saveToLocalStorage();
-                } else {
-                    $http.get(`/HienThi/getone/${id}`, {
-                        params: {
-                            color: color,  // Truyền giá trị màu sắc qua query parameter
-                            size: size     // Truyền giá trị kích cỡ qua query parameter
-                        }
-                    }).then(function(resp) {
-                        if (resp.data && resp.data.id) {
-                            resp.data.soLuong = 1;
-                            resp.data.color = color; // Gán thêm màu sắc
-                            resp.data.size = size;   // Gán thêm kích thước
-                            $scope.cart.items.push(resp.data);
-                            alert("Thêm thành công sản phẩm vào giỏ hàng!");
-                            $scope.cart.saveToLocalStorage();
-                        } else {
-                            console.error("Sản phẩm không tồn tại hoặc dữ liệu không hợp lệ");
-                        }
-                    }).catch(function(error) {
-                        console.error("Lỗi khi lấy sản phẩm:", error);
-                    });
+                // Kiểm tra nếu màu sắc và kích cỡ đã được chọn
+                if (!colorId || !sizeId) {
+                    alert("Vui lòng chọn màu sắc và kích cỡ!");
+                    return;
                 }
+
+                console.log("ID Sản phẩm:", id);
+                console.log("Màu sắc ID:", colorId);
+                console.log("Kích cỡ ID:", sizeId);
+                console.log("Số lượng:", quantity);
+
+                // Lấy tên màu sắc và kích cỡ từ server
+                $scope.getColorName(colorId).then(function(colorName) {
+                    $scope.getSizeName(sizeId).then(function(sizeName) {
+                        // Tạo đối tượng item với tên màu sắc và kích cỡ
+                        var item = {
+                            id: id,
+                            color: colorName,
+                            size: sizeName,
+                            soLuong: quantity
+                        };
+
+                        // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+                        var existingItem = $scope.cart.items.find(function(cartItem) {
+                            return cartItem.id == id && cartItem.color == colorName && cartItem.size == sizeName;
+                        });
+
+                        if (existingItem) {
+                            // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
+                            existingItem.soLuong += quantity;
+                        } else {
+                            // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
+                            $scope.cart.items.push(item);
+                        }
+
+                        // Lưu giỏ hàng vào localStorage
+                        $scope.cart.saveToLocalStorage();
+
+                        alert("Thêm thành công sản phẩm vào giỏ hàng!");
+                    });
+                });
+            },
+           getColorName(colorId) {
+                return $http.get(`/HienThi/colors/${colorId}`).then(function(response) {
+                    return response.data.name; // Giả sử API trả về { name: 'Đỏ' }
+                });
+            },
+
+            // Hàm lấy tên kích cỡ từ ID
+            getSizeName(sizeId) {
+                return $http.get(`/HienThi/sizes/${sizeId}`).then(function(response) {
+                    return response.data.name; // Giả sử API trả về { name: 'S' }
+                });
             },
 
 
