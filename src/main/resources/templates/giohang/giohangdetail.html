@@ -25,10 +25,12 @@
       <td>{{item.tenSanPham}}</td>
 
       <!-- Hiển thị Màu Sắc đã chọn -->
-      <td>{{getColorName(item.color)}}</td>
+      <td>{{item.mauSac}}</td>
+
+      <td>{{item.kichCo}}</td>
 
       <!-- Hiển thị Kích Cỡ (Tên) thay vì ID -->
-      <td>{{getSizeName(item.size)}}</td>
+
       <td>
         <input type="number" ng-model="item.soLuong" class="form-control" min="1" ng-change="cart.saveToLocalStorage()">
       </td>

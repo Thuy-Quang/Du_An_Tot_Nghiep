@@ -83,6 +83,7 @@ public class GioHangController {
 
     @GetMapping("/giohangdetail")
     public String hienThiSanPhamTrongGioHang(){
+
         return "giohang/giohangdetail";
     }
     @GetMapping("/sanpham/{id}")

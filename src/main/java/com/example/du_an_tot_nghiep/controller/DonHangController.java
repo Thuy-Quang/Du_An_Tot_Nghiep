@@ -26,11 +26,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/HienThiDonHang")
 public class DonHangController {
     @Autowired
-    private SanPhamRepository sanPhamRepository;
+    private SanPhamChiTietRepository sanPhamChiTietRepository;
     @Autowired
     private DonHangRepository donHangRepository;
     @Autowired
     private DonHangService donHangService;
+    @Autowired
+    ChiTietDonHangRepository chiTietDonHangRepository;
 
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
@@ -145,63 +147,75 @@ public class DonHangController {
 
         return ResponseEntity.ok(orderDTOs);
     }
-//    @PostMapping("/dat-hang")
-//    public ResponseEntity<?> datHang(@RequestBody DonHangReq donHangReq) {
-//        try {
-//            // Kiểm tra tham số đầu vào
-//            if (donHangReq.getNguoiDungId() == null) {
-//                return ResponseEntity.badRequest().body("ID người dùng không được để trống.");
-//            }
-//
-//            if (donHangReq.getSanPhamList() == null || donHangReq.getSanPhamList().isEmpty()) {
-//                return ResponseEntity.badRequest().body("Danh sách sản phẩm không được để trống.");
-//            }
-//
-//            // Kiểm tra giá trị phương thức thanh toán
-//            String phuongThuc = donHangReq.getPhuongThucThanhToan();
-//            System.out.println("dữ liệu :"+phuongThuc);
-//            if (!phuongThuc.equalsIgnoreCase("Tiền Mặt") && !phuongThuc.equalsIgnoreCase("Chuyển Khoản")) {
-//                return ResponseEntity.badRequest().body("Phương thức thanh toán không hợp lệ. Chỉ chấp nhận 'TienMat' hoặc 'ChuyenKhoan'.");
-//            }
-//
-//            // Tạo và lưu đối tượng DonHang
-//            DonHang donHang = new DonHang();
-//            donHang.setNguoiDung(
-//                    nguoiDungRepository.findById(donHangReq.getNguoiDungId())
-//                            .orElseThrow(() -> new EntityNotFoundException("Người dùng không tồn tại với ID: " + donHangReq.getNguoiDungId()))
-//            );
-//            donHang.setTrangThai("Chờ xác nhận");
-//            donHang.setTongTien(donHangReq.getTongTien());
-//            donHang.setPhuongThucThanhToan(phuongThuc);
-//            donHang.setTrangThaiThanhToan("chưa thanh toán ");
-////            System.out.println("Đối tượng DonHang sau khi gán phương thức thanh toán: " + donHang);
-//            donHang.setNgayTao(new Date());
-//            donHang.setNgayCapNhat(new Date());
-//
-//            List<ChiTietDonHang> chiTietDonHangs = donHangReq.getSanPhamList().stream().map(sp -> {
-//                ChiTietDonHang chiTiet = new ChiTietDonHang();
-//                SanPham sanPham = sanPhamRepository.findById(sp.getSanPhamId())
-//                        .orElseThrow(() -> new EntityNotFoundException("Sản phẩm không tồn tại với ID: " + sp.getSanPhamId()));
-//                chiTiet.setSanPham(sanPham);
-//                chiTiet.setSoLuong(sp.getSoLuong());
-//                chiTiet.setGiaDonVi(sp.getGiaDonVi());
-//                chiTiet.setDonHang(donHang);
-//                return chiTiet;
-//            }).toList();
-//
-//            donHangService.luuDonHang(donHang, chiTietDonHangs);
-////             Tạo phản hồi dưới dạng JSON
-//            Map<String, String> response = new HashMap<>();
-//            response.put("message", "Đơn hàng được lưu thành công.");
-//            return ResponseEntity.ok(response);
-//
-//
-//        } catch (EntityNotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi lưu đơn hàng: " + e.getMessage());
-//        }
-//    }
+    @PostMapping("/dat-hang")
+    public ResponseEntity<?> datHang(@RequestBody DonHangReq donHangReq) {
+        try {
+            // Kiểm tra tham số đầu vào
+            if (donHangReq.getNguoiDungId() == null) {
+                return ResponseEntity.badRequest().body("ID người dùng không được để trống.");
+            }
+
+            if (donHangReq.getSanPhamList() == null || donHangReq.getSanPhamList().isEmpty()) {
+                return ResponseEntity.badRequest().body("Danh sách sản phẩm không được để trống.");
+            }
+
+            // Kiểm tra giá trị phương thức thanh toán
+            String phuongThuc = donHangReq.getPhuongThucThanhToan();
+            if (!phuongThuc.equalsIgnoreCase("Tiền Mặt") && !phuongThuc.equalsIgnoreCase("Chuyển Khoản")) {
+                return ResponseEntity.badRequest().body("Phương thức thanh toán không hợp lệ. Chỉ chấp nhận 'Tiền Mặt' hoặc 'Chuyển Khoản'.");
+            }
+
+            // Tạo và lưu đối tượng DonHang
+            DonHang donHang = new DonHang();
+            donHang.setNguoiDung(
+                    nguoiDungRepository.findById(donHangReq.getNguoiDungId())
+                            .orElseThrow(() -> new EntityNotFoundException("Người dùng không tồn tại với ID: " + donHangReq.getNguoiDungId()))
+            );
+            donHang.setTrangThai("Chờ xác nhận");
+
+            donHang.setTongTien(donHangReq.getTongTien());
+            donHang.setPhuongThucThanhToan(phuongThuc);
+            donHang.setTrangThaiThanhToan("Chưa thanh toán");
+            donHang.setNgayTao(new Date());
+            donHang.setNgayCapNhat(new Date());
+
+            // Lưu đơn hàng để lấy ID
+            donHang = donHangRepository.save(donHang);
+            final DonHang finalDonHang = donHang; // Đánh dấu biến là hiệu quả final
+
+            if (donHangReq.getSanPhamList() == null || donHangReq.getSanPhamList().isEmpty()) {
+                throw new IllegalArgumentException("Danh sách sản phẩm không được để trống");
+            }
+
+            var abc = donHangReq.getSanPhamList();
+
+            // Xử lý danh sách sản phẩm chi tiết
+            List<ChiTietDonHang> chiTietDonHangs = donHangReq.getSanPhamList().stream().map(sp -> {
+                ChiTietDonHang chiTiet = new ChiTietDonHang();
+                SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(sp.getSanPhamChiTietId())
+                        .orElseThrow(() -> new EntityNotFoundException("Sản phẩm chi tiết không tồn tại với ID: " + sp.getSanPhamChiTietId()));
+                chiTiet.setSanPhamChiTiet(sanPhamChiTiet);
+                chiTiet.setSoLuong(sp.getSoLuong());
+                chiTiet.setGiaDonVi(sp.getGiaDonVi());
+                chiTiet.setDonHang(finalDonHang);
+                return chiTiet;
+            }).toList();
+
+            // Lưu danh sách chi tiết đơn hàng
+            chiTietDonHangRepository.saveAll(chiTietDonHangs);
+
+            // Tạo phản hồi
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Đơn hàng được lưu thành công.");
+            return ResponseEntity.ok(response);
+
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi lưu đơn hàng: " + e.getMessage());
+        }
+    }
+
 
 
 

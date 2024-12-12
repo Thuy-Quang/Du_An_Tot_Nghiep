@@ -97,18 +97,18 @@
         <tr ng-repeat="item in cart.items track by $index">
           <td>{{item.tenSanPham}}</td>
           <td>
-            {{item.color}}
+            {{item.mauSac}}
           </td>
 
           <!-- Hiển thị Kích Cỡ đã chọn -->
           <td>
-            {{item.size}}
+            {{item.kichCo}}
           </td>
           <td>
             <input type="number" class="form-control" ng-model="item.soLuong" min="1" ng-change="cart.saveToLocalStorage()">
           </td>
-          <td>{{item.gia | number:2}} đ</td>
-          <td>{{item.soLuong * item.gia | number:2}} đ</td>
+          <td>{{item.gia | number:0}} đ</td>
+          <td>{{item.soLuong * item.gia | number:0}} đ</td>
           <td>
             <button class="btn btn-danger btn-sm" ng-click="cart.remove(item.id)">Xoá</button>
           </td>
@@ -118,7 +118,7 @@
         <tr>
           <td colspan="5" class="text-right"><strong>Tổng Tiền:</strong></td>
           <td>
-            <strong>{{cart.calculateTotal() | number:2}}</strong>
+            <strong>{{cart.calculateTotal() | number:0}}</strong>
           </td>
         </tr>
         </tfoot>
