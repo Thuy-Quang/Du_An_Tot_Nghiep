@@ -106,14 +106,13 @@
         </a>
 
         <!-- Thanh tìm kiếm -->
-        <form class="search-form d-flex" action="/giohang" method="get">
-          <input class="form-control me-2" type="search" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" name="searchQuery" value="${searchQuery}">
+        <form class="search-form d-flex" th:action="@{/giohang}" method="get">
+          <input class="form-control me-2" type="search" placeholder="Tìm kiếm sản phẩm..."
+                 aria-label="Search" name="searchQuery" th:value="${searchQuery}">
           <button class="btn btn-outline-success" type="submit">
             <i class="bi bi-search"></i>
           </button>
         </form>
-
-
         <!-- Các mục bên phải của navbar -->
         <ul class="navbar-nav ml-auto">
           <!-- Nút Đăng nhập -->

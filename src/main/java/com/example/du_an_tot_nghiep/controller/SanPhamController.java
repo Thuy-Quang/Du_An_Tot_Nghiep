@@ -85,57 +85,183 @@ public class SanPhamController {
     }
 
 
-//Nam
-
+    //Nam
     @RequestMapping("/AoNam")
-    public String getSanPhamsByLoaiSanPhamId(Model model) {
-        // Lấy tất cả các sản phẩm có loai_san_pham_id = 1
+    public String getSanPhamsByLoaiSanPhamId0(Model model,
+                                              @RequestParam(value = "price", defaultValue = "") String[] price,
+                                              @RequestParam(defaultValue = "") String searchQuery) {
+        // Lấy sản phẩm theo loại
+        // Lấy sản phẩm theo loại
         List<SanPham> sanPhams = sanPhamRepository.findByLoaiSanPhamIdIn(Arrays.asList(1L));
+
+        // Lọc theo giá (nếu có)
+        if (price.length > 0) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> kiemTraGia(sp, price))
+                    .collect(Collectors.toList());
+        }
+
+        // Lọc theo từ khóa tìm kiếm
+        if (!searchQuery.isEmpty()) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> sp.getTenSanPham().toLowerCase().contains(searchQuery.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Thêm dữ liệu vào model
         model.addAttribute("lists", sanPhams);
-        return "SanPham/QuanAoNam/Nam/AoNam";  // Tên trang Thymeleaf của bạn
+        model.addAttribute("price", price);  // Để giữ lại bộ lọc giá
+        model.addAttribute("searchQuery", searchQuery);  // Giữ lại từ khóa tìm kiếm
+        model.addAttribute("currentPath", "/HienThi/AoNam");  // Đường dẫn hiện tại
+        return "SanPham/QuanAoNam/Nam/AoNam";
     }
 
     @RequestMapping("/QuanNam")
-    public String getSanPhamsByLoaiSanPhamId1(Model model) {
-        // Lấy tất cả các sản phẩm có loai_san_pham_id = 1
+    public String getSanPhamsByLoaiSanPhamId1(Model model,
+                                              @RequestParam(value = "price", defaultValue = "") String[] price,
+                                              @RequestParam(defaultValue = "") String searchQuery) {
+        // Lấy sản phẩm theo loại
         List<SanPham> sanPhams = sanPhamRepository.findByLoaiSanPhamIdIn(Arrays.asList(2L));
-        model.addAttribute("lists", sanPhams);
-        return "SanPham/QuanAoNam/Nam/QuanNam";  // Tên trang Thymeleaf của bạn
-    }
 
+        // Lọc theo giá (nếu có)
+        if (price.length > 0) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> kiemTraGia(sp, price))
+                    .collect(Collectors.toList());
+        }
+
+        // Lọc theo từ khóa tìm kiếm
+        if (!searchQuery.isEmpty()) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> sp.getTenSanPham().toLowerCase().contains(searchQuery.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Thêm dữ liệu vào model
+        model.addAttribute("lists", sanPhams);
+        model.addAttribute("price", price);  // Để giữ lại bộ lọc giá
+        model.addAttribute("searchQuery", searchQuery);  // Giữ lại từ khóa tìm kiếm
+        model.addAttribute("currentPath", "/HienThi/QuanNam");  // Đường dẫn hiện tại
+
+        return "SanPham/QuanAoNam/Nam/QuanNam";  // Tên view
+    }
     @RequestMapping("/AoNamAll")
-    public String getSanPhamsByLoaiSanPhamId2(Model model) {
-        // Lấy tất cả các sản phẩm có loai_san_pham_id = 1
+    public String getSanPhamsByLoaiSanPhamId2(Model model,
+                                              @RequestParam(value = "price", defaultValue = "") String[] price,
+                                              @RequestParam(defaultValue = "") String searchQuery) {
+        // Lấy sản phẩm theo loại
         List<SanPham> sanPhams = sanPhamRepository.findByLoaiSanPhamIdIn(Arrays.asList(1L, 2L));
+
+        // Lọc theo giá (nếu có)
+        if (price.length > 0) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> kiemTraGia(sp, price))
+                    .collect(Collectors.toList());
+        }
+
+        // Lọc theo từ khóa tìm kiếm
+        if (!searchQuery.isEmpty()) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> sp.getTenSanPham().toLowerCase().contains(searchQuery.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Thêm dữ liệu vào model
         model.addAttribute("lists", sanPhams);
-        return "SanPham/QuanAoNam/Nam/All";  // Tên trang Thymeleaf của bạn
+        model.addAttribute("price", price);  // Để giữ lại bộ lọc giá
+        model.addAttribute("searchQuery", searchQuery);  // Giữ lại từ khóa tìm kiếm
+        model.addAttribute("currentPath", "/HienThi/AoNamAll");  // Đường dẫn hiện tại
+
+        return "SanPham/QuanAoNam/Nam/All";  // Tên view
     }
-
-
-//    Nữ
-
     @RequestMapping("/AoNu")
-    public String getSanPhamsByLoaiSanPhamId3(Model model) {
-        // Lấy tất cả các sản phẩm có loai_san_pham_id = 1
+    public String getSanPhamsByLoaiSanPhamId3(Model model,
+                                              @RequestParam(value = "price", defaultValue = "") String[] price,
+                                              @RequestParam(defaultValue = "") String searchQuery) {
+        // Lấy sản phẩm theo loại
         List<SanPham> sanPhams = sanPhamRepository.findByLoaiSanPhamIdIn(Arrays.asList(3L));
+
+        // Lọc theo giá (nếu có)
+        if (price.length > 0) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> kiemTraGia(sp, price))
+                    .collect(Collectors.toList());
+        }
+
+        // Lọc theo từ khóa tìm kiếm
+        if (!searchQuery.isEmpty()) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> sp.getTenSanPham().toLowerCase().contains(searchQuery.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Thêm dữ liệu vào model
         model.addAttribute("lists", sanPhams);
-        return "SanPham/QuanAoNam/Nu/AoNu";  // Tên trang Thymeleaf của bạn
+        model.addAttribute("price", price);  // Để giữ lại bộ lọc giá
+        model.addAttribute("searchQuery", searchQuery);  // Giữ lại từ khóa tìm kiếm
+        model.addAttribute("currentPath", "/HienThi/AoNu");  // Đường dẫn hiện tại
+
+        return "SanPham/QuanAoNam/Nu/AoNu";  // Tên view
     }
 
     @RequestMapping("/QuanNu")
-    public String getSanPhamsByLoaiSanPhamId4(Model model) {
-        // Lấy tất cả các sản phẩm có loai_san_pham_id = 1
+    public String getSanPhamsByLoaiSanPhamId4(Model model,
+                                              @RequestParam(value = "price", defaultValue = "") String[] price,
+                                              @RequestParam(defaultValue = "") String searchQuery) {
+        // Lấy sản phẩm theo loại
         List<SanPham> sanPhams = sanPhamRepository.findByLoaiSanPhamIdIn(Arrays.asList(4L));
+
+        // Lọc theo giá (nếu có)
+        if (price.length > 0) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> kiemTraGia(sp, price))
+                    .collect(Collectors.toList());
+        }
+
+        // Lọc theo từ khóa tìm kiếm
+        if (!searchQuery.isEmpty()) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> sp.getTenSanPham().toLowerCase().contains(searchQuery.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Thêm dữ liệu vào model
         model.addAttribute("lists", sanPhams);
-        return "SanPham/QuanAoNam/Nu/QuanNu";  // Tên trang Thymeleaf của bạn
+        model.addAttribute("price", price);  // Để giữ lại bộ lọc giá
+        model.addAttribute("searchQuery", searchQuery);  // Giữ lại từ khóa tìm kiếm
+        model.addAttribute("currentPath", "/HienThi/QuanNu");  // Đường dẫn hiện tại
+
+        return "SanPham/QuanAoNam/Nu/QuanNu";  // Tên view
     }
 
     @RequestMapping("/TatCa")
-    public String getSanPhamsByLoaiSanPhamId5(Model model) {
-        // Lấy tất cả các sản phẩm có loai_san_pham_id = 1
+    public String getSanPhamsByLoaiSanPhamId5(Model model,
+                                              @RequestParam(value = "price", defaultValue = "") String[] price,
+                                              @RequestParam(defaultValue = "") String searchQuery) {
+        // Lấy sản phẩm theo loại
         List<SanPham> sanPhams = sanPhamRepository.findByLoaiSanPhamIdIn(Arrays.asList(3L, 4L));
+
+        // Lọc theo giá (nếu có)
+        if (price.length > 0) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> kiemTraGia(sp, price))
+                    .collect(Collectors.toList());
+        }
+
+        // Lọc theo từ khóa tìm kiếm
+        if (!searchQuery.isEmpty()) {
+            sanPhams = sanPhams.stream()
+                    .filter(sp -> sp.getTenSanPham().toLowerCase().contains(searchQuery.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Thêm dữ liệu vào model
         model.addAttribute("lists", sanPhams);
-        return "SanPham/QuanAoNam/Nu/TatCa";  // Tên trang Thymeleaf của bạn
+        model.addAttribute("price", price);  // Để giữ lại bộ lọc giá
+        model.addAttribute("searchQuery", searchQuery);  // Giữ lại từ khóa tìm kiếm
+        model.addAttribute("currentPath", "/HienThi/TatCa");  // Đường dẫn hiện tại
+
+        return "SanPham/QuanAoNam/Nu/TatCa";  // Tên view
     }
 
 
@@ -224,7 +350,7 @@ public class SanPhamController {
         System.out.println("Updating product with ID: " + id);
         System.out.println("Trạng Thái received: " + sanPhamRequest.getTrangThai());
 //        sanPhamService.updateSanPham(id, sanPhamRequest);
-       return "redirect:/HienThi/GetAll";
+        return "redirect:/HienThi/GetAll";
     }
 
     @PostMapping("/listSPham/delete/id/{id}")
@@ -306,5 +432,18 @@ public class SanPhamController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Size not found");
         }
     }
-
+    public boolean kiemTraGia(SanPham sanPham, String[] priceRanges) {
+        double gia = sanPham.getGia();
+        for (String range : priceRanges) {
+            String[] parts = range.split("-");
+            if (parts.length == 2) {
+                double min = Double.parseDouble(parts[0]);
+                double max = Double.parseDouble(parts[1]);
+                if (gia >= min && gia <= max) return true;
+            } else if (range.equals("2000000+")) {
+                if (gia > 2000000) return true;
+            }
+        }
+        return false;
+    }
 }

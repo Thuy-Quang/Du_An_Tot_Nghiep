@@ -42,6 +42,13 @@ public class GioHangController {
         // Lấy tất cả sản phẩm
         List<SanPham> sanPhams = sanPhamService.getall();
 
+        // Tìm kiếm theo từ khóa
+        if (!searchQuery.isEmpty()) {
+            sanPhams = sanPhams.stream()
+                    .filter(sanPham -> sanPham.getTenSanPham().toLowerCase().contains(searchQuery.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
         // Lọc theo giá nếu có
         if (price.length > 0) {
             sanPhams = sanPhams.stream()
@@ -49,7 +56,6 @@ public class GioHangController {
                         double productPrice = sanPham.getGia();  // Lấy giá của sản phẩm
                         for (String priceRange : price) {
                             String[] range = priceRange.split("-");
-
                             // Nếu giá trong phạm vi này
                             if (range.length == 2) {
                                 double minPrice = Double.parseDouble(range[0]);
@@ -57,7 +63,7 @@ public class GioHangController {
                                 if (productPrice >= minPrice && productPrice <= maxPrice) {
                                     return true;
                                 }
-                            } else if (range[0].equals("2000+")) {
+                            } else if (priceRange.equals("2000+")) {
                                 // Xử lý cho giá trên 2000
                                 if (productPrice > 2000) {
                                     return true;
@@ -69,11 +75,11 @@ public class GioHangController {
                     .collect(Collectors.toList());
         }
 
-        // Lấy tất cả màu sắc và kích cỡ để hiển thị trong form lọc
+        // Lấy danh sách màu sắc để hiển thị
         List<MauSac> mauSacs = mauSacRepository.findAll();
 
         // Thêm dữ liệu vào model
-        model.addAttribute("sanPhams", sanPhams);  // Danh sách sản phẩm sau khi lọc
+        model.addAttribute("sanPhams", sanPhams);  // Danh sách sản phẩm sau khi lọc và tìm kiếm
         model.addAttribute("mauSacs", mauSacs);    // Danh sách màu sắc để hiển thị
         model.addAttribute("searchQuery", searchQuery);  // Từ khóa tìm kiếm
         model.addAttribute("price", price);         // Bộ lọc giá
@@ -83,7 +89,6 @@ public class GioHangController {
 
     @GetMapping("/giohangdetail")
     public String hienThiSanPhamTrongGioHang(){
-
         return "giohang/giohangdetail";
     }
     @GetMapping("/sanpham/{id}")
