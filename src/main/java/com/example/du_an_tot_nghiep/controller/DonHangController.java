@@ -13,13 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -40,6 +38,15 @@ public class DonHangController {
     private MaGiamGiaKhachHangRepository maGiamGiaKhachHangRepository;
 
     // Hiển thị danh sách đơn hàng
+
+    @PostMapping("/xacNhanDonHang/{donHangId}")
+    public String confirmOrder(@PathVariable Long donHangId) {
+        // Xác nhận đơn hàng
+        donHangService.confirmOrder(donHangId);
+
+        // Sau khi xác nhận, chuyển hướng về trang danh sách đơn hàng
+        return "redirect:/HienThiDonHang/GetAll";
+    }
     @GetMapping("/GetAll")
     public String showDH(Model model ) {
         model.addAttribute("listDonHang", donHangRepository.findAll());
@@ -49,9 +56,85 @@ public class DonHangController {
     public String showMaGiamGiaKh(@PathVariable("id") Long nguoiDungID , Model model){
         List<MaGiamGiaKhachHang> listMaGiamGiaKhachHang = maGiamGiaKhachHangRepository.findByNguoiDungId(nguoiDungID);
         model.addAttribute("listMaGiamGiaKhachHang", listMaGiamGiaKhachHang);
-        model.addAttribute("listDonHang", donHangRepository.findAll());
-        return "donhang/index"; // Trả về giao diện danh sách đơn hàng
+        return "donhang/magiamgia"; // Trả về giao diện danh sách đơn hàng
 
+    }
+    @GetMapping("/apDung/{donHangID}")
+    public String apDungMaGiamGia(
+            @RequestParam("idMaGiamGiaKhachHang") Long idMaGiamGiaKhachHang,
+            @PathVariable Long donHangID,
+            RedirectAttributes redirectAttributes, Model model) {
+
+        // Kiểm tra đơn hàng có tồn tại không
+        Optional<DonHang> donHangOpt = donHangRepository.findById(donHangID);
+        if (donHangOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Đơn hàng không tồn tại!");
+            return "redirect:/HienThiDonHang/GetAll";
+        }
+
+        DonHang donHang = donHangOpt.get();
+        model.addAttribute("donHang", donHang); // Thêm donHang vào model để hiển thị thông tin nếu cần
+
+        // Kiểm tra mã giảm giá có tồn tại không
+        Optional<MaGiamGiaKhachHang> maGiamGiaOpt = maGiamGiaKhachHangRepository.findById(idMaGiamGiaKhachHang);
+        if (maGiamGiaOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Mã giảm giá không tồn tại!");
+            return "redirect:/HienThiDonHang/GetAll";
+        }
+
+        MaGiamGiaKhachHang maGiamGiaKhachHang = maGiamGiaOpt.get();
+
+        // Kiểm tra trạng thái mã giảm giá
+        if ("Đã sử dụng".equals(maGiamGiaKhachHang.getTrangThai())) {
+            redirectAttributes.addFlashAttribute("error", "Mã giảm giá đã được sử dụng!");
+            return "redirect:/HienThiDonHang/GetAll";
+        }
+
+        // Lấy tổng tiền của đơn hàng
+        double tongTien = donHang.getTongTien();
+
+        // Áp dụng mã giảm giá
+        double phanTramGiam = maGiamGiaKhachHang.getMaGiamGia().getPhanTramGiam();
+        double tienGiam = tongTien * (phanTramGiam / 100);
+        double tongTienSauKhiGiam = tongTien - tienGiam;
+
+        // Đảm bảo tổng tiền không âm
+        if (tongTienSauKhiGiam < 0) {
+            tongTienSauKhiGiam = 0;
+        }
+
+        // Cập nhật tổng tiền và trạng thái đơn hàng
+        donHang.setTongTien(tongTienSauKhiGiam);
+        donHangRepository.save(donHang);
+
+        // Cập nhật trạng thái mã giảm giá
+        maGiamGiaKhachHang.setTrangThai("Đã sử dụng");
+        maGiamGiaKhachHangRepository.save(maGiamGiaKhachHang);
+
+        // Thêm thông báo thành công
+        redirectAttributes.addFlashAttribute("success", "Áp dụng mã giảm giá thành công!");
+
+        // Trả về trang danh sách hoặc chi tiết đơn hàng
+        return "redirect:/HienThiDonHang/GetAll";
+    }
+    @GetMapping("/chiTiet/{id}")
+    public String viewOrderDetail(@PathVariable Long id, Model model) {
+        // Tìm đơn hàng theo id
+        DonHang donHang = donHangRepository.findById(id).orElse(null);
+
+        // Kiểm tra nếu đơn hàng không tồn tại
+        if (donHang == null) {
+            model.addAttribute("error", "Đơn hàng không tồn tại.");
+            return "error"; // Chuyển đến trang lỗi (nếu cần)
+        }
+        Double tongTien = donHang.getChiTietDonHangs().stream()
+                .mapToDouble(chiTiet -> chiTiet.getTongGia())
+                .sum();
+        model.addAttribute("tongTien", tongTien);
+        // Truyền các sản phẩm trong đơn hàng vào model
+        model.addAttribute("donHang", donHang);
+        model.addAttribute("chiTietDonHangs", donHang.getChiTietDonHangs());
+        return "/donhang/chitiet"; // Trả về trang chi tiết đơn hàng
     }
 
     // Hiển thị form thêm đơn hàng

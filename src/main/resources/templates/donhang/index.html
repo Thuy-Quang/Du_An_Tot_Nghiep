@@ -48,54 +48,12 @@
 
                 <!-- Thêm mã giảm giá -->
                 <a class="btn btn-info btn-sm open-discount-modal"
-                   th:href="@{/HienThiDonHang/magiamgia/khachhang/nguoiDungID/{id}(id=${donHang.nguoiDung.id})}"
-                   data-bs-toggle="modal"
-                   data-bs-target="#discountModal">
+                   th:href="@{/HienThiDonHang/magiamgia/khachhang/nguoiDungID/{id}(id=${donHang.nguoiDung.id})}">
                     Thêm mã giảm giá
                 </a>
-
-                <!-- Modal hiển thị danh sách mã giảm giá -->
-                <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="discountModalLabel">Danh sách mã giảm giá</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Thêm mã giảm giá -->
-                                <div id="discountList">
-                                    <table class="table table-bordered table-custom text-center">
-                                        <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Mã Giảm Giá </th>
-                                            <th>Tên Người Dùng </th>
-                                            <th>Trang Thái</th>
-                                            <th>Phần Trăm Giảm </th>
-                                            <th>Hàng Động </th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="maGiamGiaKhachHang, stat : ${listMaGiamGiaKhachHang}">
-                                            <td th:text="${maGiamGiaKhachHang.id}"></td>
-                                            <td th:text="${maGiamGiaKhachHang.maGiamGia.ma}"></td>
-                                            <td th:text="${maGiamGiaKhachHang.nguoiDung.hoTen}"></td>
-                                            <td th:text="${maGiamGiaKhachHang.trangThai}"></td>
-                                            <td th:text="${maGiamGiaKhachHang.maGiamGia.phanTramGiam}"></td>
-                                            <td>
-                                                <button class="btn btn-danger btn-sm">chọn</button>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <!-- Nội dung sẽ được thay thế bằng Thymeleaf fragment -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                <a class="btn btn-success" th:href="@{/HienThiDonHang/chiTiet/{id}(id=${donHang.id})}">
+                    Chi Tiết
+                </a>
             </td>
         </tr>
         </tbody>

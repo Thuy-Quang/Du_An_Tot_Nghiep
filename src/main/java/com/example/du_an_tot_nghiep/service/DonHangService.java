@@ -4,6 +4,7 @@ import com.example.du_an_tot_nghiep.entity.*;
 import com.example.du_an_tot_nghiep.model.DonHangRequest;
 import com.example.du_an_tot_nghiep.repository.ChiTietDonHangRepository;
 import com.example.du_an_tot_nghiep.repository.DonHangRepository;
+import com.example.du_an_tot_nghiep.repository.MaGiamGiaKhachHangRepository;
 import com.example.du_an_tot_nghiep.repository.NguoiDungRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class DonHangService {
     @Autowired
     private ChiTietDonHangRepository chiTietDonHangRepository;
     @Autowired
+    private MaGiamGiaKhachHangRepository maGiamGiaKhachHangRepository;
+    @Autowired
     private GioHangService gioHangService;
     @Autowired
     private DonHangRepository donHangRepository;
@@ -30,6 +33,35 @@ public class DonHangService {
 
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
+    @Autowired
+    private EmailService emailService;
+
+    public void confirmOrder(Long donHangId) {
+        // Lấy đơn hàng theo ID
+        Optional<DonHang> donHangOpt = donHangRepository.findById(donHangId);
+
+        if (donHangOpt.isPresent()) {
+            DonHang donHang = donHangOpt.get();
+
+            // Lấy email người dùng từ đơn hàng
+            Long nguoiDungId = donHang.getNguoiDung().getId();
+            Optional<NguoiDung> nguoiDungOpt = nguoiDungRepository.findById(nguoiDungId);
+
+            if (nguoiDungOpt.isPresent()) {
+                NguoiDung nguoiDung = nguoiDungOpt.get();
+                String email = nguoiDung.getEmail();
+
+                // Gửi email thanh toán
+                String subject = "Xác Nhận Thanh Toán Đơn Hàng";
+                String text = "Cảm ơn bạn đã mua hàng! Đơn hàng của bạn đã được xác nhận và đang vận chuyển.";
+                emailService.sendPaymentEmail(email, subject, text);
+            }
+
+            // Cập nhật trạng thái đơn hàng thành "Đang vận chuyển"
+            donHang.setTrangThai("Đang vận chuyển");
+            donHangRepository.save(donHang);
+        }
+    }
     public DonHangService(NguoiDungRepository nguoiDungRepository, DonHangRepository donHangRepository) {
         this.nguoiDungRepository = nguoiDungRepository;
         this.donHangRepository = donHangRepository;
@@ -137,4 +169,24 @@ public class DonHangService {
         return savedDonHang;
     }
 
+    public double apDungMaGiamGia(Long idMaGiamGiaKhachHang, Double tongTien) {
+        Optional<MaGiamGiaKhachHang> maGiamGiaKH = maGiamGiaKhachHangRepository.findById(idMaGiamGiaKhachHang);
+        if (maGiamGiaKH.isEmpty()) {
+            throw new IllegalArgumentException("Mã giảm giá không tồn tại");
+        }
+
+        MaGiamGiaKhachHang maGiamGiaKhachHang = maGiamGiaKH.get();
+        if (!maGiamGiaKhachHang.getTrangThai().equals("Hoạt động")) {
+            return tongTien; // Mã giảm giá không hoạt động
+        }
+
+        double phanTramGiam = maGiamGiaKhachHang.getMaGiamGia().getPhanTramGiam();
+        double soTienGiam = tongTien * (phanTramGiam / 100);
+
+        // Cập nhật trạng thái mã giảm giá khách hàng
+        maGiamGiaKhachHang.setTrangThai("Không hoạt động");
+        maGiamGiaKhachHangRepository.save(maGiamGiaKhachHang);
+
+        return tongTien - soTienGiam;
+    }
 }
