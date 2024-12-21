@@ -14,13 +14,13 @@ public interface SanPhamRepository extends JpaRepository<SanPham,Long> {
     List<SanPham> findByLoaiSanPhamIdIn(List<Long> loaiSanPhamIds);
 
     // Tìm kiếm sản phẩm theo tên
-    Page<SanPham> findByTenSanPhamContaining(String keyword, Pageable pageable);
+//    Page<SanPham> findByTenSanPhamContaining(String keyword, Pageable pageable);
 
     // Lấy tất cả sản phẩm, sắp xếp theo ngày tạo giảm dần (phân trang)
-    Page<SanPham> findAllByOrderByNgayTaoDesc(Pageable pageable);
-
-    // Tìm kiếm sản phẩm theo tên, sắp xếp theo ngày tạo giảm dần (phân trang)
-    Page<SanPham> findByTenSanPhamContainingOrderByNgayTaoDesc(String keyword, Pageable pageable);
+//    Page<SanPham> findAllByOrderByNgayTaoDesc(Pageable pageable);
+//
+//    // Tìm kiếm sản phẩm theo tên, sắp xếp theo ngày tạo giảm dần (phân trang)
+//    Page<SanPham> findByTenSanPhamContainingOrderByNgayTaoDesc(String keyword, Pageable pageable);
     // Phương thức tìm sản phẩm theo khoảng giá
     List<SanPham> findByGiaBetween(int minPrice, int maxPrice);
 
@@ -37,5 +37,12 @@ public interface SanPhamRepository extends JpaRepository<SanPham,Long> {
 
 
     // Phương thức tìm tất cả sản phẩm, sắp xếp theo ngày tạo
+    Page<SanPham> findByTenSanPhamContaining(String tenSanPham, Pageable pageable);
+
+    // Tìm kiếm theo tên và sắp xếp theo ngày tạo
+    Page<SanPham> findByTenSanPhamContainingOrderByNgayTaoDesc(String tenSanPham, Pageable pageable);
+
+    // Lấy tất cả sản phẩm, sắp xếp theo ngày tạo
+    Page<SanPham> findAllByOrderByNgayTaoDesc(Pageable pageable);
 
 }

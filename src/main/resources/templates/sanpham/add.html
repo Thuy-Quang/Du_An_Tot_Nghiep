@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm mới sản phẩm</title>
+    <!-- Bootstrap CSS for styling -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center mb-4"><i class="fas fa-plus-circle"></i> Thêm mới sản phẩm</h1>
+    <form action="#" th:action="@{/sanpham/add}" th:object="${sanPham}" method="post">
+        <div class="form-group">
+            <label for="tenSanPham"><i class="fas fa-tag"></i> Tên sản phẩm:</label>
+            <input type="text" class="form-control" id="tenSanPham" th:field="*{tenSanPham}" required>
+        </div>
+        <div class="form-group">
+            <label for="moTa"><i class="fas fa-info-circle"></i> Mô tả:</label>
+            <textarea class="form-control" id="moTa" th:field="*{moTa}"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="gia"><i class="fas fa-dollar-sign"></i> Giá:</label>
+            <input type="number" class="form-control" id="gia" th:field="*{gia}" required>
+        </div>
+        <div class="form-group">
+            <label for="hinhAnh"><i class="fas fa-image"></i> Hình Ảnh</label>
+            <input type="file" class="form-control-file" id="hinhAnh" name="hinhAnh" required>
+        </div>
+        <div class="form-group">
+            <label for="loaiSanPham"><i class="fas fa-cubes"></i> Loại Sản Phẩm</label>
+            <select class="form-control" id="loaiSanPham" name="loaiSanPham" required>
+                <option value="">Chọn loại sản phẩm</option>
+                <option th:each="loai : ${listLSP}" th:value="${loai.id}" th:text="${loai.tenLoai}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="trangThai"><i class="fas fa-archive"></i> Trạng Thái</label>
+            <select class="form-control" id="trangThai" name="trangThai" required>
+                <option value="Còn hàng">Còn hàng</option>
+                <option value="Hết hàng">Hết hàng</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> Lưu</button>
+    </form>
+</div>
+
+<!-- FontAwesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

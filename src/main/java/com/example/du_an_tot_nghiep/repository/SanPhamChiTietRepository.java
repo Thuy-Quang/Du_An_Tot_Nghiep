@@ -3,6 +3,8 @@ package com.example.du_an_tot_nghiep.repository;
 import com.example.du_an_tot_nghiep.entity.KichCo;
 import com.example.du_an_tot_nghiep.entity.MauSac;
 import com.example.du_an_tot_nghiep.entity.SanPhamChiTiet;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +25,10 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
 
     // Tạo phương thức tìm kiếm sản phẩm chi tiết theo SanPhamId, MauSacId và KichCoId
     Optional<SanPhamChiTiet> findBySanPhamIdAndMauSacIdAndKichCoId(Long sanPhamId, Long mauSacId, Long kichCoId);
+
+    @Query("SELECT sp FROM SanPhamChiTiet sp WHERE " +
+            "sp.sanPham.tenSanPham LIKE %:searchTerm% OR " +
+            "sp.mauSac.tenMau LIKE %:searchTerm% OR " +
+            "sp.kichCo.tenKichCo LIKE %:searchTerm%")
+    Page<SanPhamChiTiet> findBySearchTerm(String searchTerm, Pageable pageable);
 }
