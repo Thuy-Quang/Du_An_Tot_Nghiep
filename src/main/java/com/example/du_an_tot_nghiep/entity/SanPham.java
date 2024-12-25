@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -46,5 +48,8 @@ public class SanPham {
     @Temporal(TemporalType.TIMESTAMP)
     private Date ngayCapNhat;
 
-    // Getters and Setters
+    // Liên kết 1-N với SanPhamChiTiet
+    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SanPhamChiTiet> sanPhamChiTiets;
+
 }

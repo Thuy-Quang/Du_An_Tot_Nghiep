@@ -9,15 +9,18 @@ import lombok.Setter;
 public class ChiTietDonHangReq {
 
     private Long sanPhamChiTietId;  // ID của sản phẩm
-    private int soLuong;      // Số lượng của sản phẩm
-    private float giaDonVi;
-    // Constructor mặc định (Lombok sẽ tạo ra tự động nhờ @Getter và @Setter)
-    public ChiTietDonHangReq() {}
+    private Integer soLuong;            // Số lượng của sản phẩm
+    private Float giaDonVi;         // Giá đơn vị của sản phẩm
 
-    // Constructor có tham số (có thể tùy chọn)
-    public ChiTietDonHangReq(Long sanPhamId, int soLuong) {
+    // Constructor có tham số
+    public ChiTietDonHangReq(Long sanPhamChiTietId, Integer soLuong, Float giaDonVi) {
         this.sanPhamChiTietId = sanPhamChiTietId;
         this.soLuong = soLuong;
+        this.giaDonVi = giaDonVi;
+    }
+
+    // Getter custom để lấy sanPhamId
+    public Long getSanPhamId() {
+        return this.sanPhamChiTietId;
     }
 }
-

@@ -42,6 +42,9 @@ public class SanPhamChiTiet {
     @Temporal(TemporalType.TIMESTAMP)
     private Date ngayCapNhat;
 
-    // Getters and Setters
+    // Constructor chỉ nhận id
+    public SanPhamChiTiet(Long id) {
+        this.id = id;
+    }
 }
 

@@ -37,5 +37,8 @@ public class ChiTietDonHang {
         return soLuong * giaDonVi;
     }
 
-    // Getters and setters
+    @Transient
+    public SanPham getSanPham() {
+        return sanPhamChiTiet != null ? sanPhamChiTiet.getSanPham() : null;
+    }
 }

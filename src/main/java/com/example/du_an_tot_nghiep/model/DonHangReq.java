@@ -14,8 +14,6 @@ public class DonHangReq {
     private String phuongThucThanhToan;  // Phương thức thanh toán
     private Double tongTien;  // Tổng tiền đơn hàng
     private List<ChiTietDonHangReq> sanPhamList;
-
-
 }
 
 

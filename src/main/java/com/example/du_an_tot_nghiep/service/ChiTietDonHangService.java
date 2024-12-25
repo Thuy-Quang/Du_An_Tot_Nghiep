@@ -3,6 +3,12 @@ package com.example.du_an_tot_nghiep.service;
 import com.example.du_an_tot_nghiep.entity.ChiTietDonHang;
 import com.example.du_an_tot_nghiep.repository.ChiTietDonHangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.example.du_an_tot_nghiep.entity.DonHang;
+import com.example.du_an_tot_nghiep.entity.SanPhamChiTiet;
+import com.example.du_an_tot_nghiep.repository.ChiTietDonHangRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +18,15 @@ import java.util.Optional;
 public class ChiTietDonHangService {
     @Autowired
     private ChiTietDonHangRepository chiTietDonHangRepository;
+    // danh sách chi tiết dh cảu của 1 đươn hàng cụ thể
+    public Page<ChiTietDonHang> getPagedChiTietByOrderId(Long orderId, Pageable pageable) {
+        return chiTietDonHangRepository.findByDonHangId(orderId, pageable);
+    }
+
+    //Trả về danh sách các Chi Tiết Đơn Hàng dưới dạng phân trang.
+    public Page<ChiTietDonHang> getAll(Pageable pageable) {
+        return chiTietDonHangRepository.findAll(pageable);
+    }
 
     // Lấy tất cả các chi tiết đơn hàng
     public List<ChiTietDonHang> getAll() {
@@ -38,4 +53,23 @@ public class ChiTietDonHangService {
         chiTietDonHangRepository.deleteById(id);
     }
 
+    // Thêm hoặc cập nhật chi tiết đơn hàng
+    public void addOrUpdateChiTiet(Long donHangId, Long sanPhamId, int soLuong) {
+        // Tìm kiếm chi tiết đơn hàng theo donHangId và sanPhamId
+        Optional<ChiTietDonHang> existingChiTiet = chiTietDonHangRepository.findByDonHangIdAndSanPhamChiTietId(donHangId, sanPhamId);
+
+        if (existingChiTiet.isPresent()) {
+            // Nếu chi tiết đơn hàng đã tồn tại, cập nhật số lượng
+            ChiTietDonHang chiTiet = existingChiTiet.get();
+            chiTiet.setSoLuong(chiTiet.getSoLuong() + soLuong); // Cộng dồn số lượng
+            chiTietDonHangRepository.save(chiTiet);
+        } else {
+            // Nếu chưa tồn tại, tạo mới chi tiết đơn hàng
+            ChiTietDonHang newChiTiet = new ChiTietDonHang();
+            newChiTiet.setDonHang(new DonHang(donHangId));
+            newChiTiet.setSanPhamChiTiet(new SanPhamChiTiet(sanPhamId));
+            newChiTiet.setSoLuong(soLuong);
+            chiTietDonHangRepository.save(newChiTiet);
+        }
+    }
 }

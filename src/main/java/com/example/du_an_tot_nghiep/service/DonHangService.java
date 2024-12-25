@@ -6,12 +6,15 @@ import com.example.du_an_tot_nghiep.repository.ChiTietDonHangRepository;
 import com.example.du_an_tot_nghiep.repository.DonHangRepository;
 import com.example.du_an_tot_nghiep.repository.MaGiamGiaKhachHangRepository;
 import com.example.du_an_tot_nghiep.repository.NguoiDungRepository;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
+import jakarta.persistence.EntityNotFoundException;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -66,15 +69,26 @@ public class DonHangService {
         this.nguoiDungRepository = nguoiDungRepository;
         this.donHangRepository = donHangRepository;
     }
-    // Lấy tất cả đơn hàng
-//    public List<DonHang> getAll() {
-//        return donHangRepository.findAll();
-//    }
-//
-//    // L
-//    public Page<DonHang> getAll(Pageable pageable) {
-//        return donHangRepository.findAll(pageable);
-//    }
+
+    public List<DonHang> getAll() {
+        return donHangRepository.findAll();
+    }
+
+    // Lấy đơn hàng theo phân trang
+    public Page<DonHang> getAll(Pageable pageable) {
+        return donHangRepository.findAll(pageable);
+    }
+
+    //lấy danh sách đơn hàng sắp xếp theo ngày tạo
+    public Page<DonHang> getAllSortedByNgayTaoDesc(Pageable pageable) {
+        return donHangRepository.findAllByOrderByNgayTaoDesc(pageable);
+    }
+
+    // Tìm đơn hàng theo ID
+    public DonHang findById(Long id) {
+        return donHangRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Đơn hàng không tồn tại với ID: " + id));
+    }
 
     public DonHang addDonHang(DonHangRequest donHangRequest) {
         DonHang donHang = new DonHang();

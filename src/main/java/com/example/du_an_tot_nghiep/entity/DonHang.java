@@ -46,5 +46,31 @@ public class DonHang {
     @OneToMany(mappedBy = "donHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ChiTietDonHang> chiTietDonHangs;
 
+    // Hàm này sẽ được gọi trước khi lưu đối tượng vào database
+    @PrePersist
+    protected void onCreate() {
+        if (chiTietDonHangs != null && !chiTietDonHangs.isEmpty()) {
+            tongTien = chiTietDonHangs.stream()
+                    .mapToDouble(ChiTietDonHang::getTongGia)
+                    .sum();
+        } else {
+            // Nếu không có chi tiết, tổng tiền là 0
+            tongTien = 0.0;
+        }
 
+        if (trangThai == null) {
+            trangThai = "Chưa xác nhận";
+        }
+        if (trangThaiThanhToan == null) {
+            trangThaiThanhToan = "Chưa thanh toán";
+        }
+        if (ngayTao == null) {
+            ngayTao = new Date();
+        }
+    }
+
+    // Constructor chỉ nhận ID
+    public DonHang(Long id) {
+        this.id = id;
+    }
 }
