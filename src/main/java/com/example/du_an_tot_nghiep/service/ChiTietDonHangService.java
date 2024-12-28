@@ -1,6 +1,7 @@
 package com.example.du_an_tot_nghiep.service;
 
 import com.example.du_an_tot_nghiep.entity.ChiTietDonHang;
+import com.example.du_an_tot_nghiep.model.ChiTietDonHangDTO;
 import com.example.du_an_tot_nghiep.repository.ChiTietDonHangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.du_an_tot_nghiep.entity.DonHang;
@@ -71,5 +72,27 @@ public class ChiTietDonHangService {
             newChiTiet.setSoLuong(soLuong);
             chiTietDonHangRepository.save(newChiTiet);
         }
+    }
+
+    public ChiTietDonHangService(ChiTietDonHangRepository chiTietDonHangRepository) {
+        this.chiTietDonHangRepository = chiTietDonHangRepository;
+    }
+
+    public List<ChiTietDonHangDTO> getChiTietDonHangByDonHangId(Long donHangId) {
+        return chiTietDonHangRepository.findByDonHangId(donHangId)
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
+    }
+
+    private ChiTietDonHangDTO mapToDTO(ChiTietDonHang chiTietDonHang) {
+        return new ChiTietDonHangDTO(
+                chiTietDonHang.getSanPhamChiTiet().getSanPham().getTenSanPham(),
+                chiTietDonHang.getSanPhamChiTiet().getMauSac().getTenMau(),
+                chiTietDonHang.getSanPhamChiTiet().getKichCo().getTenKichCo(),
+                chiTietDonHang.getSoLuong(),
+                chiTietDonHang.getGiaDonVi(),
+                chiTietDonHang.getTongGia()
+        );
     }
 }

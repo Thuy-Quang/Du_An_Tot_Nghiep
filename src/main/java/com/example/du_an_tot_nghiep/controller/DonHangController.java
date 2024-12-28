@@ -1,10 +1,12 @@
 package com.example.du_an_tot_nghiep.controller;
 
 import com.example.du_an_tot_nghiep.entity.*;
+import com.example.du_an_tot_nghiep.model.ChiTietDonHangDTO;
 import com.example.du_an_tot_nghiep.model.DonHangDTO;
 import com.example.du_an_tot_nghiep.model.DonHangReq;
 import com.example.du_an_tot_nghiep.model.DonHangRequest;
 import com.example.du_an_tot_nghiep.repository.*;
+import com.example.du_an_tot_nghiep.service.ChiTietDonHangService;
 import com.example.du_an_tot_nghiep.service.DonHangService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/HienThiDonHang")
 public class DonHangController {
+    @Autowired
+    ChiTietDonHangService chiTietDonHangService;
     @Autowired
     private SanPhamChiTietRepository sanPhamChiTietRepository;
     @Autowired
@@ -298,8 +302,37 @@ public class DonHangController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi lưu đơn hàng: " + e.getMessage());
         }
     }
+    @GetMapping("/chi-tiet-san-pham/{id}")
+    public ResponseEntity<?> getChiTietDonHang(@PathVariable Long id) {
+        try {
+            // Lấy đơn hàng theo id
+            DonHang donHang = donHangService.getDonHangById(id);
 
+            // Kiểm tra xem đơn hàng có tồn tại không
+            if (donHang == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Đơn hàng không tồn tại.");
+            }
 
+            // Chuyển đổi danh sách ChiTietDonHang thành ChiTietDonHangDTO
+            List<ChiTietDonHangDTO> chiTietDonHangDTOs = donHang.getChiTietDonHangs().stream()
+                    .map(chiTiet -> new ChiTietDonHangDTO(
+                            chiTiet.getSanPham().getTenSanPham(),
+                            chiTiet.getSanPhamChiTiet().getMauSac().getTenMau(),
+                            chiTiet.getSanPhamChiTiet().getKichCo().getTenKichCo(),
+                            chiTiet.getSoLuong(),
+                            chiTiet.getGiaDonVi(),
+                            chiTiet.getSoLuong() * chiTiet.getGiaDonVi())) // tính tổng giá
+                    .collect(Collectors.toList());
 
+            // Trả về danh sách ChiTietDonHangDTO dưới dạng JSON
+            return ResponseEntity.ok(chiTietDonHangDTOs);
+        } catch (Exception e) {
+            // In lỗi chi tiết nếu có
+            e.printStackTrace();
+
+            // Trả về lỗi 500 nếu có vấn đề trong khi xử lý
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi lấy chi tiết đơn hàng.");
+        }
+    }
 
 }

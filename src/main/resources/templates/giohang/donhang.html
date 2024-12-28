@@ -1,86 +1,106 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index.html :: dynamic(~{::main})}">
 <head>
     <meta charset="UTF-8">
     <title>Danh sách đơn hàng</title>
+<body>
+<main class="container mt-4" ng-app="donHangApp" ng-controller="donHangController">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.24/jsrsasign-all-min.js"></script> <!-- Thư viện giải mã JWT -->
-</head>
-<body ng-app="orderApp" ng-controller="OrderController">
-<main class="container mt-4">
+    </head>
     <h1 class="mb-4">Danh sách đơn hàng của bạn</h1>
-    <table class="table table-bordered table-hover" ng-if="customerOrders.length > 0">
+    <table class="table table-bordered table-hover">
         <thead class="thead-dark">
         <tr>
-            <th>#</th>
-            <th>Mã đơn hàng</th>
-            <th>Ngày đặt hàng</th>
+            <td>STT</td>
+            <th>ID đơn hàng</th>
+            <th>Tên Khách Hàng</th>
+            <th>Trạng thái đơn hàng</th>
             <th>Tổng tiền</th>
-            <th>Trạng thái</th>
-            <th>Phương thức thanh toán</th>
+            <th>Ngày mua</th>
+            <th>Trạng thái thanh toán</th>
+            <th>Hành động</th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="order in customerOrders">
-            <td>{{ $index + 1 }}</td>
-            <td>{{ order.id }}</td>
-            <td>{{ order.ngayTao | date:'dd/MM/yyyy HH:mm:ss' }}</td>
-            <td>{{ order.tongTien | currency:'VND' }}</td>
-            <td>{{ order.trangThai }}</td>
-            <td>{{ order.phuongThucThanhToan }}</td>
+        <tr th:each="donHang, stat : ${donHang}">
+            <td th:text="${stat.index + 1}"></td>
+            <td th:text="${donHang.id}"></td>
+            <td th:text="${donHang.nguoiDung.hoTen}"></td>
+            <td th:text="${donHang.trangThai}"></td>
+            <td th:text="${donHang.tongTien + ' VND'}"></td>
+            <td th:text="${#dates.format(donHang.ngayTao, 'dd-MM-yyyy HH:mm')}"></td>
+            <td th:text="${donHang.trangThaiThanhToan}"></td>
+            <td>
+                <a class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn huỷ?')">Huỷ</a>
+                <a class="btn btn-success" th:attr="ng-click=@{|showChiTietDonHang(${donHang.id})|}">Chi tiết</a>
+            </td>
         </tr>
         </tbody>
     </table>
-    <p class="text-center" ng-if="customerOrders.length === 0">Không có đơn hàng nào!</p>
+
+    <div class="modal fade" id="chiTietDonHangModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết đơn hàng</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Màu sắc</th>
+                            <th>Kích cỡ</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Tổng giá</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="chiTiet in chiTietDonHang">
+                            <td>{{ chiTiet.tenSanPham }}</td>
+                            <td>{{ chiTiet.tenMauSac }}</td>
+                            <td>{{ chiTiet.tenKichCo }}</td>
+                            <td>{{ chiTiet.soLuong }}</td>
+                            <td>{{ chiTiet.giaDonVi | currency:'':0 }} VND</td>
+                            <td>{{ (chiTiet.soLuong * chiTiet.giaDonVi) | currency:'':0 }} VND</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        angular.module('orderApp', []).controller('OrderController', function($scope) {
-            // Lấy JWT Token từ localStorage
-            const token = localStorage.getItem('token');
-            if (!token) {
-                alert('Không tìm thấy token. Vui lòng đăng nhập lại!');
-                return;
-            }
+        var app = angular.module('donHangApp', []);
 
-            // Giải mã JWT để lấy thông tin khách hàng
-            const decodedToken = KJUR.jws.JWS.parse(token);  // Sử dụng thư viện jsrsasign để giải mã JWT
-            const payload = JSON.parse(decodedToken.payloadPP); // Giải mã payload của token
+        app.controller('donHangController', function($scope, $http) {
+            $scope.customerOrders = [];
+            $scope.chiTietDonHang = [];
 
-            // Lấy thông tin khách hàng từ payload (sửa từ 'sub' thành 'userId')
-            const customerId = payload.userId; // "userId" là tên trường trong JWT của bạn
-
-            if (!customerId) {
-                alert('Không tìm thấy thông tin khách hàng. Vui lòng đăng nhập lại!');
-                return;
-            }
-
-            $scope.customerName = customerId; // Hiển thị customerId (hoặc có thể là tên khách hàng tùy theo cấu trúc của bạn)
-
-            // Call API để lấy đơn hàng của khách hàng theo customerId
-            $scope.getCustomerOrders = function(customerId) {
-                // Giả sử bạn đã tạo API để lấy đơn hàng của khách hàng theo customerId
-                fetch(`/HienThiDonHang/danhsachcuakhachhang?nguoiDungID=${customerId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        $scope.$apply(() => {
-                            $scope.customerOrders = data; // Gán dữ liệu đơn hàng từ API vào scope
-                        });
+            $scope.showChiTietDonHang = function(donHangId) {
+                $http.get('/HienThiDonHang/chi-tiet-san-pham/' + donHangId)
+                    .then(function(response) {
+                        if (response && response.data) {
+                            $scope.chiTietDonHang = response.data;
+                            $('#chiTietDonHangModal').modal('show');
+                        } else {
+                            alert("Dữ liệu không hợp lệ. Vui lòng thử lại.");
+                        }
                     })
-                    .catch(error => console.error('Error fetching orders:', error));
-            };
-
-            // Lấy đơn hàng của khách hàng
-            $scope.getCustomerOrders(customerId);
-
-            // Xem chi tiết đơn hàng
-            $scope.viewOrder = function(order) {
-                alert('Chi tiết đơn hàng: ' + JSON.stringify(order));
+                    .catch(function(error) {
+                        alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+                    });
             };
         });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.24/jsrsasign-all-min.js"></script> <!-- Thư viện giải mã JWT -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </main>
 </body>
 </html>

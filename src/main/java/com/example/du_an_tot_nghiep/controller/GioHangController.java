@@ -1,12 +1,10 @@
 package com.example.du_an_tot_nghiep.controller;
 
-import com.example.du_an_tot_nghiep.entity.GioHang;
-import com.example.du_an_tot_nghiep.entity.KichCo;
-import com.example.du_an_tot_nghiep.entity.MauSac;
-import com.example.du_an_tot_nghiep.entity.SanPham;
+import com.example.du_an_tot_nghiep.entity.*;
 import com.example.du_an_tot_nghiep.model.GioHangDTO;
 import com.example.du_an_tot_nghiep.repository.KichCoRepository;
 import com.example.du_an_tot_nghiep.repository.MauSacRepository;
+import com.example.du_an_tot_nghiep.service.DonHangService;
 import com.example.du_an_tot_nghiep.service.GioHangService;
 import com.example.du_an_tot_nghiep.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +23,8 @@ import java.util.stream.Collectors;
 
 @Controller
 public class GioHangController {
+    @Autowired
+    DonHangService donHangService;
     @Autowired
     private SanPhamService sanPhamService;
     @Autowired
@@ -101,8 +101,10 @@ public class GioHangController {
     public String datHang() {
         return "giohang/dathang";  // Trả về view hoặc chuyển hướng đến trang đặt hàng
     }
-    @GetMapping("/donhang/khachhang")
-    public  String donhangcuakhachhang(){
+    @GetMapping("/khachhang/{id}")
+    public String getDonHangTheoUser(@PathVariable Long id,Model model) {
+        List<DonHang> optionalDonHang = donHangService.getOrdersByUserId(id);
+        model.addAttribute("donHang", optionalDonHang);
         return "giohang/donhang";
     }
 

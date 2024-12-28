@@ -203,4 +203,10 @@ public class DonHangService {
 
         return tongTien - soTienGiam;
     }
+    public List<DonHang> getOrdersByUserId(Long userId) {
+        return donHangRepository.findByNguoiDungId(userId);
+    }
+    public DonHang getDonHangById(Long id) {
+        return donHangRepository.findById(id).orElse(null);  // Trả về đơn hàng nếu có, nếu không có trả về null
+    }
 }
