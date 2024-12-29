@@ -209,4 +209,24 @@ public class DonHangService {
     public DonHang getDonHangById(Long id) {
         return donHangRepository.findById(id).orElse(null);  // Trả về đơn hàng nếu có, nếu không có trả về null
     }
+    public String huyDonHang(Long id) {
+        // Tìm đơn hàng theo ID
+        Optional<DonHang> optionalDonHang = donHangRepository.findById(id);
+        if (!optionalDonHang.isPresent()) {
+            throw new IllegalStateException("Không tìm thấy đơn hàng với ID: " + id);
+        }
+
+        DonHang donHang = optionalDonHang.get();
+
+        // Kiểm tra trạng thái
+        if ("Đang vận chuyển".equalsIgnoreCase(donHang.getTrangThai())) {
+            throw new IllegalStateException("Đơn hàng đang vận chuyển, không thể huỷ.");
+        }
+
+        // Cập nhật trạng thái thành "Đã huỷ"
+        donHang.setTrangThai("Đã huỷ");
+        donHangRepository.save(donHang);
+
+        return "Đơn hàng đã được huỷ thành công.";
+    }
 }

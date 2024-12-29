@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     </head>
+    <div th:if="${message}" th:utext="'alert(\'${message}\');'"></div>
+    <div th:if="${error}" th:utext="'alert(\'${error}\');'"></div>
     <h1 class="mb-4">Danh sách đơn hàng của bạn</h1>
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
@@ -32,7 +34,10 @@
             <td th:text="${#dates.format(donHang.ngayTao, 'dd-MM-yyyy HH:mm')}"></td>
             <td th:text="${donHang.trangThaiThanhToan}"></td>
             <td>
-                <a class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn huỷ?')">Huỷ</a>
+                <form th:action="@{/HienThiDonHang/huy/{id}(id=${donHang.id})}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn huỷ?')">
+                    <input type="hidden" name="_method" value="put"/>
+                    <button type="submit" class="btn btn-danger">Huỷ</button>
+                </form>
                 <a class="btn btn-success" th:attr="ng-click=@{|showChiTietDonHang(${donHang.id})|}">Chi tiết</a>
             </td>
         </tr>

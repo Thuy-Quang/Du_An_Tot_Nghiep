@@ -334,5 +334,36 @@ public class DonHangController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi lấy chi tiết đơn hàng.");
         }
     }
+    @PostMapping("/huy/{id}")
+    public String huyDonHang(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            // Tìm đơn hàng theo ID
+            Optional<DonHang> optionalDonHang = donHangRepository.findById(id);
+            if (!optionalDonHang.isPresent()) {
+                throw new IllegalStateException("Không tìm thấy đơn hàng với ID: " + id);
+            }
+
+            DonHang donHang = optionalDonHang.get();
+
+            // Kiểm tra trạng thái
+            if ("Đang vận chuyển".equalsIgnoreCase(donHang.getTrangThai())) {
+                throw new IllegalStateException("Đơn hàng đang vận chuyển, không thể huỷ.");
+            }
+
+            // Cập nhật trạng thái thành "Đã huỷ"
+            donHang.setTrangThai("Đã huỷ");
+            donHangRepository.save(donHang);
+
+            // Thêm thông báo thành công vào Flash Attributes
+            redirectAttributes.addFlashAttribute("message", "Đơn hàng đã được huỷ thành công.");
+
+        } catch (IllegalStateException e) {
+            // Thêm thông báo lỗi vào Flash Attributes
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        // Chuyển hướng về trang danh sách đơn hàng
+        return "giohang/dahuy";
+    }
 
 }
