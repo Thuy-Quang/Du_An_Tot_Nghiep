@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -25,37 +26,38 @@ public class JwtFilter extends OncePerRequestFilter { // Kế thừa OncePerRequ
     private NguoiDungDetailsService nguoiDungDetailsService;
 
     @Override
+
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException { // Thêm ServletException vào khai báo
+            throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
 
         String token = null;
         String username = null;
 
+        // Kiểm tra xem header Authorization có tồn tại không và có phải là Bearer token không
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7); // Lấy token
+            token = authorizationHeader.substring(7); // Lấy token từ header
             username = jwtUtil.extractUsername(token); // Trích xuất username từ token
         }
 
-        // Kiểm tra và xác thực token
+        // Kiểm tra nếu username không null và không có xác thực người dùng trong SecurityContext
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            /*TODO:
-             * Không load lại user từ database vì mình xác thực thông tin bằng token
-             * trong trường hợp token lấy từ server khác thì sẽ không có bảng để lấy thông tin user
-             * vì thế nên chỗ này chỉ sử dụng thông tin từ token
-             */
-//            UserDetails userDetails = nguoiDungDetailsService.loadUserByUsername(username);
-            var authorites = jwtUtil.extractClaims(token);
-            UserDetails userDetails = new User(username, "default", authorites);
+            // Sử dụng NguoiDungDetailsService để lấy thông tin người dùng từ DB
+            UserDetails userDetails = nguoiDungDetailsService.loadUserByUsername(username);
+
             // Kiểm tra tính hợp lệ của token
             if (jwtUtil.validateToken(token, userDetails.getUsername())) {
-                // Tạo đối tượng xác thực
+                // Tạo đối tượng xác thực với các quyền của người dùng
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken); // Thiết lập xác thực
+
+                // Thiết lập đối tượng Authentication vào SecurityContext
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
-        chain.doFilter(request, response); // Tiếp tục chuỗi bộ lọc
+
+        // Tiếp tục chuỗi bộ lọc
+        chain.doFilter(request, response);
     }
 }

@@ -28,9 +28,6 @@ public class DangNhapController {
     @Autowired
     private NguoiDungDetailsService nguoiDungDetailsService;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
     // Đăng nhập
     @PostMapping("/dang-nhap")
     public ResponseEntity<?> dangNhap(@RequestParam String tenDangNhap, @RequestParam String matKhau) {
@@ -45,7 +42,7 @@ public class DangNhapController {
 
         // Tạo token JWT
         try {
-            String token = jwtUtil.generateToken(tenDangNhap,userId);
+            String token = jwtUtil.generateToken(tenDangNhap, userId);
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             response.put("message", "Đăng nhập thành công");
