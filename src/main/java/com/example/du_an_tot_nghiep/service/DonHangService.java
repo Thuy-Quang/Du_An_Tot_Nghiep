@@ -2,11 +2,9 @@ package com.example.du_an_tot_nghiep.service;
 
 import com.example.du_an_tot_nghiep.entity.*;
 import com.example.du_an_tot_nghiep.model.DonHangRequest;
-import com.example.du_an_tot_nghiep.repository.ChiTietDonHangRepository;
-import com.example.du_an_tot_nghiep.repository.DonHangRepository;
-import com.example.du_an_tot_nghiep.repository.MaGiamGiaKhachHangRepository;
-import com.example.du_an_tot_nghiep.repository.NguoiDungRepository;
+import com.example.du_an_tot_nghiep.repository.*;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +28,9 @@ public class DonHangService {
     @Autowired
     private GioHangService gioHangService;
     @Autowired
+    SanPhamChiTietRepository sanPhamChiTietRepository;
+    @Autowired
+
     private DonHangRepository donHangRepository;
     @Autowired
     private MaGiamGiaService maGiamGiaService;
@@ -39,7 +40,7 @@ public class DonHangService {
     @Autowired
     private EmailService emailService;
 
-    public void confirmOrder(Long donHangId) {
+    public void confirmOrder(Long donHangId) throws MessagingException {
         // Lấy đơn hàng theo ID
         Optional<DonHang> donHangOpt = donHangRepository.findById(donHangId);
 
@@ -54,10 +55,37 @@ public class DonHangService {
                 NguoiDung nguoiDung = nguoiDungOpt.get();
                 String email = nguoiDung.getEmail();
 
-                // Gửi email thanh toán
+                // Tạo bảng chi tiết sản phẩm và tổng tiền
+                StringBuilder emailContent = new StringBuilder();
+                emailContent.append("<h2>Xác Nhận Thanh Toán Đơn Hàng</h2>");
+                emailContent.append("<p>Cảm ơn bạn đã mua hàng! Đơn hàng của bạn đã được xác nhận và đang vận chuyển.</p>");
+                emailContent.append("<h3>Chi Tiết Sản Phẩm</h3>");
+                emailContent.append("<table border='1' cellpadding='10' cellspacing='0'>");
+                emailContent.append("<thead><tr><th>Sản phẩm</th><th>Số lượng</th><th>Giá</th><th>Tổng</th></tr></thead>");
+                emailContent.append("<tbody>");
+
+                double totalAmount = 0;
+                for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
+                    double totalPrice = chiTiet.getGiaDonVi() * chiTiet.getSoLuong();
+                    totalAmount += totalPrice;
+                    emailContent.append("<tr>");
+                    emailContent.append("<td>").append(chiTiet.getSanPham().getTenSanPham()).append("</td>");
+                    emailContent.append("<td>").append(chiTiet.getSoLuong()).append("</td>");
+                    emailContent.append("<td>").append(chiTiet.getGiaDonVi()).append("</td>");
+                    emailContent.append("<td>").append(totalPrice).append("</td>");
+                    emailContent.append("</tr>");
+                }
+
+                emailContent.append("</tbody>");
+                emailContent.append("</table>");
+                emailContent.append("<p><strong>Tổng Tiền: </strong>").append(totalAmount).append("</p>");
+
+                // Thêm logo vào email
+                emailContent.append("<img src='cid:logo' alt='Logo' style='width: 150px; height: auto;'/>");
+
+                // Gửi email thanh toán dưới dạng HTML
                 String subject = "Xác Nhận Thanh Toán Đơn Hàng";
-                String text = "Cảm ơn bạn đã mua hàng! Đơn hàng của bạn đã được xác nhận và đang vận chuyển.";
-                emailService.sendPaymentEmail(email, subject, text);
+                emailService.sendPaymentEmail(email, subject, emailContent.toString());
             }
 
             // Cập nhật trạng thái đơn hàng thành "Đang vận chuyển"
@@ -65,6 +93,7 @@ public class DonHangService {
             donHangRepository.save(donHang);
         }
     }
+
     public DonHangService(NguoiDungRepository nguoiDungRepository, DonHangRepository donHangRepository) {
         this.nguoiDungRepository = nguoiDungRepository;
         this.donHangRepository = donHangRepository;
@@ -83,6 +112,39 @@ public class DonHangService {
     public Page<DonHang> getAllSortedByNgayTaoDesc(Pageable pageable) {
         return donHangRepository.findAllByOrderByNgayTaoDesc(pageable);
     }
+    public String hoanTatDonHang(Long donHangId) {
+        // Lấy đơn hàng theo ID
+        DonHang donHang = donHangRepository.findById(donHangId)
+                .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
+
+        // Kiểm tra trạng thái đơn hàng
+        if (!"Đang vận chuyển".equals(donHang.getTrangThai())) {
+            return "Đơn hàng không ở trạng thái Đang vận chuyển, không thể hoàn tất";
+        }
+
+        // Kiểm tra chi tiết đơn hàng
+        for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
+            SanPhamChiTiet sanPhamChiTiet = chiTiet.getSanPhamChiTiet();
+            if (sanPhamChiTiet.getSoLuong() < chiTiet.getSoLuong()) {
+                return "Sản phẩm " + sanPhamChiTiet.getSanPham().getTenSanPham() + " không đủ số lượng";
+            }
+        }
+
+        // Cập nhật số lượng tồn kho
+        for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
+            SanPhamChiTiet sanPhamChiTiet = chiTiet.getSanPhamChiTiet();
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - chiTiet.getSoLuong());
+            sanPhamChiTietRepository.save(sanPhamChiTiet);
+        }
+
+        // Cập nhật trạng thái đơn hàng
+        donHang.setTrangThai("Hoàn tất");
+        donHang.setNgayCapNhat(new Date());
+        donHangRepository.save(donHang);
+
+        return "Hoàn tất đơn hàng thành công!";
+    }
+
 
     // Tìm đơn hàng theo ID
     public DonHang findById(Long id) {

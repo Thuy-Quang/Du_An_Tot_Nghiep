@@ -32,7 +32,7 @@
             <td th:text="${stat.index + 1}"></td>
             <td th:text="${donHang.nguoiDung.hoTen}"></td>
             <td th:text="${donHang.trangThai}"></td>
-            <td th:text="${donHang.tongTien + ' VND'}"></td>
+            <td th:text="${donHang.tongTien}"></td>
             <td th:text="${donHang.phuongThucThanhToan}"></td>
             <td th:text="${#dates.format(donHang.ngayTao, 'dd-MM-yyyy HH:mm')}"></td>
             <td th:text="${donHang.trangThaiThanhToan}"></td>
@@ -47,17 +47,66 @@
                 </form>
 
                 <!-- Thêm mã giảm giá -->
-                <a class="btn btn-info btn-sm open-discount-modal"
+                <a class="btn btn-light btn-sm open-discount-modal"
                    th:href="@{/HienThiDonHang/magiamgia/khachhang/nguoiDungID/{id}(id=${donHang.nguoiDung.id})}">
                     Thêm mã giảm giá
                 </a>
                 <a class="btn btn-success" th:href="@{/HienThiDonHang/chiTiet/{id}(id=${donHang.id})}">
                     Chi Tiết
                 </a>
+                <a class="btn btn-info"
+                   th:onclick="'hoanTatDonHang(' + ${donHang.id} + ')'">Hoàn Tất</a>
             </td>
         </tr>
         </tbody>
     </table>
+    <script>
+        function hoanTatDonHang(donHangId) {
+            if (confirm("Bạn có chắc chắn muốn hoàn tất đơn hàng này không?")) {
+                // Kiểm tra trạng thái đơn hàng trước
+                fetch(`/HienThiDonHang/trangthai/${donHangId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Không thể lấy trạng thái đơn hàng.");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.trangThai === "Đang vận chuyển") {
+                            // Nếu trạng thái là "Đang vận chuyển", cho phép hoàn tất
+                            return fetch(`/HienThiDonHang/hoantat/${donHangId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                        } else {
+                            // Hiển thị thông báo nếu trạng thái không phù hợp
+                            alert("Đơn hàng phải được xác nhận , mới có thể hoàn tất.");
+                            throw new Error("Trạng thái không hợp lệ.");
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Đơn hàng đã được hoàn tất thành công!");
+                            location.reload(); // Tải lại trang để cập nhật
+                        } else {
+                            response.text().then(text => alert("Lỗi: " + text));
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Lỗi:", error);
+                        alert("Có lỗi xảy ra!");
+                    });
+            }
+        }
+    </script>
 </div>
+
 </body>
 </html>

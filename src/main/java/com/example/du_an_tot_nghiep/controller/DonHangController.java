@@ -8,6 +8,7 @@ import com.example.du_an_tot_nghiep.model.DonHangRequest;
 import com.example.du_an_tot_nghiep.repository.*;
 import com.example.du_an_tot_nghiep.service.ChiTietDonHangService;
 import com.example.du_an_tot_nghiep.service.DonHangService;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,9 +43,24 @@ public class DonHangController {
     private MaGiamGiaKhachHangRepository maGiamGiaKhachHangRepository;
 
     // Hiển thị danh sách đơn hàng
+    @PostMapping("/hoantat/{id}")
+    public ResponseEntity<String> hoanTatDonHang(@PathVariable Long id) {
+        try {
+            String message = donHangService.hoanTatDonHang(id);
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/trangthai/{id}")
+    public ResponseEntity<?> getTrangThaiDonHang(@PathVariable Long id) {
+        DonHang donHang = donHangRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
+        return ResponseEntity.ok(Map.of("trangThai", donHang.getTrangThai()));
+    }
 
     @PostMapping("/xacNhanDonHang/{donHangId}")
-    public String confirmOrder(@PathVariable Long donHangId) {
+    public String confirmOrder(@PathVariable Long donHangId) throws MessagingException {
         // Xác nhận đơn hàng
         donHangService.confirmOrder(donHangId);
 
@@ -252,29 +268,28 @@ public class DonHangController {
                 return ResponseEntity.badRequest().body("Phương thức thanh toán không hợp lệ. Chỉ chấp nhận 'Tiền Mặt' hoặc 'Chuyển Khoản'.");
             }
 
-            // Tạo và lưu đối tượng DonHang
+            // Tạo đối tượng DonHang
             DonHang donHang = new DonHang();
             donHang.setNguoiDung(
                     nguoiDungRepository.findById(donHangReq.getNguoiDungId())
                             .orElseThrow(() -> new EntityNotFoundException("Người dùng không tồn tại với ID: " + donHangReq.getNguoiDungId()))
             );
             donHang.setTrangThai("Chờ xác nhận");
-
-            donHang.setTongTien(donHangReq.getTongTien());
             donHang.setPhuongThucThanhToan(phuongThuc);
             donHang.setTrangThaiThanhToan("Chưa thanh toán");
             donHang.setNgayTao(new Date());
             donHang.setNgayCapNhat(new Date());
 
-            // Lưu đơn hàng để lấy ID
-            donHang = donHangRepository.save(donHang);
-            final DonHang finalDonHang = donHang; // Đánh dấu biến là hiệu quả final
+            // Tính tổng tiền từ danh sách sản phẩm
+            double tongTien = donHangReq.getSanPhamList().stream()
+                    .mapToDouble(sp -> sp.getSoLuong() * sp.getGiaDonVi())
+                    .sum();
 
-            if (donHangReq.getSanPhamList() == null || donHangReq.getSanPhamList().isEmpty()) {
-                throw new IllegalArgumentException("Danh sách sản phẩm không được để trống");
-            }
+            // Cập nhật tổng tiền cho đơn hàng trước khi lưu
+            donHang.setTongTien(tongTien);
 
-            var abc = donHangReq.getSanPhamList();
+            // Lưu đơn hàng vào cơ sở dữ liệu
+            DonHang savedDonHang = donHangRepository.save(donHang);
 
             // Xử lý danh sách sản phẩm chi tiết
             List<ChiTietDonHang> chiTietDonHangs = donHangReq.getSanPhamList().stream().map(sp -> {
@@ -284,12 +299,23 @@ public class DonHangController {
                 chiTiet.setSanPhamChiTiet(sanPhamChiTiet);
                 chiTiet.setSoLuong(sp.getSoLuong());
                 chiTiet.setGiaDonVi(sp.getGiaDonVi());
-                chiTiet.setDonHang(finalDonHang);
+                chiTiet.setDonHang(savedDonHang);  // Sử dụng đối tượng đã lưu
                 return chiTiet;
-            }).toList();
+            }).collect(Collectors.toList());
 
             // Lưu danh sách chi tiết đơn hàng
             chiTietDonHangRepository.saveAll(chiTietDonHangs);
+
+            // Tính lại tổng tiền của đơn hàng sau khi lưu chi tiết (nếu cần)
+            double tongTienSauKhiLuu = chiTietDonHangs.stream()
+                    .mapToDouble(chiTiet -> chiTiet.getSoLuong() * chiTiet.getGiaDonVi())
+                    .sum();
+
+            // Cập nhật lại tổng tiền của đơn hàng
+            savedDonHang.setTongTien(tongTienSauKhiLuu);
+
+            // Lưu lại đơn hàng với tổng tiền đã cập nhật
+            donHangRepository.save(savedDonHang);
 
             // Tạo phản hồi
             Map<String, String> response = new HashMap<>();
@@ -302,6 +328,7 @@ public class DonHangController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi lưu đơn hàng: " + e.getMessage());
         }
     }
+
     @GetMapping("/chi-tiet-san-pham/{id}")
     public ResponseEntity<?> getChiTietDonHang(@PathVariable Long id) {
         try {

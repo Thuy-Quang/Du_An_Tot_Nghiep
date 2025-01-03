@@ -4,59 +4,55 @@ app.controller('CartController', function($scope, $http) {
         $scope.cart = {
             order:[],
             items: [],
-            colors: [],  // Mảng chứa thông tin màu sắc
-            sizes: [],   // Mảng chứa thông tin kích cỡ
+            colors: [],
+            sizes: [],
 
-            // Lấy tên màu sắc từ ID
-            getColorName: function(colorId) {
-                const color = $scope.cart.colors.find(c => c.id === colorId);
-                console.log("color", color)
-                return color ? color.tenMau : "Không xác định";
-            },
-
-            // Lấy tên kích cỡ từ ID
-            getSizeName: function(sizeId) {
-                const size = this.sizes.find(s => s.id === sizeId);
-                return size ? size.tenKichCo : "Không xác định";
-            },
 
             // Hàm thêm sản phẩm vào giỏ hàng
             add(id) {
                 var color = $scope.selectedColor;  // Màu sắc đã chọn
                 var size = $scope.selectedSize;    // Kích cỡ đã chọn
+                var quantity = $scope.selectedQuantity; // Số lượng đã chọn
 
-                // Hiển thị thông tin trên console (có thể thay thế bằng logic xử lý giỏ hàng)
                 console.log("ID Sản phẩm:", id);
                 console.log("Màu sắc:", color);
                 console.log("Kích cỡ:", size);
+                console.log("Số lượng:", quantity);
 
-                var item = this.items.find(item => item.id == id && item.color == color && item.size == size);
-                console.log(item);
-                if (item) {
-                    // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng
-                    item.soLuong++;
-                    this.saveToLocalStorage();
-                } else {
-                    $http.get(`/HienThi/getone/${id}`, {
-                        params: {
-                            color: color,  // Truyền giá trị màu sắc qua query parameter
-                            size: size     // Truyền giá trị kích cỡ qua query parameter
-                        }
-                    }).then(function(resp) {
-                        if (resp.data && resp.data.id) {
-                            resp.data.soLuong = 1;
-                            resp.data.color = color; // Gán thêm màu sắc
-                            resp.data.size = size;   // Gán thêm kích thước
-                            $scope.cart.items.push(resp.data);
+                $http.get(`/HienThi/getone/${id}`, {
+                    params: {
+                        color: color,  // Truyền giá trị màu sắc qua query parameter
+                        size: size     // Truyền giá trị kích thước qua query parameter
+                    }
+                }).then(function(resp) {
+                    if (resp.data && resp.data.id) {
+                        var item = $scope.cart.items.find(item => item.id == id && item.color == color && item.size == size);
+
+                        if (quantity > resp.data.soLuong) {
+                            // Kiểm tra số lượng tồn kho
+                            alert("Số lượng sản phẩm bạn chọn vượt quá số lượng tồn kho!");
+                            console.error("Không đủ số lượng tồn kho:", resp.data.soLuongTon);
+                        } else {
+                            if (item) {
+                                // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng
+                                item.soLuong += quantity;
+                            } else {
+                                // Thêm sản phẩm mới vào giỏ hàng
+                                resp.data.soLuong = quantity;
+                                resp.data.color = color; // Gán thêm màu sắc
+                                resp.data.size = size;   // Gán thêm kích thước
+                                $scope.cart.items.push(resp.data);
+                            }
+
                             alert("Thêm thành công sản phẩm vào giỏ hàng!");
                             $scope.cart.saveToLocalStorage();
-                        } else {
-                            console.error("Sản phẩm không tồn tại hoặc dữ liệu không hợp lệ");
                         }
-                    }).catch(function(error) {
-                        console.error("Lỗi khi lấy sản phẩm:", error);
-                    });
-                }
+                    } else {
+                        console.error("Sản phẩm không tồn tại hoặc dữ liệu không hợp lệ");
+                    }
+                }).catch(function(error) {
+                    console.error("Lỗi khi lấy sản phẩm:", error);
+                });
             },
 
             // Lưu giỏ hàng vào localStorage
@@ -193,7 +189,6 @@ app.controller('CartController', function($scope, $http) {
                     alert("Giỏ hàng trống!");
                     return;
                 }
-
                 // Dữ liệu đơn hàng
                 var orderData = {
                     nguoiDungId: Number(userId), // ID người dùng từ token
@@ -206,7 +201,6 @@ app.controller('CartController', function($scope, $http) {
                         giaDonVi: item.gia
                     }))
                 };
-
                 // Kiểm tra dữ liệu đơn hàng trước khi gửi
                 if (!orderData.sanPhamList || orderData.sanPhamList.length === 0) {
                     alert("Không có sản phẩm trong đơn hàng.");

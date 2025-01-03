@@ -115,11 +115,16 @@
         <!-- Các mục bên phải của navbar -->
         <ul class="navbar-nav ml-auto">
           <!-- Nút Đăng nhập -->
-          <li class="nav-item d-flex align-items-center">
-            <a class="nav-link d-flex align-items-center" th:href="@{/dang-nhap/hien-thi}">
-              <i class="bi bi-person-circle me-2"></i> Đăng nhập
+          <li class="nav-item dropdown d-flex align-items-center">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" id="accountDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-2"></i> Tài khoản
             </a>
+            <ul class="dropdown-menu" aria-labelledby="accountDropdown">
+              <li><a class="dropdown-item" th:href="@{/dang-nhap/hien-thi}">Đăng nhập</a></li>
+              <li><a class="dropdown-item"  onclick="logout()" >Đăng xuất</a></li>
+            </ul>
           </li>
+
           <div class="cart-icon-container"  ng-controller="CartController">
             <a th:href="@{/giohangdetail}" class="cart-link">
               <div>
@@ -180,6 +185,34 @@
         console.log("Token không tồn tại");
       }
     });
+    // Function to handle logout
+    function logout() {
+      // Gửi yêu cầu POST tới API đăng xuất
+      fetch('/api/xac-thuc/dang-xuat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+              .then(response => response.json())
+              .then(data => {
+                // Kiểm tra thông báo từ server
+                if (data.message === "Đăng xuất thành công") {
+                  // Xóa token trong localStorage
+                  localStorage.removeItem('token');
+
+                  // Hiển thị thông báo đăng xuất thành công
+                  alert("Đăng xuất thành công!");
+
+                  // Chuyển hướng về trang đăng nhập
+                  window.location.href = '/dang-nhap/hien-thi';
+                }
+              })
+              .catch(error => {
+                console.error('Lỗi đăng xuất:', error);
+              });
+    }
+    ;
   </script>
   <script th:src="@{/js/addgiohang.js}"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

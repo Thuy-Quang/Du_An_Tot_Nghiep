@@ -34,9 +34,9 @@ public class DangNhapController {
         // Xác thực người dùng
         Boolean isUserInDB = nguoiDungDetailsService.checkUserInDB(tenDangNhap, matKhau);
         if (!isUserInDB) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Tên đăng nhập hoặc mật khẩu không chính xác");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Tên đăng nhập hoặc mật khẩu không chính xác");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
         Long userId = nguoiDungDetailsService.getUserIdByUsername(tenDangNhap);
 
@@ -53,5 +53,12 @@ public class DangNhapController {
             errorResponse.put("error", "Không thể tạo JWT");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
+    }
+    // Đăng xuất
+    @PostMapping("/dang-xuat")
+    public ResponseEntity<?> dangXuat() {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Đăng xuất thành công");
+        return ResponseEntity.ok(response);
     }
 }
