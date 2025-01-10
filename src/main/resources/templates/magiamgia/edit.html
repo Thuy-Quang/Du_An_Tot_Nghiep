@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Sửa Mã Giảm Giá</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function validateForm() {
+            const ma = document.getElementById("ma").value.trim(); // Sử dụng trim() để loại bỏ khoảng trắng
+            const phanTramGiam = document.getElementById("phanTramGiam").value.trim(); // Cũng trim cho phần trăm giảm
+            const ngayBatDau = document.getElementById("ngayBatDau").value.trim();
+            const ngayHetHan = document.getElementById("ngayHetHan").value.trim();
+
+            // Kiểm tra xem các trường có bị trống không
+            if (!ma) {
+                alert("Mã không được để trống.");
+                return false;
+            }
+            if (!phanTramGiam) {
+                alert("Phần trăm giảm không được để trống.");
+                return false;
+            }
+            if (!ngayBatDau) {
+                alert("Ngày bắt đầu không được để trống.");
+                return false;
+            }
+            if (!ngayHetHan) {
+                alert("Ngày hết hạn không được để trống.");
+                return false;
+            }
+
+            // Kiểm tra độ dài của mã
+            if (ma.length < 3 || ma.length > 10) {
+                alert("Mã giảm giá phải từ 3 đến 10 ký tự.");
+                return false;
+            }
+
+            // Kiểm tra phần trăm giảm giá
+            if (parseFloat(phanTramGiam) <= 0 || parseFloat(phanTramGiam) > 100) {
+                alert("Phần trăm giảm phải lớn hơn 0 và nhỏ hơn hoặc bằng 100.");
+                return false;
+            }
+
+            // Chuyển đổi chuỗi ngày thành đối tượng Date
+            const batDauDate = new Date(ngayBatDau);
+            const hetHanDate = new Date(ngayHetHan);
+
+            // Kiểm tra ngày hết hạn phải sau ngày bắt đầu
+            if (hetHanDate <= batDauDate) {
+                alert("Ngày hết hạn phải sau ngày bắt đầu.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+    <script>
+        function loadContent(url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    document.querySelector('.main-content').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                    alert('Lỗi khi tải nội dung: ' + error.message); // Thông báo lỗi cho người dùng
+                });
+        }
+
+        function submitForm(url, formData, callback) {
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        callback(); // Tải lại danh sách hoặc làm gì đó sau khi thành công
+                    } else {
+                        alert('Thao tác thất bại: ' + data.message);
+                    }
+                })
+                .catch(error => console.error('Lỗi:', error));
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault(); // Ngăn không cho trang tải lại
+            const form = event.target;
+            const formData = new FormData(form);
+            const actionUrl = form.getAttribute('action'); // Lấy URL từ thuộc tính action của form
+            submitForm(actionUrl, formData, () => loadContent(form.dataset.reloadUrl));
+        }
+    </script>
+</head>
+<body>
+<div class="container" th:fragment="quanly">
+
+    <h1 class="text-center">Sửa Mã Giảm Giá</h1>
+
+    <form id="productForm" action="/ma-giam-gia/update/{id}(id=${maGiamGia.id})" th:object="${maGiamGia}" method="post"  enctype="multipart/form-data" onsubmit="handleFormSubmit(event) ">
+        <div class="mb-3">
+            <label for="ma" class="form-label">Mã</label>
+            <input type="text" class="form-control" id="ma" th:field="*{ma}" required>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('ma')}" th:errors="*{ma}">Mã không hợp lệ.</div>
+        </div>
+        <div class="mb-3">
+            <label for="phanTramGiam" class="form-label">Phần Trăm Giảm</label>
+            <input type="number" class="form-control" id="phanTramGiam" th:field="*{phanTramGiam}" step="0.01" required min="0" max="100">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('phanTramGiam')}" th:errors="*{phanTramGiam}">Phần trăm giảm phải từ 0 đến 100.</div>
+        </div>
+        <div class="mb-3">
+            <label for="ngayBatDau" class="form-label">Ngày Bắt Đầu</label>
+            <input type="date" class="form-control" id="ngayBatDau" th:field="*{ngayBatDau}" required>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('ngayBatDau')}" th:errors="*{ngayBatDau}">Ngày bắt đầu không hợp lệ.</div>
+        </div>
+        <div class="mb-3">
+            <label for="ngayHetHan" class="form-label">Ngày Hết Hạn</label>
+            <input type="date" class="form-control" id="ngayHetHan" th:field="*{ngayHetHan}" required>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('ngayHetHan')}" th:errors="*{ngayHetHan}">Ngày hết hạn không hợp lệ.</div>
+        </div>
+        <div class="mb-3">
+            <label for="trangThai" class="form-label">Trạng Thái</label>
+            <input type="text" class="form-control" id="trangThai" th:field="*{trangThai}" required>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}">Trạng thái không hợp lệ.</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Cập Nhật</button>
+        <a href="javascript:void(0);" th:onclick="'loadContent(\'/ma-giam-gia\')'" class="btn btn-primary">Quay lại</a>
+    </form>
+
+</div>
+</body>
+</html>

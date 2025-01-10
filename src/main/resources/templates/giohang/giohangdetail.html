@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/index.html :: dynamic(~{::main})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Giỏ Hàng</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body>
+<main ng-app="cartApp" ng-controller="CartController">
+  <h2>Giỏ Hàng Của Bạn</h2>
+  <table class="table" th:fragment="shoppingcart">
+    <thead>
+    <tr>
+      <th>Sản Phẩm</th>
+      <th>Màu Sắc</th>
+      <th>Kích Cỡ</th>
+      <th>Số Lượng</th>
+      <th>Giá</th>
+      <th>Chức Năng </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in cart.items track by $index">
+      <td>{{item.tenSanPham}}</td>
+
+      <!-- Hiển thị Màu Sắc đã chọn -->
+      <td>{{item.mauSac}}</td>
+
+      <td>{{item.kichCo}}</td>
+
+      <!-- Hiển thị Kích Cỡ (Tên) thay vì ID -->
+
+      <td>
+        <input type="number" ng-model="item.soLuong" class="form-control" min="1" ng-change="cart.saveToLocalStorage()">
+      </td>
+      <td>{{item.gia | number:0}}</td> <!-- Hiển thị giá không có số thập phân -->
+      <td>
+        <button class="btn btn-danger" ng-click="cart.remove(item.id)">xoá</button>
+      </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+      <td colspan="5" class="text-right"><strong>Tổng Tiền:</strong></td>
+      <td><strong>{{cart.calculateTotal() | number:0}}</strong></td> <!-- Hiển thị tổng tiền không có số thập phân -->
+    </tr>
+    </tfoot>
+  </table>
+  <div class="d-flex justify-content-between">
+    <a th:href="@{/giohang}" class="btn btn-primary">Tiếp Tục Mua Sắm</a>
+    <button class="btn btn-success" ng-click="cart.dathang()">Đặt Hàng</button>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script th:src="@{/js/addgiohang.js}"></script>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách đơn hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div class="container" th:fragment="quanly">
+    <br><br><h1 class="text-center">Danh Sách Đơn Hàng</h1><br><br>
+
+    <!-- Nút thêm đơn hàng -->
+    <a class="btn btn-primary mb-4" href="/HienThiDonHang/create">Thêm Đơn Hàng</a>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Người dùng</th>
+            <th>Trạng thái đơn hàng</th>
+            <th>Tổng tiền</th>
+            <th>Phương thức thanh toán</th>
+            <th>Ngày tạo</th>
+            <th>Trạng thái thanh toán</th>
+            <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="donHang, stat : ${listDonHang}">
+            <td th:text="${stat.index + 1}"></td>
+            <td th:text="${donHang.nguoiDung.hoTen}"></td>
+            <td th:text="${donHang.trangThai}"></td>
+            <td th:text="${donHang.tongTien}"></td>
+            <td th:text="${donHang.phuongThucThanhToan}"></td>
+            <td th:text="${#dates.format(donHang.ngayTao, 'dd-MM-yyyy HH:mm')}"></td>
+            <td th:text="${donHang.trangThaiThanhToan}"></td>
+            <td>
+                <!-- Sửa đơn hàng -->
+                <a class="btn btn-warning btn-sm" th:href="@{/HienThiDonHang/listDonHang/edit/{id}(id=${donHang.id})}">Sửa</a>
+
+                <!-- Xóa đơn hàng -->
+                <form th:action="@{/HienThiDonHang/listDonHang/delete/{id}(id=${donHang.id})}" method="post" style="display:inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này không?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                </form>
+
+                <!-- Thêm mã giảm giá -->
+                <a class="btn btn-light btn-sm open-discount-modal"
+                   th:href="@{/HienThiDonHang/magiamgia/khachhang/nguoiDungID/{id}(id=${donHang.nguoiDung.id})}">
+                    Thêm mã giảm giá
+                </a>
+                <a class="btn btn-success" th:href="@{/HienThiDonHang/chiTiet/{id}(id=${donHang.id})}">
+                    Chi Tiết
+                </a>
+                <a class="btn btn-info"
+                   th:onclick="'hoanTatDonHang(' + ${donHang.id} + ')'">Hoàn Tất</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <script>
+        function hoanTatDonHang(donHangId) {
+            if (confirm("Bạn có chắc chắn muốn hoàn tất đơn hàng này không?")) {
+                // Kiểm tra trạng thái đơn hàng trước
+                fetch(`/HienThiDonHang/trangthai/${donHangId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Không thể lấy trạng thái đơn hàng.");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.trangThai === "Đang vận chuyển") {
+                            // Nếu trạng thái là "Đang vận chuyển", cho phép hoàn tất
+                            return fetch(`/HienThiDonHang/hoantat/${donHangId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                        } else {
+                            // Hiển thị thông báo nếu trạng thái không phù hợp
+                            alert("Đơn hàng phải được xác nhận , mới có thể hoàn tất.");
+                            throw new Error("Trạng thái không hợp lệ.");
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Đơn hàng đã được hoàn tất thành công!");
+                            location.reload(); // Tải lại trang để cập nhật
+                        } else {
+                            response.text().then(text => alert("Lỗi: " + text));
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Lỗi:", error);
+                        alert("Có lỗi xảy ra!");
+                    });
+            }
+        }
+    </script>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <title>Thêm Vai Trò Người Dùng</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <h2 class="text-center mb-4">Thêm Vai Trò Người Dùng</h2>
+
+    <!-- Hiển thị thông báo lỗi nếu có -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Hiển thị thông báo thành công nếu có -->
+    <div th:if="${message}" class="alert alert-success">
+        <span th:text="${message}"></span>
+    </div>
+
+    <form th:action="@{/vai-tro-nguoi-dung/save}" th:object="${vaiTroNguoiDung}" method="post">
+        <div class="form-group mb-3">
+            <label for="nguoiDung">Người Dùng:</label>
+            <select id="nguoiDung" th:field="*{nguoiDung}" class="form-control" required>
+                <option value="">Chọn người dùng</option>
+                <option th:each="user: ${nguoiDungList}" th:value="${user.id}" th:text="${user.hoTen}"></option>
+            </select>
+            <!-- Thông báo lỗi nếu không chọn người dùng -->
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('nguoiDung')}">
+                Vui lòng chọn người dùng.
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="vaiTro">Vai Trò:</label>
+            <select id="vaiTro" th:field="*{vaiTro}" class="form-control" required>
+                <option value="">Chọn vai trò</option>
+                <option th:each="role: ${vaiTroList}" th:value="${role.id}" th:text="${role.tenVaiTro}"></option>
+            </select>
+            <!-- Thông báo lỗi nếu không chọn vai trò -->
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('vaiTro')}">
+                Vui lòng chọn vai trò.
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success">Lưu</button>
+        <a th:href="@{/vai-tro-nguoi-dung}" class="btn btn-danger">Hủy</a>
+    </form>
+</div>
+
+<!-- JavaScript của Bootstrap (yêu cầu cho chức năng validate) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

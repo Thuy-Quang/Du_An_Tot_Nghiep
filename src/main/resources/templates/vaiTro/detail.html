@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <title>Chi Tiết Vai Trò</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <h1 class="mb-4 text-center">Chi Tiết Vai Trò</h1>
+
+    <!-- Hiển thị thông báo nếu có -->
+    <p th:if="${message}" class="alert alert-warning" th:text="${message}"></p>
+
+    <!-- Thông tin vai trò -->
+    <div th:if="${vaiTro}" class="card">
+        <div class="card-header">
+            Thông Tin Vai Trò
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">ID: <span th:text="${vaiTro.id}"></span></h5>
+            <p class="card-text">
+                <strong>Tên Vai Trò:</strong> <span th:text="${vaiTro.tenVaiTro}"></span>
+            </p>
+            <!-- Nút sửa vai trò -->
+            <a th:href="@{/vai-tro/edit/{id}(id=${vaiTro.id})}" class="btn btn-primary">Sửa</a>
+            <!-- Nút quay lại danh sách vai trò -->
+            <a th:href="@{/vai-tro}" class="btn btn-secondary">Quay lại danh sách</a>
+        </div>
+    </div>
+
+    <!-- Hiển thị lỗi nếu vai trò không tồn tại -->
+    <div th:if="${vaiTro == null}" class="alert alert-danger mt-4">
+        Không tìm thấy vai trò.
+    </div>
+</div>
+
+<!-- JavaScript của Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <title>Chi Tiết Vai Trò Người Dùng</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Chi Tiết Vai Trò Người Dùng</h4>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <strong>ID:</strong> <span th:text="${vaiTroNguoiDung.id}"></span>
+            </div>
+            <div class="mb-3">
+                <strong>Tên Người Dùng:</strong> <span th:text="${vaiTroNguoiDung.nguoiDung.hoTen}"></span>
+            </div>
+            <div class="mb-3">
+                <strong>Tên Vai Trò:</strong> <span th:text="${vaiTroNguoiDung.vaiTro.tenVaiTro}"></span>
+            </div>
+            <a class="btn btn-secondary" th:href="@{/vai-tro-nguoi-dung}">Quay Lại</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

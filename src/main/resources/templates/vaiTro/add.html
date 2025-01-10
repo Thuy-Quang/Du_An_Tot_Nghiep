@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <title>Thêm vai trò</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 600px;
+        }
+    </style>
+</head>
+<script>
+    function validateForm() {
+        const ma = document.getElementById("ma").value.trim(); // Sử dụng trim() để loại bỏ khoảng trắng
+        const phanTramGiam = document.getElementById("phanTramGiam").value.trim(); // Cũng trim cho phần trăm giảm
+        const ngayBatDau = document.getElementById("ngayBatDau").value.trim();
+        const ngayHetHan = document.getElementById("ngayHetHan").value.trim();
+
+        // Kiểm tra xem các trường có bị trống không
+        if (!ma) {
+            alert("Mã không được để trống.");
+            return false;
+        }
+        if (!phanTramGiam) {
+            alert("Phần trăm giảm không được để trống.");
+            return false;
+        }
+        if (!ngayBatDau) {
+            alert("Ngày bắt đầu không được để trống.");
+            return false;
+        }
+        if (!ngayHetHan) {
+            alert("Ngày hết hạn không được để trống.");
+            return false;
+        }
+
+        // Kiểm tra độ dài của mã
+        if (ma.length < 3 || ma.length > 10) {
+            alert("Mã giảm giá phải từ 3 đến 10 ký tự.");
+            return false;
+        }
+
+        // Kiểm tra phần trăm giảm giá
+        if (parseFloat(phanTramGiam) <= 0 || parseFloat(phanTramGiam) > 100) {
+            alert("Phần trăm giảm phải lớn hơn 0 và nhỏ hơn hoặc bằng 100.");
+            return false;
+        }
+
+        // Chuyển đổi chuỗi ngày thành đối tượng Date
+        const batDauDate = new Date(ngayBatDau);
+        const hetHanDate = new Date(ngayHetHan);
+
+        // Kiểm tra ngày hết hạn phải sau ngày bắt đầu
+        if (hetHanDate <= batDauDate) {
+            alert("Ngày hết hạn phải sau ngày bắt đầu.");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <h1 class="text-center mb-4">Thêm vai trò mới</h1>
+
+    <!-- Hiển thị thông báo thành công -->
+    <div th:if="${message}" class="alert alert-success" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+
+    <!-- Hiển thị thông báo lỗi -->
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+    <h1 class="text-center">Thêm Vai Trò</h1>
+    <!-- Form thêm vai trò -->
+   <form th:action="@{/vai-tro/add}" th:object="${vaiTro}" method="post" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="tenVaiTro">Tên vai trò:</label>
+            <input type="text" class="form-control" id="tenVaiTro" th:field="*{tenVaiTro}" required />
+
+            <!-- Hiển thị lỗi cho input -->
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('tenVaiTro')}" th:errors="*{tenVaiTro}"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Thêm</button>
+    </form>
+
+    <!-- Nút quay lại -->
+    <a href="javascript:void(0);" th:onclick="'loadContent(\'/vai-tro\')'" class="btn btn-primary">Quay lại</a>
+</div>
+
+<!-- Thư viện JavaScript của Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

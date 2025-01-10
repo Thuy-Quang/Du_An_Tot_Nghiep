@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <title>Chỉnh sửa vai trò</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <h1 class="text-center mb-4">Chỉnh sửa vai trò</h1>
+
+    <!-- Hiển thị thông báo -->
+    <div th:if="${message}" class="alert alert-success" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Form chỉnh sửa vai trò -->
+    <form action="#" th:action="@{/vai-tro/edit/{id}(id=${vaiTro.id})}" th:object="${vaiTro}" method="post">
+        <div class="form-group">
+            <label for="tenVaiTro">Tên vai trò:</label>
+            <input type="text" class="form-control" id="tenVaiTro" th:field="*{tenVaiTro}" placeholder="Nhập tên vai trò" required />
+        </div>
+        <!-- Nút cập nhật -->
+        <button type="submit" class="btn btn-primary btn-block mt-3">Cập nhật</button>
+    </form>
+
+    <!-- Nút quay lại danh sách vai trò -->
+    <a href="javascript:void(0);" th:onclick="'loadContent(\'/vai-tro\')'" class="btn btn-primary">Quay lại</a>
+</div>
+
+<!-- Bootstrap Scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

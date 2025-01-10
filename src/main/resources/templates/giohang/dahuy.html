@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đơn Hàng Đã Huỷ</title>
+  <!-- Link đến Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Thêm hiệu ứng đổ bóng và bo góc cho thông báo */
+    .alert-custom {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 2px solid #f5c6cb;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert-custom h4 {
+      color: #d63e3e;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    /* Nút quay về trang chủ */
+    .btn-custom {
+      background-color: #28a745;
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn-custom:hover {
+      background-color: #218838;
+      transform: scale(1.05);
+    }
+
+    .btn-custom:focus {
+      outline: none;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Thêm hiệu ứng cho phần nền */
+    .background {
+      background: linear-gradient(135deg, #ff99cc, #66ccff);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 600px;
+    }
+
+    /* Thêm hiệu ứng chữ đẹp */
+    .message-text {
+      font-family: 'Arial', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+
+  <div class="background">
+    <div class="container text-center">
+      <!-- Thông báo đã huỷ với hiệu ứng đẹp -->
+      <div class="alert alert-custom">
+        <h4 class="alert-heading">Đơn Hàng Đã Huỷ!</h4>
+        <p class="message-text">Đơn hàng của bạn đã huỷ thành công. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi!</p>
+        <hr>
+        <p class="mb-0">Chúng tôi luôn sẵn sàng hỗ trợ bạn.</p>
+      </div>
+
+      <!-- Nút quay về trang chủ -->
+      <div class="mt-4">
+        <a th:href="@{/giohang}"  class="btn btn-custom">Quay Về Trang Chủ</a>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Link đến các script của Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

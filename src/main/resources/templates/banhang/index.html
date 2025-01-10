@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Bán Hàng Tại Quầy</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .btn:hover {
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+        /*Ảnh*/
+        .table img {
+            max-width: 30px;
+            max-height: 30px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 2px;
+            background-color: #fff;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .table th {
+            background-color: #343a40; /* Màu nền header đậm hơn */
+            color: white;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa; /* Màu hover nhạt */
+        }
+    </style>
+</head>
+<body>
+<div class="container py-5" th:fragment="quanly">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .btn:hover {
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+        /*Ảnh*/
+        .table img {
+            max-width: 30px;
+            max-height: 30px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 2px;
+            background-color: #fff;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .table th {
+            background-color: #343a40; /* Màu nền header đậm hơn */
+            color: white;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa; /* Màu hover nhạt */
+        }
+    </style>
+    <h1 class="text-center mb-5">Quản Lý Bán Hàng</h1>
+
+    <!-- Khu vực danh sách sản phẩm -->
+    <div id="product-list" class="mb-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">Danh Sách Sản Phẩm</h2>
+                    <!-- Nút kích hoạt modal tạo đơn hàng -->
+                    <button id="btn-tao-don-hang" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#createOrderModal">
+                        <i class="bi bi-plus-circle"></i> Tạo Đơn Hàng
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>STT</th>
+                        <th>Hình Ảnh</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Màu Sắc</th>
+                        <th>Kích Cỡ</th>
+                        <th>Giá</th>
+                        <th>Số Lượng</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="sanPham, stat : ${listSanPham}">
+                        <td th:text="${stat.count}"></td>
+
+                        <td class="text-center">
+                            <img th:src="@{'/images/' + ${sanPham.hinhAnh}}" alt="Hình ảnh sản phẩm" class="img-thumbnail">
+                        </td>
+
+                        <td th:text="${sanPham.tenSanPham}"></td>
+                        <td>
+                            <span th:each="chiTiet, idx : ${sanPham.sanPhamChiTiets}">
+                                <span th:text="${chiTiet.mauSac.tenMau}"></span>
+                                <br th:if="${!idx.last}">
+                            </span>
+                        </td>
+
+                        <td>
+                            <span th:each="chiTiet, idx : ${sanPham.sanPhamChiTiets}">
+                                <span th:text="${chiTiet.kichCo.tenKichCo}"></span>
+                                <br th:if="${!idx.last}">
+                            </span>
+                        </td>
+
+                        <td th:text="${#numbers.formatDecimal(sanPham.gia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+
+                        <td>
+                            <span th:each="chiTiet, idx : ${sanPham.sanPhamChiTiets}">
+                                <span th:text="${chiTiet.soLuong}"></span>
+                                <br th:if="${!idx.last}">
+                            </span>
+                        </td>
+
+                        <td>
+                            <span th:each="chiTiet, idx : ${sanPham.sanPhamChiTiets}">
+                                <span th:text="${chiTiet.trangThai}"
+                                      th:classappend="${chiTiet.trangThai == 'Còn hàng'} ? 'text-success' : 'text-danger'">
+                                </span>
+                                <br th:if="${!idx.last}">
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- Pagination -->
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPageSanPham == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/bhtaiquay(pageSanPham=${currentPageSanPham - 1}, pageDonHang=${currentPageDonHang}, pageChiTiet=${currentPageChiTiet}, size=5)}">Previous</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPagesSanPham - 1)}"
+                            th:classappend="${i == currentPageSanPham} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/bhtaiquay(pageSanPham=${i}, pageDonHang=${currentPageDonHang}, pageChiTiet=${currentPageChiTiet}, size=5)}"
+                               th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${currentPageSanPham == totalPagesSanPham - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/bhtaiquay(pageSanPham=${currentPageSanPham + 1}, pageDonHang=${currentPageDonHang}, pageChiTiet=${currentPageChiTiet}, size=5)}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tạo Đơn Hàng -->
+    <div class="modal fade" id="createOrderModal" tabindex="-1" aria-labelledby="createOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="createOrderModalLabel">Tạo Đơn Hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/bhtaiquay/taoDonHang" method="post">
+                        <div class="mb-3">
+                            <label for="customerSelect" class="form-label">Chọn Khách Hàng</label>
+                            <div class="d-flex align-items-center">
+                                <select id="customerSelect" name="nguoiDungId" class="form-select" required>
+                                    <option value="" disabled selected>Chọn khách hàng...</option>
+                                    <option th:each="khachHang : ${listKhachHang}"
+                                            th:value="${khachHang.id}"
+                                            th:text="${khachHang.hoTen}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="paymentMethod" class="form-label">Phương Thức Thanh Toán</label>
+                            <select id="paymentMethod" name="phuongThucThanhToan" class="form-select" required>
+                                <option value="Tiền mặt">Tiền mặt</option>
+                                <option value="Chuyển khoản">Chuyển khoản</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Tạo Đơn Hàng</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Khu vực danh sách đơn hàng -->
+    <div id="order-list" class="mb-5">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h2 class="mb-0">Danh Sách Đơn Hàng</h2>
+            </div>
+            <div class="card-body">
+                <table id="order-table" class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã Đơn Hàng</th>
+                        <th>Tên Khách Hàng</th>
+                        <th>Ngày Tạo</th>
+                        <th>Phương Thức Thanh Toán</th>
+                        <th>Trạng Thái</th>
+                        <th>Tổng Tiền</th>
+                        <th>Hành Động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="donHang, stat : ${listDonHang}">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${donHang.id}"></td>
+                        <td th:text="${donHang.nguoiDung.hoTen}"></td>
+                        <td th:text="${#dates.format(donHang.ngayTao, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${donHang.phuongThucThanhToan}"></td>
+                        <td>
+                            <span th:if="${donHang.trangThai == 'Chưa xác nhận'}" class="text-danger">
+                                Chờ thanh toán
+                            </span>
+                            <span th:if="${donHang.trangThai == 'Đã xác nhận'}" class="text-warning">
+                                Đã xác nhận
+                            </span>
+                            <span th:if="${donHang.trangThai == 'Đã thanh toán'}" class="text-success">
+                                Đã thanh toán
+                                </span>
+                        </td>
+
+                        <td th:text="${#numbers.formatDecimal(donHang.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+                        <td>
+                            <a th:href="@{/bhtaiquay(idDonHangDuocChon=${donHang.id})}" class="btn btn-primary">Chọn</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- Pagination -->
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPageDonHang == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/bhtaiquay(pageSanPham=${currentPageSanPham}, pageDonHang=${currentPageDonHang - 1}, pageChiTiet=${currentPageChiTiet}, size=5)}">Previous</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPagesDonHang - 1)}"
+                            th:classappend="${i == currentPageDonHang} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/bhtaiquay(pageSanPham=${currentPageSanPham}, pageDonHang=${i}, pageChiTiet=${currentPageChiTiet}, size=5)}"
+                               th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${currentPageDonHang == totalPagesDonHang - 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/bhtaiquay(pageSanPham=${currentPageSanPham}, pageDonHang=${currentPageDonHang + 1}, pageChiTiet=${currentPageChiTiet}, size=5)}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form modal Sửa Đơn Hàng -->
+    <div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel"
+         th:classappend="${hienThiModal} ? 'show d-block' : ''" style="display: ${hienThiModal} ? 'block' : 'none';" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="editOrderModalLabel">Sửa Đơn Hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Thông báo kết quả -->
+                    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+                    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                    <!-- Form cập nhật số lượng -->
+                    <form action="/bhtaiquay/updateDonHang" method="post">
+                        <input type="hidden" name="donHangId" th:value="${donHangDuocChon.id}">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Số lượng hiện tại</th>
+                                <th>Giá</th>
+                                <th>Cập nhật số lượng</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="chiTiet : ${donHangDuocChon.chiTietDonHangs}">
+                                <td th:text="${chiTiet.sanPham.tenSanPham}"></td>
+                                <td th:text="${chiTiet.soLuong}"></td>
+                                <td th:text="${chiTiet.giaDonVi}"></td>
+                                <td>
+                                    <input type="hidden" name="sanPhamChiTietIds" th:value="${chiTiet.sanPhamChiTiet.id}">
+                                    <input type="number" name="soLuongs" th:value="${chiTiet.soLuong}" min="1" class="form-control">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Tổng tiền -->
+                        <div class="text-end mt-3">
+                            <strong>Tổng tiền: </strong>
+                            <span th:text="${#numbers.formatDecimal(donHangDuocChon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Cập nhật</button>
+                    </form>
+                </div>
+
+                    <!-- Form thêm sản phẩm mới -->
+                    <form action="/bhtaiquay/addSanPham" method="post" class="mt-4">
+                        <input type="hidden" name="donHangId" th:value="${donHangDuocChon.id}">
+                        <div class="mb-3">
+                            <label for="newProductSelect" class="form-label">Thêm sản phẩm</label>
+                            <select id="newProductSelect" name="sanPhamId" class="form-select" required>
+                                <option value="" disabled selected>Chọn sản phẩm...</option>
+                                <option th:each="sanPham : ${listSanPhamFull}"
+                                        th:value="${sanPham.id}" th:text="${sanPham.tenSanPham}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newProductQuantity" class="form-label">Số lượng</label>
+                            <input type="number" id="newProductQuantity" name="soLuong" class="form-control" min="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Thêm vào đơn hàng</button>
+                    </form>
+
+                    <!-- Nút Thanh toán -->
+                    <form action="/bhtaiquay/thanhToan" method="post" class="mt-4">
+                        <input type="hidden" name="donHangId" th:value="${donHangDuocChon.id}">
+                        <button type="submit" class="btn btn-primary w-100">Thanh toán</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Khu vực chi tiết đơn hàng -->
+    <div id="order-detail-list" class="mb-5">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h2 class="mb-0">Chi Tiết Đơn Hàng</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã Đơn Hàng</th>
+                        <th>Tên Khách Hàng</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Mã Sản Phẩm</th>
+                        <th>Màu Sắc</th>
+                        <th>Kích Cỡ</th>
+                        <th>Số Lượng</th>
+                        <th>Giá Đơn Vị</th>
+                        <th>Tổng</th>
+                        <th>Trạng Thái</th>
+                        <th>Ngày Thêm</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="chiTiet, stat : ${listChiTietDonHang}">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${chiTiet.donHang.id}"></td>
+                        <td th:text="${chiTiet.donHang.nguoiDung.hoTen}"></td>
+                        <td th:text="${chiTiet.sanPhamChiTiet.sanPham.tenSanPham}"></td>
+                        <td th:text="${chiTiet.sanPhamChiTiet.id}"></td>
+                        <td th:text="${chiTiet.sanPhamChiTiet.mauSac}"></td>
+                        <td th:text="${chiTiet.sanPhamChiTiet.kichCo}"></td>
+                        <td th:text="${chiTiet.soLuong}"></td>
+                        <td th:text="${chiTiet.giaDonVi} + ' VNĐ'"></td>
+                        <td th:text="${chiTiet.soLuong * chiTiet.giaDonVi} + ' VNĐ'"></td>
+                        <td th:text="${chiTiet.donHang.trangThai}"></td>
+                        <td th:text="${#dates.format(chiTiet.ngayThem, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

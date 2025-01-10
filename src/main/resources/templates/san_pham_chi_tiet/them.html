@@ -1,0 +1,76 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<title>W3.CSS</title>-->
+<!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+<!--<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">-->
+<!--&lt;!&ndash; Bootstrap CSS &ndash;&gt;-->
+<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">-->
+<!--&lt;!&ndash; Font Awesome &ndash;&gt;-->
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">-->
+<!--<body>-->
+
+<!--<div class="w3-container">-->
+<!--    <h2>W3.CSS Modal</h2>-->
+<!--    <p>Use w3-container classes to create different sections in the modal (e.g. header & footer).</p>-->
+<!--    <button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-black">Open Modal</button>-->
+
+
+<!--    <div id="id01" class="w3-modal">-->
+<!--        <div class="w3-modal-content">-->
+<!--            <header class="w3-container w3-teal">-->
+<!--        <span onclick="document.getElementById('id01').style.display='none'"-->
+<!--              class="w3-button w3-display-topright">&times;</span>-->
+<!--                <h1 class="text-center mb-4">Thêm Sản Phẩm Chi Tiết</h1>-->
+<!--            </header>-->
+<!--            <div class="w3-container">-->
+<!--                <form th:action="@{/san-pham-chi-tiet/create}" th:object="${sanPhamChiTiet}" method="post">-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="sanPham" class="form-label"><i class="fas fa-box"></i> Sản Phẩm</label>-->
+<!--                        <select id="sanPham" class="form-select" th:field="*{sanPham.id}">-->
+<!--                            <option th:each="sanPham : ${sanPhamList}" th:value="${sanPham.id}" th:text="${sanPham.tenSanPham}"></option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+
+<!--                    <div class="mb-3">-->
+<!--                        <label for="mauSac" class="form-label"><i class="fas fa-palette"></i> Màu Sắc</label>-->
+<!--                        <select id="mauSac" class="form-select" th:field="*{mauSac.id}">-->
+<!--                            <option th:each="mauSac : ${mauSacList}" th:value="${mauSac.id}" th:text="${mauSac.tenMau}"></option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+
+<!--                    <div class="mb-3">-->
+<!--                        <label for="kichCo" class="form-label"><i class="fas fa-ruler-combined"></i> Kích Cỡ</label>-->
+<!--                        <select id="kichCo" class="form-select" th:field="*{kichCo.id}">-->
+<!--                            <option th:each="kichCo : ${kichCoList}" th:value="${kichCo.id}" th:text="${kichCo.tenKichCo}"></option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+
+<!--                    <div class="mb-3">-->
+<!--                        <label for="soLuong" class="form-label"><i class="fas fa-sort-numeric-up"></i> Số Lượng</label>-->
+<!--                        <input type="number" id="soLuong" class="form-control" th:field="*{soLuong}"/>-->
+<!--                    </div>-->
+
+<!--                    <div class="mb-3">-->
+<!--                        <label for="trangThai" class="form-label"><i class="fas fa-toggle-on"></i> Trạng Thái</label>-->
+<!--                        <select id="trangThai" class="form-select" th:field="*{trangThai}">-->
+<!--                            <option value="Còn hàng">Còn hàng</option>-->
+<!--                            <option value="Hết hàng">Hết hàng</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+
+<!--                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Lưu</button>-->
+<!--                    <a href="/san-pham-chi-tiet" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại </a>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--            <footer class="w3-container w3-teal">-->
+<!--                <p>Modal Footer</p>-->
+<!--            </footer>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--&lt;!&ndash; Bootstrap JS &ndash;&gt;-->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--&lt;!&ndash; Font Awesome JS &ndash;&gt;-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->

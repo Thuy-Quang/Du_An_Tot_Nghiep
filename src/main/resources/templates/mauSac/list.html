@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <title>Danh Sách Màu Sắc</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome cho icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <h1 class="mb-4">Danh Sách Màu Sắc</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 p-2 bg-light rounded shadow-sm">
+        <!-- Tìm kiếm -->
+        <form th:action="@{/mau-sac/list}" method="get" class="d-flex flex-grow-1 me-3">
+            <input type="text" name="search" class="form-control me-2" placeholder="Tìm kiếm tên màu sắc" th:value="${search}"
+                   style="max-width: 400px;">
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+        </form>
+
+        <!-- Nút thêm -->
+        <a href="/mau-sac/add" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Thêm mới màu sắc
+        </a>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Tên Màu</th>
+            <th>Trạng Thái</th>
+            <th class="text-center">Hành Động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="mauSac : ${mauSacPage.content}">
+            <td th:text="${mauSac.id}"></td>
+            <td th:text="${mauSac.tenMau}"></td>
+            <td th:text="${mauSac.trangThai}"></td>
+            <td class="text-center">
+                <a th:href="@{/mau-sac/edit/{id}(id=${mauSac.id})}" class="btn btn-warning mr-2"><i class="fas fa-edit"></i> Sửa</a>
+                <a class="btn btn-danger btn-sm" th:href="@{/mau-sac/delete/{id}(id=${mauSac.id})}"  onclick="return confirm('Bạn chắc chắn muốn xóa không?')">
+                    <i class="fas fa-trash-alt"></i> Xóa
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav th:if="${mauSacPage.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/mau-sac/list(search=${search}, page=${currentPage - 1}, size=${mauSacPage.size})}">Trước</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, mauSacPage.totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/mau-sac/list(search=${search}, page=${i}, size=${mauSacPage.size})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == mauSacPage.totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/mau-sac/list(search=${search}, page=${currentPage + 1}, size=${mauSacPage.size})}">Sau</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Bootstrap JS và Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

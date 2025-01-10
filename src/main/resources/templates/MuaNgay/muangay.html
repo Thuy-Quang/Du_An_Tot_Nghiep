@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh Toán</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<main class="container mt-4">
+    <h3>Thông Tin Thanh Toán</h3>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Sản phẩm: <span th:text="${checkoutItem.tenSanPham}"></span></h5>
+            <p class="card-text">Số lượng: <span th:text="${quantity}"></span></p>
+            <p class="card-text text-danger">Giá: <span th:text="${#numbers.formatCurrency(checkoutItem.gia)}"></span></p>
+            <p class="card-text text-danger">Thành tiền:
+                <span th:text="${#numbers.formatCurrency(checkoutItem.gia * quantity)}"></span>
+            </p>
+        </div>
+    </div>
+    <form th:action="@{/checkout/confirm}" method="post">
+        <button class="btn btn-primary">Xác Nhận Thanh Toán</button>
+    </form>
+</main>
+</body>
+</html>

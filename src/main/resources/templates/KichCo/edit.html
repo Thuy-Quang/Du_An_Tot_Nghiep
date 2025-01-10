@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <title>Edit Kích Cỡ</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <h1 class="mb-4">Edit Kích Cỡ</h1>
+    <form id="kichCoForm" th:action="@{/kich-co/edit/{id}(id=${kichCo.id})}" th:object="${kichCo}" method="post" novalidate>
+        <div class="form-group">
+            <label for="tenKichCo">Tên Kích Cỡ:</label>
+            <input type="text" id="tenKichCo" th:field="*{tenKichCo}" class="form-control" placeholder="Nhập tên kích cỡ" required>
+            <div class="error-message d-none" id="error-tenKichCo">Tên Kích Cỡ không được để trống và không vượt quá 5 ký tự.</div>
+        </div>
+        <div class="form-group">
+            <label for="trangThai">Trạng Thái:</label>
+            <select id="trangThai" th:field="*{trangThai}" class="form-control">
+                <option value="Còn Hàng">Còn Hàng</option>
+                <option value="Hết Hàng">Hết Hàng</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Update
+        </button>
+        <a href="javascript:void(0);" th:onclick="'loadContent(\'/kich-co/list\')'" class="btn btn-primary">Quay lại</a>
+    </form>
+</div>
+
+<!-- Bootstrap JS (Optional) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.getElementById('kichCoForm').addEventListener('submit', function (event) {
+        let isValid = true;
+
+        // Reset error messages
+        document.querySelectorAll('.error-message').forEach(error => error.classList.add('d-none'));
+
+        // Validate Tên Kích Cỡ
+        const tenKichCo = document.getElementById('tenKichCo');
+        const errorTenKichCo = document.getElementById('error-tenKichCo');
+        if (!tenKichCo.value.trim() || tenKichCo.value.trim().length > 5) {
+            isValid = false;
+            errorTenKichCo.classList.remove('d-none');
+            tenKichCo.classList.add('is-invalid');
+        } else {
+            tenKichCo.classList.remove('is-invalid');
+        }
+
+        // Prevent form submission if validation failed
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Đơn Hàng</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<script>
+    function validateForm() {
+        const tenLoai = document.getElementById("tenLoai").value;
+        const moTa = document.getElementById("moTa").value;
+
+        // Kiểm tra nếu trường "Tên Loại" trống
+        if (tenLoai.trim() === "") {
+            alert("Tên loại sản phẩm không được để trống.");
+            return false;
+        }
+
+        // Kiểm tra nếu trường "Mô Tả" trống (nếu cần)
+        if (moTa.trim() === "") {
+            alert("Mô tả không được để trống.");
+            return false;
+        }
+
+        // Kiểm tra độ dài của tên loại
+        if (tenLoai.length < 3 || tenLoai.length > 50) {
+            alert("Tên loại sản phẩm phải từ 3 đến 50 ký tự.");
+            return false;
+        }
+
+        // Kiểm tra mô tả (nếu cần)
+        if (moTa.length > 255) { // Ví dụ: Giới hạn mô tả tối đa 255 ký tự
+            alert("Mô tả không được vượt quá 255 ký tự.");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+<body>
+
+<div class="container mt-5" th:fragment="quanly">
+    <h2 class="mb-4">Thêm Đơn Hàng</h2>
+    <form th:action="@{/HienThiDonHang/create}" th:object="${donHangRequest}" method="post" onsubmit="return validateForm();">
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${#fields.hasErrors('nguoiDungId')}" class="alert alert-danger">
+            <p th:errors="*{nguoiDungId}"></p>
+        </div>
+        <!-- Người dùng -->
+        <div class="mb-3">
+            <label for="nguoiDung" class="form-label">Người Dùng</label>
+            <select class="form-select" id="nguoiDung" name="nguoiDungId" th:field="*{nguoiDungId}" required>
+                <option th:each="nguoiDung : ${listNguoiDung}"
+                        th:value="${nguoiDung.id}"
+                        th:text="${nguoiDung.hoTen}"></option>
+            </select>
+        </div>
+
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${#fields.hasErrors('trangThai')}" class="alert alert-danger">
+            <p th:errors="*{trangThai}"></p>
+        </div>
+        <!-- Trạng thái -->
+        <div class="mb-3">
+            <label for="trangThai" class="form-label">Trạng Thái</label>
+            <select class="form-select" id="trangThai" name="trangThai" th:field="*{trangThai}" required>
+                <option value="Đang xử lý">Đang xử lý</option>
+                <option value="Đã giao hàng">Đã giao hàng</option>
+                <option value="Đã hủy">Đã hủy</option>
+            </select>
+        </div>
+
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${#fields.hasErrors('tongTien')}" class="alert alert-danger">
+            <p th:errors="*{tongTien}"></p>
+        </div>
+        <!-- Tổng tiền -->
+        <div class="mb-3">
+            <label for="tongTien" class="form-label">Tổng Tiền</label>
+            <input type="number" class="form-control" id="tongTien" name="tongTien" th:field="*{tongTien}" placeholder="Nhập tổng tiền" required>
+        </div>
+
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${#fields.hasErrors('phuongThucThanhToan')}" class="alert alert-danger">
+            <p th:errors="*{phuongThucThanhToan}"></p>
+        </div>
+        <!-- Phương thức thanh toán -->
+        <div class="mb-3">
+            <label for="phuongThucThanhToan" class="form-label">Phương Thức Thanh Toán</label>
+            <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" th:field="*{phuongThucThanhToan}" required>
+                <option value="Tiền mặt">Tiền mặt</option>
+                <option value="Chuyển khoản">Chuyển khoản</option>
+            </select>
+        </div>
+
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${#fields.hasErrors('trangThaiThanhToan')}" class="alert alert-danger">
+            <p th:errors="*{trangThaiThanhToan}"></p>
+        </div>
+        <!-- Trạng thái thanh toán -->
+        <div class="mb-3">
+            <label for="trangThaiThanhToan" class="form-label">Trạng Thái Thanh Toán</label>
+            <select class="form-select" id="trangThaiThanhToan" name="trangThaiThanhToan" th:field="*{trangThaiThanhToan}" required>
+                <option value="Chưa thanh toán">Chưa thanh toán</option>
+                <option value="Đã thanh toán">Đã thanh toán</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Lưu Đơn Hàng</button>
+        <a href="javascript:void(0);" th:onclick="'loadContent(\'/HienThiDonHang/GetAll\')'" class="btn btn-primary">Quay lại</a>
+    </form>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

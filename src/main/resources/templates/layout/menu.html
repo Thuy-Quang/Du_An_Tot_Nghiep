@@ -1,0 +1,225 @@
+<div xmlns:th="http://www.thymeleaf.org">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    /* Hiển thị menu thả xuống khi di chuột */
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    /* Căn giữa các mục trong navbar */
+    .navbar-nav {
+      align-items: center;
+    }
+
+    /* Logo sẽ được giữ kích thước cố định */
+    .navbar-brand img {
+      width: 100px;
+      height: 100px;
+    }
+
+    /* Đẩy các mục Đăng Nhập và Giỏ Hàng sang bên phải */
+    .ml-auto {
+      margin-left: auto;
+    }
+
+    /* Căn giữa logo */
+    .navbar-brand {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Vị trí Badge trên icon giỏ hàng */
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      font-size: 12px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cart-icon-container {
+      position: relative;
+    }
+
+    /* CSS cho thanh tìm kiếm */
+    .search-form {
+      position: absolute;
+      top: 100%; /* Di chuyển xuống dưới phần logo */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;  /* Kéo dài chiều rộng của thanh tìm kiếm */
+      margin-top: 10px;  /* Thêm khoảng cách giữa logo và thanh tìm kiếm */
+    }
+
+    .search-form input {
+      width: 100%;  /* Đảm bảo ô tìm kiếm đầy chiều rộng */
+    }
+  </style>
+
+  <nav class="navbar navbar-expand-lg navbar-light" th:fragment="navbar">
+    <div class="container-fluid">
+      <!-- Các mục bên trái của navbar -->
+      <div class="d-flex justify-content-between w-100">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a th:href="@{/giohang}" class="nav-link">Trang Chủ</a>
+          </li>
+          <!-- Menu thả xuống cho Nam -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="a" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Nam
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="a">
+              <li><a class="dropdown-item" th:href="@{/HienThi/QuanNam}">Quần</a></li>
+              <li><a class="dropdown-item" th:href="@{/HienThi/AoNam}">Áo</a></li>
+              <li><a class="dropdown-item" th:href="@{/HienThi/AoNamAll}">Tất cả</a></li>
+            </ul>
+          </li>
+
+          <!-- Menu thả xuống cho Nữ -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="b" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Nữ
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="b">
+              <li><a class="dropdown-item" th:href="@{/HienThi/QuanNu}">Quần</a></li>
+              <li><a class="dropdown-item" th:href="@{/HienThi/AoNu}">Áo</a></li>
+              <li><a class="dropdown-item" th:href="@{/HienThi/TatCa}">Tất cả</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" id="orderPageLink" class="nav-link">Đơn Hàng của Tôi</a>
+          </li>
+        </ul>
+
+        <!-- Logo ở giữa -->
+        <a class="navbar-brand" href="#">
+          <img th:src="@{/images/images.png}">
+        </a>
+
+        <!-- Thanh tìm kiếm -->
+        <form class="search-form d-flex" th:action="@{/giohang}" method="get">
+          <input class="form-control me-2" type="search" placeholder="Tìm kiếm sản phẩm..."
+                 aria-label="Search" name="searchQuery" th:value="${searchQuery}">
+          <button class="btn btn-outline-success" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+        <!-- Các mục bên phải của navbar -->
+        <ul class="navbar-nav ml-auto">
+          <!-- Nút Đăng nhập -->
+          <li class="nav-item dropdown d-flex align-items-center">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" id="accountDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-2"></i> Tài khoản
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="accountDropdown">
+              <li><a class="dropdown-item" th:href="@{/dang-nhap/hien-thi}">Đăng nhập</a></li>
+              <li><a class="dropdown-item"  onclick="logout()" >Đăng xuất</a></li>
+            </ul>
+          </li>
+
+          <div class="cart-icon-container"  ng-controller="CartController">
+            <a th:href="@{/giohangdetail}" class="cart-link">
+              <div>
+                <i class="fas fa-shopping-cart cart-icon"></i>
+                <span class="cart-badge" ng-bind="cart.count"></span>
+              </div>
+              <div class="cart-label">Giỏ hàng</div>
+            </a>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const ordersContainer = document.getElementById("orders"); // Một container để hiển thị đơn hàng
+      const jwtToken = localStorage.getItem("token");
+
+      if (jwtToken) {
+        try {
+          const decodedToken = jwt_decode(jwtToken);
+          const userId = decodedToken.userId;
+
+          // Hàm chuyển hướng đến trang chi tiết đơn hàng
+          const goToOrderPage = () => {
+            window.location.href = `/khachhang/${userId}`;
+          };
+
+          // Gắn sự kiện click cho nút hoặc liên kết điều hướng (nếu có)
+          const orderLink = document.getElementById("orderPageLink");
+          if (orderLink) {
+            orderLink.addEventListener("click", goToOrderPage);
+          }
+
+          // Gọi API để lấy danh sách đơn hàng
+          fetch(`/khachhang/${userId}`)
+                  .then((response) => {
+                    if (!response.ok) {
+                      throw new Error("Lỗi khi gọi API");
+                    }
+                    return response.json();
+                  })
+                  .then((orders) => {
+                    orders.forEach((order) => {
+                      const orderItem = document.createElement("div");
+                      orderItem.textContent = `Đơn hàng #${order.id}: ${order.detail}`;
+                      ordersContainer.appendChild(orderItem);
+                    });
+                  })
+                  .catch((error) => {
+                    console.error("Lỗi khi lấy đơn hàng:", error);
+                  });
+        } catch (error) {
+          console.error("Lỗi khi giải mã token:", error);
+        }
+      } else {
+        console.log("Token không tồn tại");
+      }
+    });
+    // Function to handle logout
+    function logout() {
+      // Gửi yêu cầu POST tới API đăng xuất
+      fetch('/api/xac-thuc/dang-xuat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+              .then(response => response.json())
+              .then(data => {
+                // Kiểm tra thông báo từ server
+                if (data.message === "Đăng xuất thành công") {
+                  // Xóa token trong localStorage
+                  localStorage.removeItem('token');
+
+                  // Hiển thị thông báo đăng xuất thành công
+                  alert("Đăng xuất thành công!");
+
+                  // Chuyển hướng về trang đăng nhập
+                  window.location.href = '/dang-nhap/hien-thi';
+                }
+              })
+              .catch(error => {
+                console.error('Lỗi đăng xuất:', error);
+              });
+    }
+    ;
+  </script>
+  <script th:src="@{/js/addgiohang.js}"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Thêm AngularJS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+</div>

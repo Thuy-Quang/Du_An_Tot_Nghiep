@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Loại Sản Phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div class="container" th:fragment="quanly">
+
+    <br><br><h1 class="text-center">Danh Sách Loại Sản Phẩm</h1><br><br>
+
+    <!-- Thêm Loại Sản Phẩm -->
+    <a class="btn btn-primary mb-4" th:href="@{/loai-san-pham/add}"> Thêm Loại Sản Phẩm</a>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên Loại</th>
+            <th>Mô Tả</th>
+            <th>Ngày Tạo</th>
+            <th>Ngày Cập Nhật</th>
+            <th>Thao Tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="loaiSanPham, stat : ${listLoaiSanPham}">
+            <td th:text="${stat.index + 1}"></td>
+            <td th:text="${loaiSanPham.tenLoai}"></td>
+            <td th:text="${loaiSanPham.moTa}"></td>
+            <td th:text="${#dates.format(loaiSanPham.ngayTao, 'dd-MM-yyyy')}"></td>
+            <td th:text="${#dates.format(loaiSanPham.ngayCapNhat, 'dd-MM-yyyy')}"></td>
+            <td>
+                <!-- Sửa -->
+                <a class="btn btn-warning btn-sm" th:href="@{/loai-san-pham/edit/{id}(id=${loaiSanPham.id})}">
+                    Sửa
+                </a>
+
+                <!-- Xóa -->
+                <form th:action="@{/loai-san-pham/delete/{id}(id=${loaiSanPham.id})}" method="post" style="display:inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa loại sản phẩm này không?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Thêm Người Dùng</title>
+</head>
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <h1 class="mb-4 text-center">Thêm Người Dùng</h1>
+    <form th:action="@{/nguoi-dung/luu}" th:object="${nguoiDung}" method="post" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="tenDangNhap">Tên đăng nhập:</label>
+            <input type="text" class="form-control" id="tenDangNhap" th:field="*{tenDangNhap}" pattern=".{5,}" title="Tên đăng nhập phải ít nhất 5 ký tự" required />
+        </div>
+        <div class="form-group">
+            <label for="matKhau">Mật khẩu:</label>
+            <input type="password" class="form-control" id="matKhau" th:field="*{matKhau}" pattern=".{6,}" title="Mật khẩu phải ít nhất 6 ký tự" required />
+        </div>
+        <div class="form-group">
+            <label for="hoTen">Họ tên:</label>
+            <!-- Sửa lại pattern để chỉ cho phép các ký tự tiếng Việt, khoảng trắng -->
+            <input type="text" class="form-control" id="hoTen" th:field="*{hoTen}" pattern="^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯƠĂĐỆếố\s]{2,}$" title="Họ tên chỉ chứa chữ cái tiếng Việt và ít nhất 2 ký tự" required />
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" th:field="*{email}" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Email phải đúng định dạng (ví dụ: example@gmail.com)" required />
+        </div>
+        <div class="form-group">
+            <label for="soDienThoai">Số điện thoại:</label>
+            <input type="text" class="form-control" id="soDienThoai" th:field="*{soDienThoai}" pattern="[0-9]{10}" title="Số điện thoại phải là 10 chữ số" required />
+        </div>
+        <div class="form-group">
+            <label for="diaChi">Địa chỉ:</label>
+            <input type="text" class="form-control" id="diaChi" th:field="*{diaChi}" pattern="^[a-zA-Z0-9\s,.-]{5,100}$" title="Địa chỉ phải bao gồm chữ cái, số và ít nhất 5 ký tự" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="javascript:void(0);" th:onclick="'loadContent(\'/nguoi-dung\')'" class="btn btn-primary">Quay lại</a>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- JavaScript validation -->
+<script>
+    function validateForm() {
+        var hoTen = document.getElementById("hoTen").value;
+        var namePattern = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯƠĂĐỆếố\s]+$/u;
+
+        if (!namePattern.test(hoTen)) {
+            alert("Họ tên chỉ chứa chữ cái tiếng Việt và ít nhất 2 ký tự.");
+            return false;
+        }
+
+        return true; // Nếu hợp lệ, form sẽ được submit
+    }
+</script>
+</body>
+</html>

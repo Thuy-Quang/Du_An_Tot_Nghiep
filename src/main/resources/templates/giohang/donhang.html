@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index.html :: dynamic(~{::main})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách đơn hàng</title>
+<body>
+<main class="container mt-4" ng-app="donHangApp" ng-controller="donHangController">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </head>
+    <div th:if="${message}" th:utext="'alert(\'${message}\');'"></div>
+    <div th:if="${error}" th:utext="'alert(\'${error}\');'"></div>
+    <h1 class="mb-4">Danh sách đơn hàng của bạn</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <td>STT</td>
+            <th>ID đơn hàng</th>
+            <th>Tên Khách Hàng</th>
+            <th>Trạng thái đơn hàng</th>
+            <th>Tổng tiền</th>
+            <th>Ngày mua</th>
+            <th>Trạng thái thanh toán</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="donHang, stat : ${donHang}">
+            <td th:text="${stat.index + 1}"></td>
+            <td th:text="${donHang.id}"></td>
+            <td th:text="${donHang.nguoiDung.hoTen}"></td>
+            <td th:text="${donHang.trangThai}"></td>
+            <td th:text="${donHang.tongTien + ' VND'}"></td>
+            <td th:text="${#dates.format(donHang.ngayTao, 'dd-MM-yyyy HH:mm')}"></td>
+            <td th:text="${donHang.trangThaiThanhToan}"></td>
+            <td>
+                <form th:action="@{/HienThiDonHang/huy/{id}(id=${donHang.id})}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn huỷ?')">
+                    <input type="hidden" name="_method" value="put"/>
+                    <button type="submit" class="btn btn-danger">Huỷ</button>
+                </form>
+                <a class="btn btn-success" th:attr="ng-click=@{|showChiTietDonHang(${donHang.id})|}">Chi tiết</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="chiTietDonHangModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết đơn hàng</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Màu sắc</th>
+                            <th>Kích cỡ</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Tổng giá</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="chiTiet in chiTietDonHang">
+                            <td>{{ chiTiet.tenSanPham }}</td>
+                            <td>{{ chiTiet.tenMauSac }}</td>
+                            <td>{{ chiTiet.tenKichCo }}</td>
+                            <td>{{ chiTiet.soLuong }}</td>
+                            <td>{{ chiTiet.giaDonVi | currency:'':0 }} VND</td>
+                            <td>{{ (chiTiet.soLuong * chiTiet.giaDonVi) | currency:'':0 }} VND</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var app = angular.module('donHangApp', []);
+
+        app.controller('donHangController', function($scope, $http) {
+            $scope.customerOrders = [];
+            $scope.chiTietDonHang = [];
+
+            $scope.showChiTietDonHang = function(donHangId) {
+                $http.get('/HienThiDonHang/chi-tiet-san-pham/' + donHangId)
+                    .then(function(response) {
+                        if (response && response.data) {
+                            $scope.chiTietDonHang = response.data;
+                            $('#chiTietDonHangModal').modal('show');
+                        } else {
+                            alert("Dữ liệu không hợp lệ. Vui lòng thử lại.");
+                        }
+                    })
+                    .catch(function(error) {
+                        alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+                    });
+            };
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</main>
+</body>
+</html>

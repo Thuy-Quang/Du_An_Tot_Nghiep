@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <title>Thêm mới sản phẩm</title>
+
+</head>
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <!-- Bootstrap CSS for styling -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+    <h1 class="text-center mb-4"><i class="fas fa-plus-circle"></i> Thêm mới sản phẩm</h1>
+    <form id="sanPhamForm" action="#" th:action="@{/sanpham/add}" th:object="${sanPham}" method="post" novalidate>
+        <div class="form-group">
+            <label for="tenSanPham"><i class="fas fa-tag"></i> Tên sản phẩm:</label>
+            <input type="text" class="form-control" id="tenSanPham" th:field="*{tenSanPham}" required>
+            <div class="error-message d-none" id="error-tenSanPham">Tên sản phẩm không được để trống và không vượt quá 100 ký tự.</div>
+        </div>
+        <div class="form-group">
+            <label for="moTa"><i class="fas fa-info-circle"></i> Mô tả:</label>
+            <textarea class="form-control" id="moTa" th:field="*{moTa}"></textarea>
+            <div class="error-message d-none" id="error-moTa">Mô tả không được vượt quá 255 ký tự.</div>
+        </div>
+        <div class="form-group">
+            <label for="gia"><i class="fas fa-dollar-sign"></i> Giá:</label>
+            <input type="number" class="form-control" id="gia" th:field="*{gia}" required>
+            <div class="error-message d-none" id="error-gia">Giá phải lớn hơn 0.</div>
+        </div>
+        <div class="form-group">
+            <label for="hinhAnh"><i class="fas fa-image"></i> Hình Ảnh</label>
+            <input type="file" class="form-control-file" id="hinhAnh" name="hinhAnh" required>
+            <div class="error-message d-none" id="error-hinhAnh">Hình ảnh phải là định dạng jpg, jpeg hoặc png.</div>
+        </div>
+        <div class="form-group">
+            <label for="loaiSanPham"><i class="fas fa-cubes"></i> Loại Sản Phẩm</label>
+            <select class="form-control" id="loaiSanPham" name="loaiSanPham" required>
+                <option value="" disabled selected>Chọn loại sản phẩm</option>
+                <option th:each="loai : ${listLSP}" th:value="${loai.id}" th:text="${loai.tenLoai}"></option>
+            </select>
+            <div class="error-message d-none" id="error-loaiSanPham">Vui lòng chọn loại sản phẩm.</div>
+        </div>
+        <div class="form-group">
+            <label for="trangThai"><i class="fas fa-archive"></i> Trạng Thái</label>
+            <select class="form-control" id="trangThai" name="trangThai" required>
+                <option value="" disabled selected>Chọn trạng thái</option>
+                <option value="Còn hàng">Còn hàng</option>
+                <option value="Hết hàng">Hết hàng</option>
+            </select>
+            <div class="error-message d-none" id="error-trangThai">Vui lòng chọn trạng thái.</div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> Lưu</button>
+    </form>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        document.getElementById('sanPhamForm').addEventListener('submit', function (event) {
+            let isValid = true;
+
+            // Reset all error messages
+            document.querySelectorAll('.error-message').forEach(error => error.classList.add('d-none'));
+
+            // Check Tên sản phẩm
+            const tenSanPham = document.getElementById('tenSanPham');
+            if (!tenSanPham.value.trim() || tenSanPham.value.length > 100) {
+                isValid = false;
+                const errorTenSanPham = document.getElementById('error-tenSanPham');
+                errorTenSanPham.classList.remove('d-none');
+                tenSanPham.classList.add('is-invalid');
+            } else {
+                tenSanPham.classList.remove('is-invalid');
+            }
+
+            // Check Mô tả
+            const moTa = document.getElementById('moTa');
+            if (moTa.value.length > 255) {
+                isValid = false;
+                const errorMoTa = document.getElementById('error-moTa');
+                errorMoTa.classList.remove('d-none');
+                moTa.classList.add('is-invalid');
+            } else {
+                moTa.classList.remove('is-invalid');
+            }
+
+            // Check Giá
+            const gia = document.getElementById('gia');
+            if (!gia.value.trim() || isNaN(gia.value) || Number(gia.value) <= 0) {
+                isValid = false;
+                const errorGia = document.getElementById('error-gia');
+                errorGia.classList.remove('d-none');
+                gia.classList.add('is-invalid');
+            } else {
+                gia.classList.remove('is-invalid');
+            }
+
+            // Check Hình ảnh
+            const hinhAnh = document.getElementById('hinhAnh');
+            const hinhAnhValue = hinhAnh.value.trim();
+            if (!hinhAnhValue || !/.*\.(jpg|jpeg|png)$/i.test(hinhAnhValue)) {
+                isValid = false;
+                const errorHinhAnh = document.getElementById('error-hinhAnh');
+                errorHinhAnh.classList.remove('d-none');
+                hinhAnh.classList.add('is-invalid');
+            } else {
+                hinhAnh.classList.remove('is-invalid');
+            }
+
+            // Check Loại sản phẩm
+            const loaiSanPham = document.getElementById('loaiSanPham');
+            if (!loaiSanPham.value.trim()) {
+                isValid = false;
+                const errorLoaiSanPham = document.getElementById('error-loaiSanPham');
+                errorLoaiSanPham.classList.remove('d-none');
+                loaiSanPham.classList.add('is-invalid');
+            } else {
+                loaiSanPham.classList.remove('is-invalid');
+            }
+
+            // Check Trạng thái
+            const trangThai = document.getElementById('trangThai');
+            if (!trangThai.value.trim()) {
+                isValid = false;
+                const errorTrangThai = document.getElementById('error-trangThai');
+                errorTrangThai.classList.remove('d-none');
+                trangThai.classList.add('is-invalid');
+            } else {
+                trangThai.classList.remove('is-invalid');
+            }
+
+            // Prevent form submission if validation failed
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    </script>
+</div>
+
+<!-- FontAwesome for icons -->
+
+</body>
+</html>

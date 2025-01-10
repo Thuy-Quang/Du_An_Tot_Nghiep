@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <title>List of Kích Cỡ</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <h1 class="mb-4">Danh sách Kích Cỡ</h1>
+
+    <!-- Tìm kiếm và Thêm mới trên cùng một hàng -->
+    <div class="d-flex justify-content-between align-items-center mb-4 p-2 bg-light rounded shadow-sm">
+        <form method="get" action="/kich-co/list" class="d-flex flex-grow-1 me-3">
+            <input type="text" name="keyword" class="form-control me-2" placeholder="Tìm kiếm kích cỡ" th:value="${keyword}" style="max-width: 400px;">
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+        </form>
+        <a href="/kich-co/add" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Thêm mới màu sắc
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Tên Kích Cỡ</th>
+                <th>Trạng Thái</th>
+                <th class="text-center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="kichCo : ${kichCoPage.content}">
+                <td th:text="${kichCo.id}"></td>
+                <td th:text="${kichCo.tenKichCo}"></td>
+                <td th:text="${kichCo.trangThai}"></td>
+                <td class="text-center">
+                    <a th:href="@{/kich-co/edit/{id}(id=${kichCo.id})}" class="btn btn-warning mr-2">
+                        <i class="fas fa-edit"></i> Sửa
+                    </a>
+                    <a class="btn btn-danger btn-sm" th:href="@{/kich-co/delete/{id}(id=${kichCo.id})}"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
+                        <i class="fas fa-trash-alt"></i> Xóa
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${kichCoPage.hasPrevious()} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/kich-co/list(page=${currentPage - 1}, keyword=${keyword})}">Trước</a>
+            </li>
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, kichCoPage.totalPages - 1)}"
+                th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/kich-co/list(page=${pageNum}, keyword=${keyword})}"
+                   th:text="${pageNum + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${kichCoPage.hasNext()} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/kich-co/list(page=${currentPage + 1}, keyword=${keyword})}">Sau</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Bootstrap JS (Optional) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

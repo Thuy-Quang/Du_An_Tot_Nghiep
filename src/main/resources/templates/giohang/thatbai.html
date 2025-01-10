@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hủy Đơn Hàng Thất Bại</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: white;
+    }
+    .container {
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 40px;
+      border-radius: 15px;
+      width: 80%;
+      max-width: 600px;
+    }
+    .logo {
+      font-size: 100px;
+      color: #ffcc00;
+      margin-bottom: 20px;
+    }
+    .logo i {
+      color: #f44336;
+    }
+    h1 {
+      font-size: 36px;
+      margin: 20px 0;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background-color: #ffcc00;
+      color: #333;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      text-transform: uppercase;
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #ff9800;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo">
+    <i class="fas fa-times-circle"></i>
+  </div>
+  <h1>Hủy Đơn Hàng Thất Bại!</h1>
+  <p>Rất tiếc, đơn hàng của bạn không thể hủy vì đang vận chuyển hoặc đã huỷ rồi . Vui lòng thử lại sau hoặc liên hệ với bộ phận hỗ trợ.</p>
+  <div class="mt-4">
+    <a th:href="@{/giohang}"  class="btn btn-custom">Quay Về Trang Chủ</a>
+  </div>
+</div>
+
+<!-- Link to Font Awesome (for the logo) -->
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+</body>
+</html>

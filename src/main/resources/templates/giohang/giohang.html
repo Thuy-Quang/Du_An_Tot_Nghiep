@@ -1,0 +1,166 @@
+        <!DOCTYPE html>
+        <html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index.html :: dynamic(~{::main})}">
+        <head>
+            <meta charset="UTF-8">
+            <title>Danh Sách Sản Phẩm</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+        </head>
+        <body>
+        <main class="container mt-4" >
+            <style>
+                /* Thiết kế bao bì sản phẩm */
+                .card {
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    padding: 20px;
+                    border: none;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    border-radius: 12px;
+                    height: 100%;
+                    background-color: #fff;
+                    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+                }
+
+                .card:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+                }
+
+                .card-img-top {
+                    height: 250px;
+                    object-fit: cover;
+                    border-radius: 10px;
+                }
+
+                .form-group {
+                    margin-bottom: 1rem;
+                }
+
+                /* Nút thêm vào giỏ hàng và mua ngay */
+                .btn-primary, .btn-success {
+                    width: 100%;
+                    padding: 12px;
+                    font-size: 16px;
+                    border-radius: 8px;
+                }
+
+                .btn-primary {
+                    background-color: #007bff;
+                    border: 1px solid #007bff;
+                }
+
+                .btn-success {
+                    background-color: #28a745;
+                    border: 1px solid #28a745;
+                }
+
+                .btn-primary:hover {
+                    background-color: #0056b3;
+                    border-color: #0056b3;
+                }
+
+                .btn-success:hover {
+                    background-color: #218838;
+                    border-color: #218838;
+                }
+
+
+                .form-row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+                }
+
+                .form-row .col-md-6 {
+                    flex: 0 0 48%;
+                }
+
+                /* Sửa lại style để đồng đều giữa các form select */
+                .form-group select {
+                    width: 100%;
+                    border-radius: 8px;
+                    border: 1px solid #ccc;
+                    padding: 8px;
+                }
+
+                /* Tạo không gian thoáng đãng giữa các card */
+                .row {
+                    margin-top: 30px;
+                }
+
+                h3 {
+                    font-family: 'Arial', sans-serif;
+                    font-weight: 600;
+                    margin-bottom: 40px;
+                }
+            </style>
+            <h3 class="text-center">Danh Sách Sản Phẩm</h3>
+
+            <div class="row">
+                <!-- Biểu tượng giỏ hàng -->
+        <!--        <div class="cart-icon-container">-->
+        <!--            <a th:href="@{/giohangdetail}" class="cart-link">-->
+        <!--                <div class="cart-icon-wrapper">-->
+        <!--                    <i class="fas fa-shopping-cart cart-icon"></i>-->
+        <!--                    <span class="cart-badge" ng-bind="cart.count"></span>-->
+        <!--                </div>-->
+        <!--                <div class="cart-label">Giỏ hàng</div>-->
+        <!--            </a>-->
+        <!--        </div>-->
+                <!-- Danh sách sản phẩm -->
+                <div class="col-md-4 mb-4" th:each="sanPham : ${sanPhams}">
+                    <div class="card h-100 text-center">
+                        <!-- Ảnh sản phẩm -->
+                        <a th:href="@{/HienThi/sanpham/{id}(id=${sanPham.id})}">
+                            <img th:src="@{'/images/' + ${sanPham.hinhAnh}}" alt="Hình sản phẩm" class="card-img-top">
+                        </a>
+                        <div class="card-body">
+                            <!-- Tên sản phẩm -->
+                            <h5 class="card-title">
+                                <a th:href="@{/HienThi/sanpham/{id}(id=${sanPham.id})}" th:text="${sanPham.tenSanPham}">Tên Sản Phẩm</a>
+                            </h5>
+                            <!-- Giá sản phẩm -->
+                            <p class="card-text text-danger">
+                                <a th:href="@{/HienThi/sanpham/{id}(id=${sanPham.id})}" th:text="${#numbers.formatCurrency(sanPham.gia)}">Giá</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!--                        &lt;!&ndash; Chọn màu sắc và kích cỡ &ndash;&gt;-->
+    <!--                        <div class="form-row">-->
+    <!--                            <div class="col-md-6">-->
+    <!--                                <label for="colorSelect">Màu sắc:</label>-->
+    <!--                                <select class="form-control" id="colorSelect" ng-model="selectedColor">-->
+    <!--                                    <option ng-repeat="mauSac in cart.colors" ng-value="mauSac.id">{{mauSac.tenMau}}</option>-->
+    <!--                                </select>-->
+    <!--                            </div>-->
+    <!--                            <div class="col-md-6">-->
+    <!--                                <label for="sizeSelect">Kích cỡ:</label>-->
+    <!--                                <select class="form-control" id="sizeSelect" ng-model="selectedSize">-->
+    <!--                                    <option ng-repeat="kichCo in cart.sizes" ng-value="kichCo.id">{{kichCo.tenKichCo}}</option>-->
+    <!--                                </select>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+
+<!--                            <div class="d-flex justify-content-center align-items-center mb-2">-->
+<!--                                <button class="btn btn-primary w-100"-->
+<!--                                        th:attr="ng-click=@{|cart.add(${sanPham.id})|}">-->
+<!--                                    <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng-->
+<!--                                </button>-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+                </div>
+
+
+            <script th:src="@{/js/addgiohang.js}"></script>
+            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+        </main>
+        </body>
+        </html>

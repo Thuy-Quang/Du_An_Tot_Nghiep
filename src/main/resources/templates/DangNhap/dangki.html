@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .registration-container {
+            width: 350px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333333;
+            font-size: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333333;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 5px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .submit-btn:active {
+            background-color: #388e3c;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+    </style>
+</head>
+<body>
+<div class="registration-container">
+    <a href="#">
+        <img th:src="@{/images/images.png}" class="logo" alt="Logo">
+    </a>
+    <h2>Đăng ký</h2>
+
+    <form th:action="@{/dang-ky}" method="post" th:object="${nguoiDung}">
+        <!-- Thông báo lỗi toàn cục -->
+        <div class="error-message" th:if="${error}" th:text="${error}"></div>
+        <div class="error-message" th:if="${errorTenDangNhap}" th:text="${errorTenDangNhap}"></div>
+        <div class="error-message" th:if="${errorEmail}" th:text="${errorEmail}"></div>
+        <div class="error-message" th:if="${errorMatKhau}" th:text="${errorMatKhau}"></div>
+
+        <!-- Trường Họ và Tên -->
+        <label for="hoTen">Họ và Tên</label>
+        <input type="text" id="hoTen" name="hoTen" th:field="*{hoTen}" />
+        <div class="error-message" th:errors="*{hoTen}"></div>
+
+        <!-- Trường Tên Đăng Nhập -->
+        <label for="tenDangNhap">Tên Đăng Nhập</label>
+        <input type="text" id="tenDangNhap" name="tenDangNhap" th:field="*{tenDangNhap}" />
+        <div class="error-message" th:errors="*{tenDangNhap}"></div>
+
+        <!-- Trường Email -->
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" th:field="*{email}" />
+        <div class="error-message" th:errors="*{email}"></div>
+
+        <!-- Trường Số Điện Thoại -->
+        <label for="soDienThoai">Số Điện Thoại</label>
+        <input type="text" id="soDienThoai" name="soDienThoai" th:field="*{soDienThoai}" />
+        <div class="error-message" th:errors="*{soDienThoai}"></div>
+
+        <!-- Trường Mật Khẩu -->
+        <label for="matKhau">Mật khẩu</label>
+        <input type="password" id="matKhau" name="matKhau" th:field="*{matKhau}" />
+        <div class="error-message" th:errors="*{matKhau}"></div>
+
+        <!-- Trường Xác Nhận Mật Khẩu -->
+        <label for="xacNhanMatKhau">Xác nhận mật khẩu</label>
+        <input type="password" id="xacNhanMatKhau" name="xacNhanMatKhau" th:field="*{xacNhanMatKhau}" />
+        <div class="error-message" th:errors="*{xacNhanMatKhau}"></div>
+
+        <!-- Nút Đăng Ký -->
+        <button type="submit" class="submit-btn">Đăng ký</button>
+    </form>
+
+</body>
+</html>

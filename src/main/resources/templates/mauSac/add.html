@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Thêm Màu Sắc</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome cho icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Thêm Màu Sắc</h1>
+
+    <!-- Form thêm mới -->
+    <form id="mauSacForm" th:action="@{/mau-sac/add}" th:object="${mauSac}" method="post">
+        <div class="mb-3">
+            <label for="tenMau" class="form-label">Tên Màu:</label>
+            <input type="text" id="tenMau" th:field="*{tenMau}" class="form-control" />
+            <div id="tenMauError" class="error-message"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="trangThai" class="form-label">Trạng Thái:</label>
+            <select id="trangThai" th:field="*{trangThai}" class="form-select">
+                <option value="Còn hàng">Còn Hàng</option>
+                <option value="Hết hàng">Hết Hàng</option>
+            </select>
+            <div id="trangThaiError" class="error-message"></div>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Lưu
+        </button>
+        <a href="/mau-sac/list" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </form>
+</div>
+
+<!-- Bootstrap JS và Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+<!-- Script kiểm tra lỗi -->
+<script>
+    document.getElementById('mauSacForm').addEventListener('submit', function (event) {
+        // Lấy các trường input và danh sách lỗi
+        const tenMau = document.getElementById('tenMau');
+        const tenMauError = document.getElementById('tenMauError');
+
+        let isValid = true;
+
+        // Xóa thông báo lỗi cũ
+        tenMauError.textContent = '';
+        trangThaiError.textContent = '';
+
+        // Kiểm tra trường "Tên Màu"
+        if (tenMau.value.trim() === '') {
+            tenMauError.textContent = 'Tên màu không được để trống.';
+            isValid = false;
+        } else if (tenMau.value.trim().length < 2) {
+            tenMauError.textContent = 'Tên màu phải có ít nhất 2 ký tự.';
+            isValid = false;
+        } else if (tenMau.value.trim().length > 20) {
+            tenMauError.textContent = 'Tên màu không được quá 20 ký tự.';
+            isValid = false;
+        }
+
+        // Nếu không hợp lệ, ngăn không cho gửi form
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+</script>
+</body>
+
+</html>

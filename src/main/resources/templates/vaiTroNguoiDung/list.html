@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<head>
+    <title>Danh sách Vai Trò Người Dùng</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5" th:fragment="quanly">
+    <h2 class="text-center mb-4">Danh sách Vai Trò Người Dùng</h2>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 p-2 bg-light rounded shadow-sm">
+        <!-- Tìm kiếm -->
+        <form th:action="@{/vai-tro-nguoi-dung}" method="get" class="d-flex flex-grow-1 me-3">
+            <input type="text" name="search" class="form-control me-2" placeholder="Tìm kiếm ............." th:value="${search}"
+                   style="max-width: 400px;">
+            <button class="btn btn-info" type="submit">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+        </form>
+
+        <!-- Nút thêm -->
+        <a href="/vai-tro-nguoi-dung/add" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Thêm mới vai trò người dùng
+        </a>
+    </div>
+
+    <!-- Bảng danh sách vai trò người dùng -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped align-middle text-center">
+            <thead class="table-dark align-middle">
+            <tr>
+                <th>STT</th>
+                <th>Tên Người Dùng</th>
+                <th>Tên Vai Trò</th>
+                <th>Hành Động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vtn ,stat: ${vaiTroNguoiDungList}">
+                <td th:text="${stat.index + 1}"></td>
+                <td th:text="${vtn.nguoiDung.hoTen}"></td>
+                <td th:text="${vtn.vaiTro.tenVaiTro}"></td>
+                <td class="text-center align-middle">
+                    <a th:href="@{/vai-tro-nguoi-dung/edit/{id}(id=${vtn.id})}" class="btn btn-warning btn-sm">Sửa</a>
+                    <a th:href="@{/vai-tro-nguoi-dung/delete/{id}(id=${vtn.id})}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</a>
+                    <a th:href="@{/vai-tro-nguoi-dung/detail/{id}(id=${vtn.id})}" class="btn btn-info btn-sm">Chi Tiết</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phân trang -->
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/vai-tro-nguoi-dung(page=${currentPage - 1}, size=${size}, search=${search})}">Trước</a>
+            </li>
+
+            <!-- Hiển thị các số trang -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/vai-tro-nguoi-dung(page=${i}, size=${size}, search=${search})}" th:text="${i + 1}"></a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/vai-tro-nguoi-dung(page=${currentPage + 1}, size=${size}, search=${search})}">Sau</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- JavaScript của Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
