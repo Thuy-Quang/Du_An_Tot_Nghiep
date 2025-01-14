@@ -160,8 +160,13 @@
             orderLink.addEventListener("click", goToOrderPage);
           }
 
-          // Gọi API để lấy danh sách đơn hàng
-          fetch(`/khachhang/${userId}`)
+          fetch(`/khachhang/${userId}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json", // Định dạng dữ liệu gửi
+              Authorization: `Bearer ${jwtToken}`, // Thêm Bearer Token vào header
+            },
+          })
                   .then((response) => {
                     if (!response.ok) {
                       throw new Error("Lỗi khi gọi API");
@@ -169,6 +174,7 @@
                     return response.json();
                   })
                   .then((orders) => {
+                    const ordersContainer = document.getElementById("orders-container"); // Đảm bảo `ordersContainer` được xác định
                     orders.forEach((order) => {
                       const orderItem = document.createElement("div");
                       orderItem.textContent = `Đơn hàng #${order.id}: ${order.detail}`;
@@ -185,6 +191,7 @@
         console.log("Token không tồn tại");
       }
     });
+
     // Function to handle logout
     function logout() {
       // Gửi yêu cầu POST tới API đăng xuất
@@ -194,8 +201,8 @@
           'Content-Type': 'application/json',
         },
       })
-              .then(response => response.json())
-              .then(data => {
+              .then((response) => response.json())
+              .then((data) => {
                 // Kiểm tra thông báo từ server
                 if (data.message === "Đăng xuất thành công") {
                   // Xóa token trong localStorage
@@ -208,11 +215,10 @@
                   window.location.href = '/dang-nhap/hien-thi';
                 }
               })
-              .catch(error => {
-                console.error('Lỗi đăng xuất:', error);
+              .catch((error) => {
+                console.error("Lỗi đăng xuất:", error);
               });
     }
-    ;
   </script>
   <script th:src="@{/js/addgiohang.js}"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

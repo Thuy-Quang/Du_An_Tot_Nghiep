@@ -14,20 +14,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
-/**
- * TODO: annotation @EnableMethodSecurity dùng để bật các annotation xác thực quyền
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
     @Autowired
     private NguoiDungDetailsService nguoiDungDetailsService;
 
     @Autowired
     private JwtFilter jwtFilter;
-
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -42,10 +40,15 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/api/xac-thuc/dang-nhap","/dang-nhap/hien-thi","/index","/quan-ly").permitAll() // Cập nhật đây
+                        // Cho phép truy cập các tài nguyên tĩnh
                         .requestMatchers("/*", "/**").permitAll() // Cập nhật đây
-                        .anyRequest().authenticated()
+                        //Chỉ Customer mới được
 
+                        // Tất cả các yêu cầu khác phải được xác thực
+                        .anyRequest().authenticated()
+                )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(accessDeniedHandler())
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -55,9 +58,16 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, accessDeniedException) -> {
+            response.setStatus(403);
+            response.getWriter().write("Access Denied: You do not have permission to access this resource.");
+        };
     }
 }

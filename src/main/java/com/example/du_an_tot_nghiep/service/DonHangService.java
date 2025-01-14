@@ -291,4 +291,20 @@ public class DonHangService {
 
         return "Đơn hàng đã được huỷ thành công.";
     }
+
+    public boolean xoaSanPhamKhoiDonHang(Long donHangId, Long chiTietDonHangId) {
+        Optional<ChiTietDonHang> chiTietDonHang = chiTietDonHangRepository.findById(chiTietDonHangId);
+        if (chiTietDonHang.isPresent() && chiTietDonHang.get().getDonHang().getId().equals(donHangId)) {
+            chiTietDonHangRepository.delete(chiTietDonHang.get());
+            return true;
+        }
+        return false;
+    }
+
+
+    public DonHang save(DonHang donHang) {
+        return donHangRepository.save(donHang);
+    }
+
+
 }

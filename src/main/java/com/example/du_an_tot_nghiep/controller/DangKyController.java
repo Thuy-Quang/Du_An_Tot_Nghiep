@@ -42,7 +42,7 @@ public class DangKyController {
     public String showRegistrationForm() {
         return "DangNhap/dangki"; // Đảm bảo file HTML tồn tại tại thư mục templates/DangNhap/
     }
-    @PostMapping("/dang-ky")
+    @PostMapping("/dang-ky/add")
     public String registerUser(
             @ModelAttribute("nguoiDung") @Valid NguoiDung nguoiDung,
             BindingResult bindingResult,

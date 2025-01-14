@@ -2,7 +2,10 @@ package com.example.du_an_tot_nghiep.service;
 
 import com.example.du_an_tot_nghiep.entity.NguoiDung;
 import com.example.du_an_tot_nghiep.repository.NguoiDungRepository;
+import com.example.du_an_tot_nghiep.repository.VaiTroNguoiDungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,7 +21,8 @@ public class NguoiDungDetailsService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    VaiTroNguoiDungRepository vaiTroNguoiDungRepository;
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
 
@@ -25,11 +30,18 @@ public class NguoiDungDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         NguoiDung nguoiDung = nguoiDungRepository.findByTenDangNhap(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng: " + username));
+        List<String> listVaiTro = vaiTroNguoiDungRepository.findRolesByUsername(nguoiDung.getTenDangNhap());
+
+        // Chuyển đổi List<String> sang List<GrantedAuthority>
+        List<SimpleGrantedAuthority> authorities = listVaiTro.stream()
+                .map(SimpleGrantedAuthority::new) // Chuyển mỗi vai trò thành SimpleGrantedAuthority
+                .toList();
 
         return new org.springframework.security.core.userdetails.User(
-                nguoiDung.getTenDangNhap(), nguoiDung.getMatKhau(), new ArrayList<>()
+                nguoiDung.getTenDangNhap(), nguoiDung.getMatKhau(), authorities
         );
     }
+
 
     // Thêm người dùng mới
     public String addNguoiDung(NguoiDung nguoiDung) {
@@ -98,6 +110,10 @@ public class NguoiDungDetailsService implements UserDetailsService {
             return nguoiDungOpt.get().getMatKhau();
         }
         return null;
+    }
+
+    public List<String> getRolesByUsername(String tenDangNhap) {
+        return vaiTroNguoiDungRepository.findRolesByUsername(tenDangNhap);
     }
 }
 

@@ -88,7 +88,7 @@
     </a>
     <h2>Đăng ký</h2>
 
-    <form th:action="@{/dang-ky}" method="post" th:object="${nguoiDung}">
+    <form th:action="@{/dang-ky/add}" method="post" th:object="${nguoiDung}">
         <!-- Thông báo lỗi toàn cục -->
         <div class="error-message" th:if="${error}" th:text="${error}"></div>
         <div class="error-message" th:if="${errorTenDangNhap}" th:text="${errorTenDangNhap}"></div>

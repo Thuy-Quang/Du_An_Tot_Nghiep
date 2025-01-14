@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,10 +40,11 @@ public class DangNhapController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
         Long userId = nguoiDungDetailsService.getUserIdByUsername(tenDangNhap);
+        List<String> roles = nguoiDungDetailsService.getRolesByUsername(tenDangNhap); // Lấy danh sách quyền
 
         // Tạo token JWT
         try {
-            String token = jwtUtil.generateToken(tenDangNhap, userId);
+            String token = jwtUtil.generateToken(tenDangNhap, userId, roles);
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             response.put("message", "Đăng nhập thành công");

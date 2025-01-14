@@ -27,4 +27,5 @@ public interface ChiTietDonHangRepository extends JpaRepository<ChiTietDonHang, 
     Page<ChiTietDonHang> findAll(Pageable pageable);
 
     Page<ChiTietDonHang> findBySanPham_TenSanPhamContaining(String search, Pageable pageable);
+    void deleteById(Long id);
 }

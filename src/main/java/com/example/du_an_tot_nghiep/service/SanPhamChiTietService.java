@@ -31,4 +31,9 @@ public class SanPhamChiTietService {
     public List<KichCo> getKichCoByMauSac(Long sanPhamId, Long mauSacId) {
         return sanPhamChiTietRepository.findKichCoBySanPhamIdAndMauSacId(sanPhamId, mauSacId);
     }
+
+
+    public SanPhamChiTiet save(SanPhamChiTiet sanPhamChiTiet) {
+        return sanPhamChiTietRepository.save(sanPhamChiTiet);
+    }
 }

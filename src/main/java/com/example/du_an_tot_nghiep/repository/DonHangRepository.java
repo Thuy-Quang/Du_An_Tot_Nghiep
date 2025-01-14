@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DonHangRepository extends JpaRepository<DonHang,Long> {
@@ -38,4 +39,6 @@ public interface DonHangRepository extends JpaRepository<DonHang,Long> {
 
     @Query("SELECT SUM(dh.tongTien) FROM DonHang dh WHERE dh.ngayTao BETWEEN :startDate AND :endDate")
     Double sumTongTienBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    Optional<DonHang> findByNguoiDungIdAndTrangThai(Long idNguoiDung, String trangThai);
 }

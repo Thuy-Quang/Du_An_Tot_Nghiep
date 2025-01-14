@@ -10,6 +10,7 @@ import com.example.du_an_tot_nghiep.service.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -91,16 +92,19 @@ public class GioHangController {
     public String hienThiSanPhamTrongGioHang(){
         return "giohang/giohangdetail";
     }
+
     @GetMapping("/sanpham/{id}")
     public String chiTietSanPham(@PathVariable Long id, Model model) {
 //        SanPham sanPham = sanPhamService.findById(id); // Tìm sản phẩm theo ID
 //        model.addAttribute("sanPham", sanPham);
         return "sanphamchitiet/hienthi"; // Tên file HTML chi tiết
     }
+
     @GetMapping("/dat-hang")
     public String datHang() {
         return "giohang/dathang";  // Trả về view hoặc chuyển hướng đến trang đặt hàng
     }
+
     @GetMapping("/khachhang/{id}")
     public String getDonHangTheoUser(@PathVariable Long id,Model model) {
         List<DonHang> optionalDonHang = donHangService.getOrdersByUserId(id);
