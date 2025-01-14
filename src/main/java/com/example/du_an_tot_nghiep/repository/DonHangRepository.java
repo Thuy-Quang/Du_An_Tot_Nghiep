@@ -41,4 +41,36 @@ public interface DonHangRepository extends JpaRepository<DonHang,Long> {
     Double sumTongTienBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     Optional<DonHang> findByNguoiDungIdAndTrangThai(Long idNguoiDung, String trangThai);
+
+
+    @Query(value = """
+    SELECT TOP 5 sp.id, sp.ten_san_pham, sp.hinh_anh, SUM(ct.so_luong) AS so_luong_ban 
+    FROM chi_tiet_don_hang ct 
+    JOIN san_pham_chi_tiet spct ON ct.san_pham_chi_tiet_id = spct.id 
+    JOIN san_pham sp ON spct.san_pham_id = sp.id 
+    JOIN don_hang dh ON ct.don_hang_id = dh.id 
+    WHERE dh.trang_thai = N'Hoàn tất' 
+    AND dh.ngay_tao BETWEEN :startDate AND :endDate
+    GROUP BY sp.id, sp.ten_san_pham, sp.hinh_anh
+    ORDER BY so_luong_ban DESC
+""", nativeQuery = true)
+    List<Object[]> thongKeSanPhamBanChay(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate
+    );
+
+
+
+
+    @Query(value = "SELECT SUM(dh.tong_tien) FROM don_hang dh WHERE CAST(dh.ngay_tao AS DATE) = :date", nativeQuery = true)
+    Double tinhDoanhSoTheoNgay(@Param("date") Date date);
+
+
+
+    @Query("SELECT SUM(d.tongTien) FROM DonHang d WHERE d.ngayTao BETWEEN :startDate AND :endDate")
+    Double tinhDoanhSoHomNay(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query("SELECT SUM(d.tongTien) FROM DonHang d WHERE d.ngayTao BETWEEN :startDate AND :endDate")
+    Double tinhDoanhSoThang(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
 }

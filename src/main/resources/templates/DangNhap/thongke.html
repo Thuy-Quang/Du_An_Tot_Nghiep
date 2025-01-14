@@ -1,128 +1,208 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thống Kê Hệ Thống</title>
-
-</head>
-<body>
-
-<div class="container" th:fragment="quanly">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
-        }
-        .container {
-            margin-top: 50px;
-        }
-        .card {
-            background-color: #fff;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-        .card-header {
-            background-color: #007bff;
-            color: #fff;
-            font-size: 18px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-        .stats-card {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-        .stats-card .stat {
-            text-align: center;
-            flex: 1;
-            padding: 20px;
-            border-radius: 8px;
+            font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
         }
-        .stats-card .stat h3 {
-            margin: 0;
-            font-size: 32px;
+        .dashboard-card {
+            transition: transform 0.2s;
+            border: none;
+            border-radius: 10px;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 1rem;
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .product-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+            padding: 1rem;
+            transition: background-color 0.2s;
+        }
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
         }
     </style>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Thống Kê Theo Ngày, Tuần và Tháng</h4>
+</head>
+<body>
+<div class="container py-5">
+    <h1 class="text-center mb-5 fw-bold text-primary">Thống Kê Hệ Thống</h1>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-4">
+            <div class="card dashboard-card shadow">
+                <div class="card-header text-center">
+                    <h4 class="mb-0">Doanh Số Hôm Nay</h4>
                 </div>
-                <div class="card-body">
-                    <form action="/thong-ke/thongke" method="get">
-                        <div class="form-row">
-                            <!-- Chọn ngày -->
-                            <div class="form-group col-md-4">
-                                <label for="ngayChon">Chọn ngày:</label>
-                                <input type="text" id="ngayChon" name="ngayChon" class="form-control" placeholder="Chọn ngày"
-                                       th:value="${ngayChon != null ? #dates.format(ngayChon, 'yyyy-MM-dd') : #dates.format(new java.util.Date(), 'yyyy-MM-dd')}" />
-                            </div>
-                            <!-- Chọn tuần -->
-                            <div class="form-group col-md-4">
-                                <label for="tuan">Chọn tuần:</label>
-                                <select id="tuan" name="tuan" class="form-control">
-                                    <option th:each="i : ${#numbers.sequence(1, 52)}" th:value="${i}" th:text="'Tuần ' + ${i}">Tuần</option>
-                                </select>
-                            </div>
-                            <!-- Chọn tháng -->
-                            <div class="form-group col-md-4">
-                                <label for="thang">Chọn tháng:</label>
-                                <select id="thang" name="thang" class="form-control">
-                                    <option th:each="i : ${#numbers.sequence(1, 12)}" th:value="${i}" th:text="'Tháng ' + ${i}">Tháng</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Xem Thống Kê</button>
-                    </form>
+                <div class="card-body text-center">
+                    <p class="stats-number text-primary mb-0" th:text="${#numbers.formatDecimal(doanhSoHomNay, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</p>
                 </div>
             </div>
+        </div>
 
-            <div class="card">
+        <div class="col-lg-4">
+            <div class="card dashboard-card shadow">
+                <div class="card-header text-center">
+                    <h4 class="mb-0">Doanh Số Tháng</h4>
+                </div>
+                <div class="card-body text-center">
+                    <p class="stats-number text-success mb-0" th:text="${#numbers.formatDecimal(doanhSoThang, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card dashboard-card shadow">
+                <div class="card-header text-center">
+                    <h4 class="mb-0">Sản Phẩm Bán Trong Tháng</h4>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                            th:each="item : ${sanPhamBanDuoc}">
+                            <span th:text="${item[0]}" class="text-truncate" style="max-width: 200px;">Tên sản phẩm</span>
+                            <span class="badge bg-success" th:text="'SL: ' + ${item[1]}">SL: 0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card dashboard-card shadow">
+                <div class="card-header">
+                    <h4 class="mb-0">Sản Phẩm Bán Chạy</h4>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                            th:each="item : ${sanPhamBanChay}">
+                            <div class="d-flex align-items-center">
+                                <img th:if="${item[2] != null}" th:src="@{'/images/' + ${item[2]}}"
+                                     alt="Hình ảnh sản phẩm" class="product-img me-3">
+                                <span th:text="${item[1]}" class="text-truncate" style="max-width: 200px;">Tên sản phẩm</span>
+                            </div>
+                            <span class="badge bg-primary" th:text="'SL: ' + ${item[3]}">SL: 0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card dashboard-card shadow">
+                <div class="card-header">
+                    <h4 class="mb-0">Biểu Đồ Doanh Số Tháng</h4>
+                </div>
                 <div class="card-body">
-                    <!-- Thống kê dữ liệu -->
-                    <div class="stats-card">
-                        <div class="stat">
-                            <h3 th:text="${soNguoiDungMoi}">0</h3>
-                            <p>Người dùng mới</p>
-                        </div>
-                        <div class="stat">
-                            <h3 th:text="${soDonHangHomNay}">0</h3>
-                            <p>Đơn hàng trong ngày</p>
-                        </div>
-                        <div class="stat">
-                            <h3 th:text="${tongDoanhThu}">0</h3>
-                            <p>Doanh thu (VNĐ)</p>
-                        </div>
+                    <div class="chart-container">
+                        <canvas id="myChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        // Khởi tạo datepicker cho input chọn ngày
-        flatpickr("#ngayChon", {
-            dateFormat: "Y-m-d",
-            locale: "vi",
-            maxDate: "today",
-        });
-    </script>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Debug image loading
+        const images = document.querySelectorAll('.product-img');
+        images.forEach(img => {
+            img.onerror = function() {
+                this.src = '/images/default-product.jpg';
+            };
+        });
+
+        // Chart initialization
+        fetch('/api/chart-data')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Doanh Số (VNĐ)',
+                            data: data.data,
+                            borderColor: 'rgb(75, 192, 192)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 15000000,  // Tăng max lên 50 triệu VNĐ
+                                ticks: {
+                                    callback: function(value) {
+                                        return value.toLocaleString() + ' VNĐ';
+                                    },
+                                    stepSize: 1500000  // Điều chỉnh bước chia mỗi mốc là 5 triệu VNĐ
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading chart data:', error);
+            });
+    });
+</script>
 
 </body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </html>

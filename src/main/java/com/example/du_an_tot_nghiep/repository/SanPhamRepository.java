@@ -4,8 +4,11 @@ import com.example.du_an_tot_nghiep.entity.SanPham;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -42,7 +45,17 @@ public interface SanPhamRepository extends JpaRepository<SanPham,Long> {
     // Tìm kiếm theo tên và sắp xếp theo ngày tạo
     Page<SanPham> findByTenSanPhamContainingOrderByNgayTaoDesc(String tenSanPham, Pageable pageable);
 
-    // Lấy tất cả sản phẩm, sắp xếp theo ngày tạo
+
+
     Page<SanPham> findAllByOrderByNgayTaoDesc(Pageable pageable);
+    @Query("SELECT s.tenSanPham, SUM(ctdh.soLuong) " +
+            "FROM ChiTietDonHang ctdh " +
+            "JOIN ctdh.sanPhamChiTiet spct " +
+            "JOIN spct.sanPham s " +
+            "WHERE ctdh.donHang.ngayTao BETWEEN :startOfMonth AND :endOfMonth " +
+            "GROUP BY s.tenSanPham")
+    List<Object[]> countSanPhamBanDuocTrongThang(
+            @Param("startOfMonth") LocalDateTime startOfMonth,
+            @Param("endOfMonth") LocalDateTime endOfMonth);
 
 }
