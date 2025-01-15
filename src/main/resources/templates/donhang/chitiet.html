@@ -7,9 +7,6 @@
 </head>
 <body>
 <div class="container" th:fragment="quanly">
-    <div th:if="${error}" class="alert alert-danger" role="alert">
-        <p th:text="${error}"></p>
-    </div>
     <h1 class="text-center">Chi Tiết Đơn Hàng</h1>
     <div>
         <h3>Thông Tin Đơn Hàng</h3>
@@ -31,7 +28,7 @@
             <th>Màu Sắc</th>
             <th>Số Lượng</th>
             <th>Giá Đơn Vị</th>
-            <th> Giá</th>
+            <th>Giá</th>
         </tr>
         </thead>
         <tbody>
@@ -46,8 +43,16 @@
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="5" class="text-right"><strong>Tổng Tiền:</strong></td>
+            <td colspan="5" class="text-right"><strong>Tổng Tiền Sản Phẩm:</strong></td>
             <td><span th:text="${tongTien}"></span></td>
+        </tr>
+        <tr>
+            <td colspan="5" class="text-right"><strong>Phí Vận Chuyển:</strong></td>
+            <td>30,000</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="text-right"><strong>Tổng Thanh Toán:</strong></td>
+            <td><span th:text="${tongTien + 30000}"></span></td>
         </tr>
         </tfoot>
     </table>
