@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:fragment="dynamic(quanly)"  >
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="dynamic(quanly)">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,11 +12,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        /* Cấu trúc chính của body */
         body {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Chiều cao tối thiểu bằng 100% chiều cao của viewport */
+            min-height: 100vh;
         }
 
         /* Thanh điều hướng ẩn bên trái */
@@ -25,27 +24,21 @@
             left: 0;
             top: 0;
             height: 100%;
-            width: 60px; /* Chiều rộng tối thiểu ban đầu */
+            width: 200px;
             background-color: #343a40;
-            transition: width 0.3s; /* Hiệu ứng chuyển tiếp cho chiều rộng */
+            transition: width 0.3s;
             overflow-x: hidden;
             z-index: 1000;
         }
 
-        /* Mở rộng thanh khi di chuột */
-        .sidebar:hover {
-            width: 200px; /* Mở rộng thanh khi di chuột vào */
+        .sidebar.collapsed {
+            width: 60px; /* Thu nhỏ sidebar */
         }
 
-        /* Các mục trong sidebar */
         .sidebar ul {
             list-style: none;
             padding: 0;
             margin-top: 60px;
-        }
-
-        .sidebar ul li {
-            position: relative; /* Để căn chỉnh nội dung bên trong */
         }
 
         .sidebar ul li a {
@@ -55,55 +48,87 @@
             color: #fff;
             text-decoration: none;
             font-size: 18px;
-            transition: background-color 0.3s; /* Hiệu ứng cho màu nền */
+            transition: background-color 0.3s;
         }
 
         .sidebar ul li a i {
             margin-right: 10px;
-            width: 24px; /* Đảm bảo icon có khoảng cách */
+            width: 24px;
         }
 
-        .sidebar ul li a span {
-            display: none; /* Ẩn văn bản mặc định */
-        }
-
-        .sidebar:hover ul li a span {
-            display: inline; /* Hiển thị văn bản khi di chuột vào sidebar */
+        .sidebar.collapsed ul li a span {
+            display: none; /* Ẩn văn bản khi sidebar thu nhỏ */
         }
 
         .sidebar ul li a:hover {
-            background-color: #495057; /* Màu nền khi hover */
-            color: #ffc107; /* Màu chữ khi hover */
+            background-color: #495057;
+            color: #ffc107;
         }
 
-        /* Nội dung chính */
         .main-content {
-            margin-left: 60px; /* Căn chỉnh với chiều rộng của sidebar */
-            transition: margin-left 0.3s; /* Hiệu ứng chuyển tiếp cho nội dung chính */
-            flex: 1; /* Để nội dung chính chiếm không gian còn lại */
-            padding: 20px; /* Khoảng cách bên trong */
+            margin-left: 200px;
+            transition: margin-left 0.3s;
+            flex: 1;
+            padding: 20px;
         }
 
-        /* Căn chỉnh nội dung chính khi sidebar mở rộng */
-        .sidebar:hover ~ .main-content {
-            margin-left: 200px; /* Đẩy nội dung chính khi sidebar mở rộng */
+        .main-content.collapsed {
+            margin-left: 60px; /* Điều chỉnh nội dung chính khi sidebar thu nhỏ */
         }
 
-        /* Footer */
         footer {
-            background-color: #343a40; /* Màu nền footer */
-            color: white; /* Màu chữ footer */
+            background-color: #343a40;
+            color: white;
             text-align: center;
-            padding: 10px 0; /* Khoảng cách bên trong footer */
+            padding: 10px 0;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background-color: #ffc107;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: #343a40;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .toggle-btn:focus {
+            outline: none;
+        }
+        body {
+            font-size: 14px; /* Kích thước chữ nhỏ hơn cho toàn bộ trang */
+        }
+
+        .sidebar ul li a {
+            font-size: 14px; /* Giảm kích thước chữ trong sidebar */
+        }
+
+        .sidebar ul li a i {
+            font-size: 16px; /* Kích thước icon vừa phải */
+        }
+
+        header h2 {
+            font-size: 20px; /* Giảm kích thước tiêu đề trong header */
+        }
+
+        .main-content {
+            font-size: 14px; /* Kích thước chữ nhỏ hơn cho nội dung chính */
+        }
+
+        footer {
+            font-size: 12px; /* Kích thước chữ nhỏ hơn cho footer */
         }
     </style>
 </head>
 
-
-<body class="container-fluid">
-<header class="bg-dark text-white p-3">
+<body>
+<header class="text-white p-3" style="background-color: rgb(33, 223, 223);">
     <div class="d-flex justify-content-between align-items-center">
-        <div></div> <!-- Khoảng trống để cân đối -->
         <h2 class="mb-0 text-center flex-grow-1">Trang quản lý SH Shop</h2>
         <div class="d-flex align-items-center">
             <i class="fas fa-user-circle fs-4 me-2"></i>
@@ -111,8 +136,14 @@
         </div>
     </div>
 </header>
+
+<!-- Nút đóng/mở -->
+<button class="toggle-btn" id="toggle-btn">
+    <i class="fas fa-bars"></i>
+</button>
+
 <!-- Sidebar -->
-<div class="sidebar">
+<div class="sidebar" id="sidebar" style="background-color: rgb(33, 223, 223);">
     <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link" th:href="@{/loai-san-pham}">
@@ -127,27 +158,21 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/bhtaiquay}">
-                <i class="fas fa-shopping-cart"></i>
-                <span>Quản Lý Bán Hàng</span>
-            </a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link" th:href="@{/HienThiDonHang/GetAll}">
                 <i class="fas fa-file-invoice-dollar"></i>
                 <span>Đơn Hàng</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/thong-ke}">
+            <a class="nav-link" th:href="@{/thong-ke/thongke}">
                 <i class="fas fa-chart-bar"></i>
                 <span>Thống Kê</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/nguoi-dung}">
+            <a class="nav-link" th:href="@{/nguoi-dung/hienthi}">
                 <i class="fas fa-users"></i>
-                <span>Khách Hàng</span>
+                <span>Người dùng</span>
             </a>
         </li>
         <li class="nav-item">
@@ -190,7 +215,7 @@
 
         <!-- Mã Giảm Giá Sản Phẩm -->
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/ma-giam-gia-san-pham/hienthi}">
+            <a class="nav-link" th:href="@{/ma-giam-gia-san-pham}">
                 <i class="fas fa-percentage"></i>
                 <span>Mã Giảm Giá Sản Phẩm</span>
             </a>
@@ -198,18 +223,24 @@
     </ul>
 </div>
 
-</div>
 <!-- Nội dung chính -->
-<div class="main-content col">
-        <div >
-            <div th:replace="${quanly}" ></div>
-        </div>
+<div class="main-content" id="main-content">
+    <div>
+        <div th:replace="${quanly}"></div>
+    </div>
 </div>
-<!-- Footer -->
-<footer>
-    <p>&copy; 2024 SH Shop - Quản lý</p>
-</footer>
+
 <!-- Bootstrap JS và Font Awesome JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const toggleBtn = document.getElementById('toggle-btn');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('collapsed');
+    });
+</script>
 </body>
 </html>

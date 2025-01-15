@@ -2,11 +2,10 @@ package com.example.du_an_tot_nghiep.controller;
 
 import com.example.du_an_tot_nghiep.entity.MaGiamGiaKhachHang;
 import com.example.du_an_tot_nghiep.repository.MaGiamGiaKhachHangRepository;
+import com.example.du_an_tot_nghiep.repository.MaGiamGiaRepository;
+import com.example.du_an_tot_nghiep.repository.NguoiDungRepository;
 import com.example.du_an_tot_nghiep.service.MaGiamGiaKHService; // Đã sửa tên class
-import com.example.du_an_tot_nghiep.service.NguoiDungService;
-import com.example.du_an_tot_nghiep.service.MaGiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,18 +22,21 @@ public class MaGiamGiaKHController {
     private MaGiamGiaKHService maGiamGiaKHService;
 
     @Autowired
-    private NguoiDungService nguoiDungService;
+    private NguoiDungRepository nguoiDungRepository;
 
     @Autowired
-    private MaGiamGiaService maGiamGiaService;
+    private MaGiamGiaRepository maGiamGiaRepository;
+
     @Autowired
-    MaGiamGiaKhachHangRepository maGiamGiaKhachHangRepository;
+    private MaGiamGiaKhachHangRepository maGiamGiaKhachHangRepository;
 
     // Hiển thị danh sách mã giảm giá khách hàng
     @GetMapping("/hienthi")
     public String listMaGiamGiaKH(Model model) {
         List<MaGiamGiaKhachHang> list = maGiamGiaKHService.findAll();
         model.addAttribute("maGiamGiaKHList", list);
+        model.addAttribute("nguoiDungList", nguoiDungRepository.findAll());
+        model.addAttribute("maGiamGiaList", maGiamGiaRepository.findAll());
         return "magiamgiakhachhang/index";
     }
 
@@ -44,8 +46,8 @@ public class MaGiamGiaKHController {
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("maGiamGiaKH", new MaGiamGiaKhachHang());
-        model.addAttribute("nguoiDungList", nguoiDungService.findAll());
-        model.addAttribute("maGiamGiaList", maGiamGiaService.findAll());
+        model.addAttribute("nguoiDungList", nguoiDungRepository.findAll());
+        model.addAttribute("maGiamGiaList", maGiamGiaRepository.findAll());
         return "magiamgiakhachhang/add";
     }
 
@@ -66,8 +68,8 @@ public class MaGiamGiaKHController {
             return "redirect:/ma-giam-gia-kh/hienthi";
         }
         model.addAttribute("maGiamGiaKH", maGiamGiaKH.get());
-        model.addAttribute("nguoiDungList", nguoiDungService.findAll());
-        model.addAttribute("maGiamGiaList", maGiamGiaService.findAll());
+        model.addAttribute("nguoiDungList", nguoiDungRepository.findAll());
+        model.addAttribute("maGiamGiaList", maGiamGiaRepository.findAll());
         return "magiamgiakhachhang/edit";
     }
 
@@ -98,15 +100,4 @@ public class MaGiamGiaKHController {
         return "redirect:/ma-giam-gia-kh/hienthi";
     }
 
-    // Hiển thị chi tiết
-    @GetMapping("/detail/{id}")
-    public String viewDetail(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-        Optional<MaGiamGiaKhachHang> maGiamGiaKH = maGiamGiaKHService.findById(id);
-        if (maGiamGiaKH.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Không tìm thấy mã giảm giá khách hàng!");
-            return "redirect:/ma-giam-gia-kh/hienthi";
-        }
-        model.addAttribute("maGiamGiaKH", maGiamGiaKH.get());
-        return "magiamgiakhachhang/detail";
-    }
 }

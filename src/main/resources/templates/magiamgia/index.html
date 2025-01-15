@@ -8,50 +8,88 @@
 
 <body>
 <div class="container" th:fragment="quanly">
+    <h2 class="text-center mb-4">Danh Sách Mã Giảm Giá</h2>
 
-    <h1 class="text-center">Danh Sách Mã Giảm Giá</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4 p-2 bg-light rounded shadow-sm">
+        <!-- Tìm kiếm -->
+        <form th:action="@{/ma-giam-gia}" method="get" class="d-flex flex-grow-1 me-3">
+            <input type="text" name="search" class="form-control me-2" placeholder="Tìm kiếm theo mã" th:value="${search}"
+                   style="max-width: 400px;">
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search"></i> Tìm Kiếm
+            </button>
+        </form>
 
-    <!-- Thêm Mã Giảm Giá -->
-    <a class="btn btn-primary mb-4" th:href="@{/ma-giam-gia/create}"> Thêm Mã Giảm Giá</a>
+        <!-- Nút thêm -->
+        <a href="/ma-giam-gia/create" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Thêm Mới
+        </a>
+    </div>
 
-    <table class="table table-bordered table-hover">
-        <thead>
+    <table class="table table-hover table-bordered">
+        <thead class="table-primary">
         <tr>
-            <th>ID</th>
-            <th>Mã</th>
-            <th>Phần Trăm Giảm</th>
-            <th>Ngày Bắt Đầu</th>
-            <th>Ngày Hết Hạn</th>
-            <th>Trạng Thái</th>
-            <th>Ngày Tạo</th>
-            <th>Ngày Cập Nhật</th>
-            <th>Thao Tác</th>
+            <th class="text-center">STT</th>
+            <th class="text-center">Mã</th>
+            <th class="text-center">Phần Trăm Giảm</th>
+            <th class="text-center">Ngày Bắt Đầu</th>
+            <th class="text-center">Ngày Hết Hạn</th>
+            <th class="text-center">Trạng Thái</th>
+            <th class="text-center">Ngày Tạo</th>
+            <th class="text-center">Ngày Cập Nhật</th>
+            <th class="text-center">Hành Động</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="maGiamGia, stat : ${listMaGiamGia}">
-            <td th:text="${maGiamGia.id}"></td>
-            <td th:text="${maGiamGia.ma}"></td>
-            <td th:text="${maGiamGia.phanTramGiam} + '%'"></td>
-            <td th:text="${#dates.format(maGiamGia.ngayBatDau, 'dd-MM-yyyy')}"></td>
-            <td th:text="${#dates.format(maGiamGia.ngayHetHan, 'dd-MM-yyyy')}"></td>
-            <td th:text="${maGiamGia.trangThai}"></td>
-            <td th:text="${#dates.format(maGiamGia.ngayTao, 'dd-MM-yyyy')}"></td>
-            <td th:text="${#dates.format(maGiamGia.ngayCapNhat, 'dd-MM-yyyy')}"></td>
-            <td>
-                <!-- Sửa -->
-                <a class="btn btn-warning btn-sm" th:href="@{/ma-giam-gia/edit/{id}(id=${maGiamGia.id})}">
-                    Sửa
+        <tr th:each="maGiamGia, stat : ${maGiamGias}">
+            <td class="text-center" th:text="${stat.index + 1}"></td>
+            <td class="text-center" th:text="${maGiamGia.ma}"></td>
+            <td class="text-center" th:text="${maGiamGia.phanTramGiam} + '%'"></td>
+            <td class="text-center" th:text="${maGiamGia.ngayBatDau}"></td>
+            <td class="text-center" th:text="${maGiamGia.ngayHetHan}"></td>
+            <td class="text-center" th:text="${maGiamGia.trangThai}"></td>
+            <td class="text-center" th:text="${maGiamGia.ngayTao}"></td>
+            <td class="text-center" th:text="${maGiamGia.ngayCapNhat}"></td>
+            <td class="d-flex justify-content-center">
+                <a class="btn btn-warning mr-2" th:href="@{/ma-giam-gia/edit/{id}(id=${maGiamGia.id})}">
+                    <i class="fas fa-edit"></i> Sửa
                 </a>
-
-                <!-- Xóa -->
-                <form th:action="@{/ma-giam-gia/delete/{id}(id=${maGiamGia.id})}" method="post" style="display:inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này không?');">
-                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
-                </form>
+                <a class="btn btn-danger" th:href="@{/ma-giam-gia/delete/{id}(id=${maGiamGia.id})}">
+                    <i class="fas fa-trash-alt"></i> Xóa
+                </a>
             </td>
         </tr>
         </tbody>
     </table>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/ma-giam-gia(page=0, search=${search}, size=${size})}">
+                    <i class="fas fa-angle-double-left"></i> Đầu
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/ma-giam-gia(page=${currentPage - 1}, search=${search}, size=${size})}">
+                    <i class="fas fa-angle-left"></i> Trước
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/ma-giam-gia(page=${currentPage + 1}, search=${search}, size=${size})}">
+                    <i class="fas fa-angle-right"></i> Sau
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/ma-giam-gia(page=${totalPages - 1}, search=${search}, size=${size})}">
+                    <i class="fas fa-angle-double-right"></i> Cuối
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

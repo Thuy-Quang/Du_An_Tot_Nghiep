@@ -1,137 +1,178 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/giaodienquanly/giaodienquanly.html :: dynamic(~{::quanly})}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sửa Mã Giảm Giá</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script>
-        function validateForm() {
-            const ma = document.getElementById("ma").value.trim(); // Sử dụng trim() để loại bỏ khoảng trắng
-            const phanTramGiam = document.getElementById("phanTramGiam").value.trim(); // Cũng trim cho phần trăm giảm
-            const ngayBatDau = document.getElementById("ngayBatDau").value.trim();
-            const ngayHetHan = document.getElementById("ngayHetHan").value.trim();
-
-            // Kiểm tra xem các trường có bị trống không
-            if (!ma) {
-                alert("Mã không được để trống.");
-                return false;
-            }
-            if (!phanTramGiam) {
-                alert("Phần trăm giảm không được để trống.");
-                return false;
-            }
-            if (!ngayBatDau) {
-                alert("Ngày bắt đầu không được để trống.");
-                return false;
-            }
-            if (!ngayHetHan) {
-                alert("Ngày hết hạn không được để trống.");
-                return false;
-            }
-
-            // Kiểm tra độ dài của mã
-            if (ma.length < 3 || ma.length > 10) {
-                alert("Mã giảm giá phải từ 3 đến 10 ký tự.");
-                return false;
-            }
-
-            // Kiểm tra phần trăm giảm giá
-            if (parseFloat(phanTramGiam) <= 0 || parseFloat(phanTramGiam) > 100) {
-                alert("Phần trăm giảm phải lớn hơn 0 và nhỏ hơn hoặc bằng 100.");
-                return false;
-            }
-
-            // Chuyển đổi chuỗi ngày thành đối tượng Date
-            const batDauDate = new Date(ngayBatDau);
-            const hetHanDate = new Date(ngayHetHan);
-
-            // Kiểm tra ngày hết hạn phải sau ngày bắt đầu
-            if (hetHanDate <= batDauDate) {
-                alert("Ngày hết hạn phải sau ngày bắt đầu.");
-                return false;
-            }
-
-            return true;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh Sửa Mã Giảm Giá</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
         }
-    </script>
-    <script>
-        function loadContent(url) {
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    document.querySelector('.main-content').innerHTML = data;
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                    alert('Lỗi khi tải nội dung: ' + error.message); // Thông báo lỗi cho người dùng
-                });
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
-        function submitForm(url, formData, callback) {
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        callback(); // Tải lại danh sách hoặc làm gì đó sau khi thành công
-                    } else {
-                        alert('Thao tác thất bại: ' + data.message);
-                    }
-                })
-                .catch(error => console.error('Lỗi:', error));
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
         }
-
-        function handleFormSubmit(event) {
-            event.preventDefault(); // Ngăn không cho trang tải lại
-            const form = event.target;
-            const formData = new FormData(form);
-            const actionUrl = form.getAttribute('action'); // Lấy URL từ thuộc tính action của form
-            submitForm(actionUrl, formData, () => loadContent(form.dataset.reloadUrl));
+        .form-group label {
+            font-weight: bold;
         }
-    </script>
+        .btn-primary {
+            width: 100%;
+        }
+        .btn-back {
+            width: 100%;
+            margin-top: 10px;
+            background-color: #6c757d;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-<div class="container" th:fragment="quanly">
 
-    <h1 class="text-center">Sửa Mã Giảm Giá</h1>
-
-    <form id="productForm" action="/ma-giam-gia/update/{id}(id=${maGiamGia.id})" th:object="${maGiamGia}" method="post"  enctype="multipart/form-data" onsubmit="handleFormSubmit(event) ">
-        <div class="mb-3">
-            <label for="ma" class="form-label">Mã</label>
-            <input type="text" class="form-control" id="ma" th:field="*{ma}" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('ma')}" th:errors="*{ma}">Mã không hợp lệ.</div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="form-container">
+                <h2>Chỉnh Sửa Mã Giảm Giá</h2>
+                <form id="maGiamGiaForm" th:action="@{/ma-giam-gia/edit/{id}(id=${maGiamGia.id})}" th:object="${maGiamGia}" method="post" novalidate>
+                    <div class="form-group">
+                        <label for="ma">Mã Giảm Giá</label>
+                        <input type="text" id="ma" th:field="*{ma}" class="form-control" required/>
+                        <div class="error-message d-none" id="error-ma">Mã giảm giá phải có từ 3 ký tự trở lên và không quá 10 ký tự và không được để trống.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phanTramGiam">Phần Trăm Giảm</label>
+                        <input type="number" step="0.01" id="phanTramGiam" th:field="*{phanTramGiam}" class="form-control" required/>
+                        <div class="error-message d-none" id="error-phanTramGiam">Phần trăm giảm phải từ 0% trở lên và không quá 100% và không được để trống.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ngayBatDau">Ngày Bắt Đầu</label>
+                        <input type="datetime-local" id="ngayBatDau" th:field="*{ngayBatDau}" class="form-control" required/>
+                        <div class="error-message d-none" id="error-ngayBatDau">Ngày bắt đầu không được để trống và không nhỏ hơn ngày hiện tại.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ngayHetHan">Ngày Hết Hạn</label>
+                        <input type="datetime-local" id="ngayHetHan" th:field="*{ngayHetHan}" class="form-control" required/>
+                        <div class="error-message d-none" id="error-ngayHetHan">Ngày hết hạn không được để trống và không nhỏ hơn ngày hiện tại.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="trangThai"><i class="fas fa-archive"></i> Trạng Thái</label>
+                        <select class="form-control" id="trangThai" name="trangThai" required>
+                            <option value="Hoạt động">Hoạt động</option>
+                            <option value="Không hoạt động">Không hoạt động</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Cập Nhật
+                    </button>
+                    <a href="/ma-giam-gia" class="btn btn-back mt-2">
+                        <i class="fas fa-arrow-left"></i> Quay Lại
+                    </a>
+                </form>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="phanTramGiam" class="form-label">Phần Trăm Giảm</label>
-            <input type="number" class="form-control" id="phanTramGiam" th:field="*{phanTramGiam}" step="0.01" required min="0" max="100">
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('phanTramGiam')}" th:errors="*{phanTramGiam}">Phần trăm giảm phải từ 0 đến 100.</div>
-        </div>
-        <div class="mb-3">
-            <label for="ngayBatDau" class="form-label">Ngày Bắt Đầu</label>
-            <input type="date" class="form-control" id="ngayBatDau" th:field="*{ngayBatDau}" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('ngayBatDau')}" th:errors="*{ngayBatDau}">Ngày bắt đầu không hợp lệ.</div>
-        </div>
-        <div class="mb-3">
-            <label for="ngayHetHan" class="form-label">Ngày Hết Hạn</label>
-            <input type="date" class="form-control" id="ngayHetHan" th:field="*{ngayHetHan}" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('ngayHetHan')}" th:errors="*{ngayHetHan}">Ngày hết hạn không hợp lệ.</div>
-        </div>
-        <div class="mb-3">
-            <label for="trangThai" class="form-label">Trạng Thái</label>
-            <input type="text" class="form-control" id="trangThai" th:field="*{trangThai}" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}">Trạng thái không hợp lệ.</div>
-        </div>
-        <button type="submit" class="btn btn-primary">Cập Nhật</button>
-        <a href="javascript:void(0);" th:onclick="'loadContent(\'/ma-giam-gia\')'" class="btn btn-primary">Quay lại</a>
-    </form>
-
+    </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    document.getElementById('maGiamGiaForm').addEventListener('submit', function (event) {
+        let isValid = true;
+
+        // Reset error messages
+        document.querySelectorAll('.error-message').forEach(error => error.classList.add('d-none'));
+
+        // Get current date for validation
+        const currentDate = new Date().toISOString().slice(0, 16);
+
+        // Validate Mã Giảm Giá
+        const ma = document.getElementById('ma');
+        const errorMa = document.getElementById('error-ma');
+        if (!ma.value) {
+            isValid = false;
+            errorMa.textContent = "Mã giảm giá không được để trống.";
+            errorMa.classList.remove('d-none');
+            ma.classList.add('is-invalid');
+        } else if (ma.value.length < 3 || ma.value.length > 10) {
+            isValid = false;
+            errorMa.textContent = "Mã giảm giá phải có từ 3 ký tự trở lên và không quá 10 ký tự.";
+            errorMa.classList.remove('d-none');
+            ma.classList.add('is-invalid');
+        } else {
+            ma.classList.remove('is-invalid');
+        }
+
+        // Validate Phần Trăm Giảm
+        const phanTramGiam = document.getElementById('phanTramGiam');
+        const errorPhanTramGiam = document.getElementById('error-phanTramGiam');
+        if (!phanTramGiam.value) {
+            isValid = false;
+            errorPhanTramGiam.textContent = "Phần trăm giảm không được để trống.";
+            errorPhanTramGiam.classList.remove('d-none');
+            phanTramGiam.classList.add('is-invalid');
+        } else if (phanTramGiam.value < 0 || phanTramGiam.value > 100) {
+            isValid = false;
+            errorPhanTramGiam.textContent = "Phần trăm giảm phải từ 0% đến 100%.";
+            errorPhanTramGiam.classList.remove('d-none');
+            phanTramGiam.classList.add('is-invalid');
+        } else {
+            phanTramGiam.classList.remove('is-invalid');
+        }
+
+        // Validate Ngày Bắt Đầu không được trống và không nhỏ hơn ngày hiện tại
+        const ngayBatDau = document.getElementById('ngayBatDau');
+        const errorNgayBatDau = document.getElementById('error-ngayBatDau');
+        if (!ngayBatDau.value) {
+            isValid = false;
+            errorNgayBatDau.textContent = "Ngày bắt đầu không được để trống.";
+            errorNgayBatDau.classList.remove('d-none');
+            ngayBatDau.classList.add('is-invalid');
+        } else if (ngayBatDau.value < currentDate) {
+            isValid = false;
+            errorNgayBatDau.textContent = "Ngày bắt đầu không được nhỏ hơn ngày hiện tại.";
+            errorNgayBatDau.classList.remove('d-none');
+            ngayBatDau.classList.add('is-invalid');
+        } else {
+            ngayBatDau.classList.remove('is-invalid');
+        }
+
+        // Validate Ngày Hết Hạn không được trống và không nhỏ hơn ngày hiện tại
+        const ngayHetHan = document.getElementById('ngayHetHan');
+        const errorNgayHetHan = document.getElementById('error-ngayHetHan');
+        if (!ngayHetHan.value) {
+            isValid = false;
+            errorNgayHetHan.textContent = "Ngày hết hạn không được để trống.";
+            errorNgayHetHan.classList.remove('d-none');
+            ngayHetHan.classList.add('is-invalid');
+        } else if (ngayHetHan.value < currentDate) {
+            isValid = false;
+            errorNgayHetHan.textContent = "Ngày hết hạn không được nhỏ hơn ngày hiện tại.";
+            errorNgayHetHan.classList.remove('d-none');
+            ngayHetHan.classList.add('is-invalid');
+        } else {
+            ngayHetHan.classList.remove('is-invalid');
+        }
+
+        // Prevent form submission if validation failed
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+</script>
+
 </body>
 </html>

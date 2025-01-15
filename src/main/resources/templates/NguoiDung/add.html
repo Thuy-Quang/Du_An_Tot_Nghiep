@@ -35,8 +35,11 @@
             <label for="diaChi">Địa chỉ:</label>
             <input type="text" class="form-control" id="diaChi" th:field="*{diaChi}" pattern="^[a-zA-Z0-9\s,.-]{5,100}$" title="Địa chỉ phải bao gồm chữ cái, số và ít nhất 5 ký tự" required />
         </div>
-        <button type="submit" class="btn btn-primary">Lưu</button>
-        <a href="javascript:void(0);" th:onclick="'loadContent(\'/nguoi-dung\')'" class="btn btn-primary">Quay lại</a>
+        <br>
+        <div class="d-flex justify-content-start">
+            <button type="submit" class="btn btn-primary mr-3">Lưu</button>
+            <a href="javascript:void(0);" th:onclick="'loadContent(\'/nguoi-dung\')'" class="btn btn-primary">Quay lại</a>
+        </div>
     </form>
 </div>
 
@@ -51,7 +54,7 @@
         var namePattern = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯƠĂĐỆếố\s]+$/u;
 
         if (!namePattern.test(hoTen)) {
-            alert("Họ tên chỉ chứa chữ cái tiếng Việt và ít nhất 2 ký tự.");
+            alert("Họ tên chỉ chứa chữ cái tiếng Việt và ít nhất 2 ký tự và phải là chữ.");
             return false;
         }
 

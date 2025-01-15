@@ -26,6 +26,7 @@ public class NguoiDungController {
     @Autowired
     JwtUtil jwtUtil;
 
+
     // Hiển thị danh sách người dùng
     @GetMapping("/hienthi")
     public String listNguoiDung(@RequestParam(defaultValue = "0") int page, Model model) {
@@ -63,9 +64,6 @@ public class NguoiDungController {
     }
 
 
-
-
-
     // Form thêm mới người dùng
     @GetMapping("/them")
     public String showAddForm(Model model) {
@@ -84,7 +82,7 @@ public class NguoiDungController {
         nguoiDung.setNgayTao(new Date());
         nguoiDung.setNgayCapNhat(new Date());
         nguoiDungService.save(nguoiDung);
-        return "redirect:/nguoi-dung";
+        return "redirect:/nguoi-dung/hienthi";
     }
 
     // Form sửa thông tin người dùng
@@ -97,6 +95,12 @@ public class NguoiDungController {
 //        }
 //        return "redirect:/nguoi-dung";
 //    }
+    @GetMapping("/cap-nhat/{id}")
+    public String showUpdateForm(@PathVariable Long id, Model model) {
+        NguoiDung nguoiDung = nguoiDungService.findById(id);
+        model.addAttribute("nguoiDung", nguoiDung);
+        return "NguoiDung/edit"; // Trả về trang chỉnh sửa
+    }
 
     // Cập nhật người dùng với kiểm tra tính hợp lệ
     @PostMapping("/cap-nhat/{id}")
@@ -107,7 +111,7 @@ public class NguoiDungController {
         }
         nguoiDung.setNgayCapNhat(new Date());
         nguoiDungService.save(nguoiDung);
-        return "redirect:/nguoi-dung";
+        return "redirect:/nguoi-dung/hienthi";
     }
 
     // Xóa người dùng
@@ -125,6 +129,7 @@ public class NguoiDungController {
             model.addAttribute("nguoiDung", nguoiDung.get());
             return "NguoiDung/detail";
         }
-        return "redirect:/nguoi-dung";
+        return "redirect:/nguoi-dung/hienthi";
     }
+
 }
