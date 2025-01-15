@@ -41,8 +41,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/*", "/**").permitAll() // Cập nhật đây
-                        .requestMatchers("/thong-ke","/vai-tro-nguoi-dung").hasRole("Admin") // Cập nhật đây
-
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

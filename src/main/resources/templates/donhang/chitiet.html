@@ -7,6 +7,9 @@
 </head>
 <body>
 <div class="container" th:fragment="quanly">
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <p th:text="${error}"></p>
+    </div>
     <h1 class="text-center">Chi Tiết Đơn Hàng</h1>
     <div>
         <h3>Thông Tin Đơn Hàng</h3>

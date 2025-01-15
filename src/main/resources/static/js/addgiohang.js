@@ -41,7 +41,10 @@ app.controller('CartController', function($scope, $http) {
                 var color = $scope.selectedColor;  // Màu sắc đã chọn
                 var size = $scope.selectedSize;    // Kích cỡ đã chọn
                 var quantity = $scope.selectedQuantity; // Số lượng đã chọn
-
+                if (!color || !size || !quantity) {
+                    alert("Vui lòng chọn đầy đủ màu sắc, kích cỡ và số lượng!");
+                    return; // Dừng hàm nếu không có đủ thông tin
+                }
                 console.log("ID Sản phẩm:", id);
                 console.log("Màu sắc:", color);
                 console.log("Kích cỡ:", size);

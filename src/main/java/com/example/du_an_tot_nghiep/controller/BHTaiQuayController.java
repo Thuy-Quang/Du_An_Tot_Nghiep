@@ -341,7 +341,7 @@ public class BHTaiQuayController {
 
         // Cập nhật tổng tiền vào đơn hàng
         donHang.setTongTien(tongTien);
-
+        donHang.setTrangThaiThanhToan("Đã thanh toán");
         // Cập nhật trạng thái đơn hàng thành "Hoàn tất"
         donHang.setTrangThai("Hoàn tất");
         donHangService.save(donHang); // Lưu đơn hàng đã cập nhật trạng thái và tổng tiền

@@ -8,6 +8,7 @@ import com.example.du_an_tot_nghiep.model.DonHangRequest;
 import com.example.du_an_tot_nghiep.repository.*;
 import com.example.du_an_tot_nghiep.service.ChiTietDonHangService;
 import com.example.du_an_tot_nghiep.service.DonHangService;
+import com.example.du_an_tot_nghiep.service.SanPhamChiTietService;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/HienThiDonHang")
 public class DonHangController {
     @Autowired
+    SanPhamChiTietService sanPhamChiTietService;
+    @Autowired
     ChiTietDonHangService chiTietDonHangService;
     @Autowired
     private SanPhamChiTietRepository sanPhamChiTietRepository;
@@ -44,16 +47,21 @@ public class DonHangController {
     private MaGiamGiaKhachHangRepository maGiamGiaKhachHangRepository;
 
     // Hiển thị danh sách đơn hàng
-    @PreAuthorize("hasRole('Quản lý')")
     @PostMapping("/hoantat/{id}")
     public ResponseEntity<String> hoanTatDonHang(@PathVariable Long id) {
         try {
+            // Gọi service để hoàn tất đơn hàng và cập nhật trạng thái
             String message = donHangService.hoanTatDonHang(id);
+
+            // Cập nhật trạng thái đơn hàng sau khi hoàn tất
+            donHangService.capNhatTrangThai(id, "Hoàn tất");
+
             return ResponseEntity.ok(message);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("/trangthai/{id}")
     public ResponseEntity<?> getTrangThaiDonHang(@PathVariable Long id) {
         DonHang donHang = donHangRepository.findById(id)
@@ -62,13 +70,44 @@ public class DonHangController {
     }
 
     @PostMapping("/xacNhanDonHang/{donHangId}")
-    public String confirmOrder(@PathVariable Long donHangId) throws MessagingException {
-        // Xác nhận đơn hàng
-        donHangService.confirmOrder(donHangId);
+    public String confirmOrder(@PathVariable Long donHangId, Model model) {
+        try {
+            // Lấy đơn hàng và kiểm tra chi tiết đơn hàng
+            DonHang donHang = donHangService.findById(donHangId);
+            if (donHang == null) {
+                model.addAttribute("error", "Đơn hàng không tồn tại.");
+                return "redirect:/HienThiDonHang/GetAll";
+            }
 
-        // Sau khi xác nhận, chuyển hướng về trang danh sách đơn hàng
-        return "redirect:/HienThiDonHang/GetAll";
+            // Kiểm tra số lượng sản phẩm
+            for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
+                SanPhamChiTiet sanPhamChiTiet = chiTiet.getSanPhamChiTiet();
+                if (sanPhamChiTiet.getSoLuong() < chiTiet.getSoLuong()) {
+                    model.addAttribute("error", "Sản phẩm " + sanPhamChiTiet.getSanPham().getTenSanPham()
+                            + " không đủ số lượng trong kho.");
+                    return "redirect:/HienThiDonHang/GetAll";
+                }
+            }
+
+            // Trừ số lượng sản phẩm chi tiết
+            for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
+                SanPhamChiTiet sanPhamChiTiet = chiTiet.getSanPhamChiTiet();
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - chiTiet.getSoLuong());
+                sanPhamChiTiet.setNgayCapNhat(new Date());
+                sanPhamChiTietService.save(sanPhamChiTiet);
+            }
+
+            // Xác nhận đơn hàng
+            donHangService.confirmOrder(donHangId);
+
+            // Chuyển hướng về trang danh sách đơn hàng
+            return "redirect:/HienThiDonHang/GetAll";
+        } catch (Exception e) {
+            model.addAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
+            return "redirect:/HienThiDonHang/GetAll";
+        }
     }
+
     @GetMapping("/GetAll")
     public String showDH(Model model ) {
         model.addAttribute("listDonHang", donHangRepository.findAll());

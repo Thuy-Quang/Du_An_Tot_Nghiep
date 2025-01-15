@@ -94,6 +94,8 @@
                     .then(response => {
                         if (response.ok) {
                             alert("Đơn hàng đã được hoàn tất thành công!");
+                            // Cập nhật trạng thái trên giao diện người dùng
+                            document.getElementById(`trangThai_${donHangId}`).innerText = 'Hoàn tất';
                             location.reload(); // Tải lại trang để cập nhật
                         } else {
                             response.text().then(text => alert("Lỗi: " + text));
@@ -101,10 +103,11 @@
                     })
                     .catch(error => {
                         console.error("Lỗi:", error);
-                        alert("Có lỗi xảy ra!");
+
                     });
             }
         }
+
     </script>
 </div>
 

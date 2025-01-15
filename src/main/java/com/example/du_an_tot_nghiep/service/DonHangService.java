@@ -61,7 +61,7 @@ public class DonHangService {
                 emailContent.append("<p>Cảm ơn bạn đã mua hàng! Đơn hàng của bạn đã được xác nhận và đang vận chuyển.</p>");
                 emailContent.append("<h3>Chi Tiết Sản Phẩm</h3>");
                 emailContent.append("<table border='1' cellpadding='10' cellspacing='0'>");
-                emailContent.append("<thead><tr><th>Sản phẩm</th><th>Số lượng</th><th>Giá</th><th>Tổng</th></tr></thead>");
+                emailContent.append("<thead><tr><th>Sản phẩm</th><th>Màu sắc </th><th>Kích cỡ</th><th>Số lượng</th><th>Giá</th><th>Tổng</th></tr></thead>");
                 emailContent.append("<tbody>");
 
                 double totalAmount = 0;
@@ -70,6 +70,8 @@ public class DonHangService {
                     totalAmount += totalPrice;
                     emailContent.append("<tr>");
                     emailContent.append("<td>").append(chiTiet.getSanPham().getTenSanPham()).append("</td>");
+                    emailContent.append("<td>").append(chiTiet.getSanPhamChiTiet().getMauSac().getTenMau()).append("</td>");
+                    emailContent.append("<td>").append(chiTiet.getSanPhamChiTiet().getKichCo().getTenKichCo()).append("</td>");
                     emailContent.append("<td>").append(chiTiet.getSoLuong()).append("</td>");
                     emailContent.append("<td>").append(chiTiet.getGiaDonVi()).append("</td>");
                     emailContent.append("<td>").append(totalPrice).append("</td>");
@@ -113,36 +115,29 @@ public class DonHangService {
         return donHangRepository.findAllByOrderByNgayTaoDesc(pageable);
     }
     public String hoanTatDonHang(Long donHangId) {
-        // Lấy đơn hàng theo ID
+        // Tìm đơn hàng theo id
         DonHang donHang = donHangRepository.findById(donHangId)
-                .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng với ID: " + donHangId));
 
-        // Kiểm tra trạng thái đơn hàng
-        if (!"Đang vận chuyển".equals(donHang.getTrangThai())) {
-            return "Đơn hàng không ở trạng thái Đang vận chuyển, không thể hoàn tất";
+        // Kiểm tra trạng thái của đơn hàng trước khi hoàn tất
+        if ("Đang vận chuyển".equals(donHang.getTrangThai())) {
+            // Cập nhật trạng thái của đơn hàng
+            donHang.setTrangThai("Hoàn tất");
+            donHang.setTrangThaiThanhToan("Đã thanh toán");
+
+            // Lưu lại thay đổi vào cơ sở dữ liệu
+            donHangRepository.save(donHang);
+
+            return "Đơn hàng đã hoàn tất thành công!";
+        } else {
+            throw new RuntimeException("Đơn hàng không thể hoàn tất vì trạng thái không hợp lệ.");
         }
-
-        // Kiểm tra chi tiết đơn hàng
-        for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
-            SanPhamChiTiet sanPhamChiTiet = chiTiet.getSanPhamChiTiet();
-            if (sanPhamChiTiet.getSoLuong() < chiTiet.getSoLuong()) {
-                return "Sản phẩm " + sanPhamChiTiet.getSanPham().getTenSanPham() + " không đủ số lượng";
-            }
-        }
-
-        // Cập nhật số lượng tồn kho
-        for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
-            SanPhamChiTiet sanPhamChiTiet = chiTiet.getSanPhamChiTiet();
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - chiTiet.getSoLuong());
-            sanPhamChiTietRepository.save(sanPhamChiTiet);
-        }
-
-        // Cập nhật trạng thái đơn hàng
-        donHang.setTrangThai("Hoàn tất");
-        donHang.setNgayCapNhat(new Date());
-        donHangRepository.save(donHang);
-
-        return "Hoàn tất đơn hàng thành công!";
+    }
+    public void capNhatTrangThai(Long donHangId, String trangThai) {
+        DonHang donHang = donHangRepository.findById(donHangId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+        donHang.setTrangThai(trangThai);  // Cập nhật trạng thái
+        donHangRepository.save(donHang);  // Lưu thay đổi vào cơ sở dữ liệu
     }
 
 
