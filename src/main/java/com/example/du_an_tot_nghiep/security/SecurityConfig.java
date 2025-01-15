@@ -40,11 +40,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        // Cho phép truy cập các tài nguyên tĩnh
                         .requestMatchers("/*", "/**").permitAll() // Cập nhật đây
-                        //Chỉ Customer mới được
+                        .requestMatchers("/thong-ke","/vai-tro-nguoi-dung").hasRole("Admin") // Cập nhật đây
 
-                        // Tất cả các yêu cầu khác phải được xác thực
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class Vtro_NdungController {
 
     @Autowired
     private VaiTroRepository vaiTroRepository;
-
+//    @PreAuthorize("hasRole('Admin')")
     @GetMapping
     public String listVaiTroNguoiDung(@RequestParam(value = "page", defaultValue = "0") int page,
                                       @RequestParam(value = "size", defaultValue = "5") int size,

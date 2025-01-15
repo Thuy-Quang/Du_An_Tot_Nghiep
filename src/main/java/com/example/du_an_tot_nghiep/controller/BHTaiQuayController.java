@@ -2,6 +2,7 @@ package com.example.du_an_tot_nghiep.controller;
 
 import com.example.du_an_tot_nghiep.entity.*;
 import com.example.du_an_tot_nghiep.model.DonHangReq;
+import com.example.du_an_tot_nghiep.model.ThanhToanRequest;
 import com.example.du_an_tot_nghiep.repository.*;
 import com.example.du_an_tot_nghiep.service.*;
 
@@ -319,23 +320,23 @@ public class BHTaiQuayController {
         }
     }
     @PostMapping("/{donHangId}/thanh-toan")
-    public ResponseEntity<String> thanhToan(@PathVariable Long donHangId) {
-        DonHang donHang = donHangService.findById(donHangId);
+    public ResponseEntity<String> thanhToan(@PathVariable Long donHangId,@RequestBody Map<String, Double> payload) {
+        Double tongTien = payload.get("tongTien");
 
+        // Kiểm tra đơn hàng
+        DonHang donHang = donHangService.findById(donHangId);
         if (donHang == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy đơn hàng.");
         }
 
+        // Kiểm tra trạng thái đơn hàng
         if (donHang.getTrangThai().equals("Hoàn tất")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Đơn hàng này đã được thanh toán rồi.");
         }
 
-        // Tính tổng tiền cho đơn hàng
-        double tongTien = 0.0;
-        for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
-            double giaDonVi = chiTiet.getGiaDonVi();  // Giá của sản phẩm
-            int soLuong = chiTiet.getSoLuong();      // Số lượng sản phẩm
-            tongTien += giaDonVi * soLuong;          // Cộng dồn tổng tiền
+        // Kiểm tra tổng tiền có hợp lệ không
+        if (tongTien <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tổng tiền không hợp lệ.");
         }
 
         // Cập nhật tổng tiền vào đơn hàng
@@ -345,53 +346,56 @@ public class BHTaiQuayController {
         donHang.setTrangThai("Hoàn tất");
         donHangService.save(donHang); // Lưu đơn hàng đã cập nhật trạng thái và tổng tiền
 
-        // Cập nhật số lượng sản phẩm
+        // Cập nhật số lượng sản phẩm trong chi tiết đơn hàng
         for (ChiTietDonHang chiTiet : donHang.getChiTietDonHangs()) {
+            if (chiTiet == null || chiTiet.getSanPhamChiTiet() == null) {
+                continue; // Bỏ qua nếu chi tiết đơn hàng hoặc sản phẩm chi tiết không hợp lệ
+            }
+
             SanPhamChiTiet sanPhamChiTiet = chiTiet.getSanPhamChiTiet();
+
+            // Kiểm tra số lượng sản phẩm
+            if (sanPhamChiTiet.getSoLuong() < chiTiet.getSoLuong()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Số lượng sản phẩm không đủ.");
+            }
+
+            // Cập nhật số lượng sản phẩm
             sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - chiTiet.getSoLuong());
             sanPhamChiTietService.save(sanPhamChiTiet); // Lưu sản phẩm đã cập nhật số lượng
         }
 
         return ResponseEntity.ok("Thanh toán thành công.");
     }
-    @PostMapping("/applyDiscount/{maGiamGiaId}")
-    public ResponseEntity<String> applyDiscount(@PathVariable Long maGiamGiaId) {
-        Optional<MaGiamGiaKhachHang> maGiamGiaOpt = maGiamGiaKhachHangRepository.findById(maGiamGiaId);
 
-        if (!maGiamGiaOpt.isPresent()) {
-            return ResponseEntity.badRequest().body("Mã giảm giá không tồn tại.");
-        }
 
-        MaGiamGiaKhachHang maGiamGiaKhachHang = maGiamGiaOpt.get();
+
+    @PostMapping("/ap-dung")
+    public ResponseEntity<?> apDungMaGiamGia(@RequestBody ApDungMaGiamGiaRequest request) {
+        MaGiamGiaKhachHang mggKhachHang = maGiamGiaKhachHangRepository.findById(request.getMaGiamGiaId())
+                .orElseThrow(() -> new RuntimeException("Mã giảm giá không tồn tại"));
+
         LocalDateTime now = LocalDateTime.now();
 
-        // Kiểm tra nếu mã giảm giá đã hết hạn
-        if (maGiamGiaKhachHang.getMaGiamGia().getNgayHetHan().isBefore(now)) {
-            return ResponseEntity.badRequest().body("Mã giảm giá đã hết hạn.");
+        // Kiểm tra trạng thái và ngày hết hạn
+        if (mggKhachHang.getTrangThai().equalsIgnoreCase("Đã sử dụng")) {
+            return ResponseEntity.badRequest().body("Mã giảm giá không khả dụng!");
         }
 
-        // Kiểm tra trạng thái của mã giảm giá
-        if ("Không hoạt động".equals(maGiamGiaKhachHang.getTrangThai())) {
-            return ResponseEntity.badRequest().body("Mã giảm giá không hoạt động.");
+        if (mggKhachHang.getMaGiamGia().getNgayHetHan().isBefore(now)) {
+            return ResponseEntity.badRequest().body("Mã giảm giá đã hết hạn!");
         }
 
-        // Nếu không có lỗi, tính toán giảm giá và cập nhật thông tin
-        // Giả sử ta có đối tượng ChiTietDonHang để tính tổng giá trị
-        Float phanTramGiam = maGiamGiaKhachHang.getMaGiamGia().getPhanTramGiam();
+        // Tính toán giảm giá
+        Float giamGia = request.getTamTinh() * mggKhachHang.getMaGiamGia().getPhanTramGiam() / 100;
 
+        // Cập nhật trạng thái mã giảm giá
+        mggKhachHang.setTrangThai("Đã sử dụng");
+        maGiamGiaKhachHangRepository.save(mggKhachHang);
 
-        // Cập nhật mã giảm giá cho khách hàng
-        MaGiamGiaKhachHang maGiamGiaKhachHang1 = new MaGiamGiaKhachHang();
-        maGiamGiaKhachHang.setMaGiamGia(maGiamGiaKhachHang1.getMaGiamGia());
-        maGiamGiaKhachHang.setTrangThai("Đã áp dụng");
-        maGiamGiaKhachHang.setNgayApDung(now);
-
-//        maGiamGiaKhachHangRepository.save(maGiamGiaKhachHang);
-
-        return ResponseEntity.ok("Áp dụng mã giảm giá thành công! Giảm giá: " + phanTramGiam + "%");
+        return ResponseEntity.ok(giamGia);
     }
 
-    // Tính toán giá trị giảm giá (giả sử bạn có thông tin về tổng giá trị)
+
 
 
 

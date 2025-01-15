@@ -85,7 +85,7 @@
         <p><strong>Ngày Tạo: </strong> <span th:text="${#dates.format(donHang.ngayTao, 'dd-MM-yyyy HH:mm')}"></span></p>
     </div>
 
-    <h3 class="mt-5">Sản Phẩm trong đon hàng</h3>
+    <h3 class="mt-5">Sản Phẩm Trong Đơn hàng</h3>
     <!-- Nút Thêm Sản Phẩm -->
     <button class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#modalSanPham">Thêm Sản Phẩm</button>
 
@@ -173,7 +173,8 @@
                             <td th:text="${mgg.maGiamGia.ngayBatDau}"></td>
                             <td th:text="${mgg.maGiamGia.ngayHetHan}"></td>
                             <td>
-                                <button class="btn btn-primary" th:onclick="'applyDiscount(' + ${mgg.id} + ')'">Áp dụng</button>
+                                <button class="btn btn-primary"
+                                        th:onclick="'apDungMaGiamGia(' + ${mgg.id} + ')'">Áp dụng</button>
 
                             </td>
 
@@ -216,15 +217,15 @@
     <tfoot>
     <tr>
         <td colspan="5" class="text-right"><strong>Tạm Tính:</strong></td>
-        <td><span  th:text="${tamtinh}"></span></td>
+        <td><span id="tamTinh" th:text="${tamtinh}"></span></td>
     </tr>
     <tr>
         <td colspan="5" class="text-right"><strong>Mã Giá Giá:</strong></td>
-        <td><span  th:text="${giamGia}"></span></td>
+        <td><span id="giamGia" th:text="${giamGia}"></span></td>
     </tr>
     <tr>
         <td colspan="5" class="text-right"><strong>Tổng Tiền:</strong></td>
-        <td><span th:text="${tongTien}" ></span></td>
+        <td><span  id="tongTien" name="tongTien" th:text="${tongTien}" ></span></td>
     </tr>
     </tfoot>
 
@@ -298,7 +299,25 @@
         }
 
         function thanhToan() {
-            const donHangId = document.querySelector('#donHangId').textContent; // Lấy ID đơn hàng
+            const donHangId = document.querySelector('#donHangId').textContent.trim(); // Lấy ID đơn hàng và loại bỏ khoảng trắng
+            let tongTien = document.querySelector('#tongTien').textContent.trim(); // Lấy tổng tiền từ span và loại bỏ khoảng trắng
+
+            // Kiểm tra giá trị tổng tiền trong console để chắc chắn
+            console.log(`Giá trị tổng tiền nhận được: ${tongTien}`);
+
+            // Loại bỏ dấu phẩy nếu có và chuyển thành số
+            tongTien = tongTien.replace(",", "");
+
+            // Chuyển giá trị thành số thực
+            tongTien = parseFloat(tongTien);
+
+            // Kiểm tra xem tổng tiền có hợp lệ không
+            if (isNaN(tongTien) || tongTien <= 0) {
+                alert("Tổng tiền không hợp lệ.");
+                return;
+            }
+
+            console.log(`DonHangId: ${donHangId}, TongTien: ${tongTien}`); // In ra để kiểm tra
 
             // Kiểm tra trạng thái của đơn hàng
             fetch(`/bhtaiquay/${donHangId}/kiem-tra-trang-thai`)
@@ -307,14 +326,17 @@
                     if (data.trangThai === 'Hoàn tất') {
                         alert('Đơn hàng này đã được thanh toán rồi. Không thể thanh toán lại.');
                     } else if (data.trangThai === 'Đang vận chuyển') {
-                        alert('Đơn hàng này đang vận chuyển . Không thể thanh toán lại.');
-                    }else if(data.trangThai === 'Đã huỷ') {
-                        alert('Đơn hàng này đã huỷ . Không thể thanh toán lại.');
-                    }else {
-
-                        // Gửi yêu cầu thanh toán
+                        alert('Đơn hàng này đang vận chuyển. Không thể thanh toán lại.');
+                    } else if (data.trangThai === 'Đã huỷ') {
+                        alert('Đơn hàng này đã huỷ. Không thể thanh toán lại.');
+                    } else {
+                        // Gửi yêu cầu thanh toán với body thay vì query string
                         fetch(`/bhtaiquay/${donHangId}/thanh-toan`, {
-                            method: 'POST'
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json', // Xác định kiểu dữ liệu là JSON
+                            },
+                            body: JSON.stringify({ tongTien: tongTien }) // Gửi tổng tiền qua body dưới dạng JSON
                         })
                             .then(response => response.text())
                             .then(message => {
@@ -330,24 +352,47 @@
                     alert("Lỗi: " + error.message);
                 });
         }
-        function applyDiscount(maGiamGiaId) {
-            fetch(`/bhtaiquay/applyDiscount/${maGiamGiaId}`, {
-                method: 'POST'
+
+
+        function apDungMaGiamGia(maGiamGiaId) {
+            const tamTinhElement = document.getElementById('tamTinh');
+            const giamGiaElement = document.getElementById('giamGia');
+            const tongTienElement = document.getElementById('tongTien');
+
+            if (!tamTinhElement || !giamGiaElement || !tongTienElement) {
+                console.error('Không tìm thấy một hoặc nhiều phần tử cần thiết.');
+                return;
+            }
+
+            const tamTinh = parseFloat(tamTinhElement.innerText);
+
+            fetch('/bhtaiquay/ap-dung', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ maGiamGiaId, tamTinh }),
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error);
-                    } else {
-                        alert("Áp dụng mã giảm giá thành công!");
-                        // Cập nhật giá trị giảm giá trên giao diện
-                        document.getElementById('giamGia').innerText = data.giamGia;
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            alert(text); // Hiển thị thông báo lỗi từ server
+                            throw new Error(text);
+                        });
                     }
+                    return response.json();
+                })
+                .then(data => {
+                    giamGiaElement.innerText = data.toFixed(0);
+                    tongTienElement.innerText = (tamTinh - data).toFixed(0);
+                    alert('Áp dụng mã giảm giá thành công! Trạng thái mã giảm giá đã được cập nhật.');
                 })
                 .catch(error => {
-                    alert("Có lỗi xảy ra: " + error);
+                    console.error('Lỗi:', error);
                 });
         }
+
+
 
     </script>
 </div>

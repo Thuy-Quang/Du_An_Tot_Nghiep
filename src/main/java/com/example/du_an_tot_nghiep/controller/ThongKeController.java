@@ -3,6 +3,7 @@ package com.example.du_an_tot_nghiep.controller;
 import com.example.du_an_tot_nghiep.service.ThongKeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ public class ThongKeController {
 
     @Autowired
     private ThongKeService thongKeService;
-
+//    @PreAuthorize("hasRole('Admin')")
     @GetMapping("/thong-ke")
     public String thongKe(Model model) {
         Date now = new Date();
